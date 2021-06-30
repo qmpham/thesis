@@ -1,0 +1,185 @@
+\documentclass[12pt,a4paper,twoside]{report}
+\usepackage[left=3cm,right=3cm,top=3cm,bottom=3cm,headsep=0.25in, voffset= 0.0in]{geometry}
+\usepackage{pagenote}
+
+%algo packages
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+%color packages
+\usepackage{xcolor}
+\colorlet{shadecolor}{orange!15}
+\usepackage{color,soul}
+\usepackage{soulutf8}
+\definecolor{bordeau}{rgb}{0.3515625,0,0.234375}
+
+% position of figure
+\usepackage[absolute,overlay]{textpos}
+
+%graphic packages
+\usepackage{graphicx}
+\graphicspath{ {figures/} }
+\usepackage{wrapfig}
+\usepackage{float} 
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+% table packages
+\usepackage{array}
+\usepackage{multirow,booktabs}
+\usepackage{multicol}
+\usepackage{tabularx}
+
+% font package
+\usepackage[utf8]{inputenc}	% Para caracteres en español
+\usepackage{textcomp}
+%\usepackage{times}
+%\usepackage{lmodern}
+\usepackage{mathptmx}
+
+% equation packages
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{mathrsfs}
+
+% header, footer packages
+\pagestyle{headings}
+
+% page package
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\fancyhf{}
+\fancyhead[LE]{\nouppercase{\leftmark}}
+\fancyhead[RO]{\nouppercase{\rightmark}}
+\fancyfoot[LE,RO]{\thepage}
+\pagestyle{fancy}
+\usepackage{afterpage}
+
+% space package
+\usepackage{setspace}
+\usepackage{calc}
+\usepackage{color,soul}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{titlesec}
+\titlespacing*{\section}
+{0pt}{1.0ex}{1.0ex}
+\titlespacing*{\chapter}
+{0pt}{1.5ex}{2.0ex}
+\titlespacing*{\subsection}
+{0pt}{1.0ex}{1.0ex}
+
+\setlength{\belowdisplayskip}{8pt} \setlength{\belowdisplayshortskip}{8pt}
+\setlength{\abovedisplayskip}{8pt} \setlength{\abovedisplayshortskip}{8pt}
+\setlist{nosep}
+\setlength{\parskip}{0.1cm}
+\setlength{\parindent}{1em}
+%\renewcommand{\baselinestretch}{0.5}
+
+% theorem commands
+\theoremstyle{definition}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{definition}{Definition}[section]
+
+% verbatim env
+\usepackage{fancyvrb}
+\usepackage{spverbatim}
+
+% reference
+\usepackage[hidelinks]{hyperref}
+
+% abbreviation package
+\usepackage[nottoc]{tocbibind}
+\usepackage[intoc]{nomencl}
+\makenomenclature
+\setlength{\nomlabelwidth}{2cm}
+\setlength{\nomitemsep}{-1.5\parsep}
+\renewcommand{\nomname}{List of Abbreviations}
+\setcounter{tocdepth}{2}
+
+\def\altand{\&}
+%%\nomenclature[⟨prefix⟩]{⟨symbol⟩}{⟨description⟩}: the prefix is used to sort the abbreviations in the printing list.
+
+%bibliography
+\usepackage{natbib}
+\setlength{\bibsep}{10.0pt}
+
+% new command
+\def\-{\raisebox{.75pt}{-}}
+\DeclareMathOperator*{\argmax}{argmax}
+\usepackage[draft]{todo}
+\newcommand{\fyTodo}[1]{\Todo[FY:]{\textcolor{orange}{#1}}}
+\newcommand{\fyTodostar}[1]{\Todo*[FY:]{\textcolor{orange}{#1}}}
+\newcommand{\fyDone}[1]{\done[FY]\Todo[FY:]{\textcolor{orange}{#1}}}
+\newcommand{\fyDonestar}[1]{\done[FY]\Todo[FY:]{\textcolor{orange}{#1}}}
+\usepackage{titlesec}
+\pgfkeys{
+    /tr/rowfilter/.style 2 args={
+        /pgfplots/x filter/.append code={
+            \edef\arga{\thisrow{#1}}
+            \edef\argb{#2}
+            \ifx\arga\argb
+            \else
+                \def\pgfmathresult{}
+            \fi
+        }
+    }
+}
+\newcommand{\system}[1]{\texttt{{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+% Thesis title
+\newcommand{\PhDTitle}{Multi-domain neural machine translation} 
+
+% Name
+\newcommand{\PhDname}{Minh-Quang PHAM}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+	\doublespacing	
+
+    \input{layout/firstpage.tex}
+
+	\input{parts/abstract.tex}
+
+	\input{parts/acknowledgement.tex}
+
+%\thispagestyle{empty}
+\tableofcontents
+\clearpage
+
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+
+\newpage
+\phantomsection
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+
+\printnomenclature
+\newpage
+	\onehalfspacing
+	\input{parts/introduction.tex}
+	\input{parts/nmt_review.tex}
+	\input{parts/mdmt_review.tex}
+	
+{\linespread{0.7}\selectfont\bibliography{bibliography}}
+\bibliographystyle{apa-good}
+
+\end{document}
+
+
