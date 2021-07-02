@@ -57,7 +57,9 @@ The decoder takes the output of the encoder as one of its inputs. The decoder wo
 \label{fig:decoding}
 \end{figure*}
 
-NMT's Encoder/Decoder is usually a stack of multiple layers. As described above, the input source sequence is mapped to a sequence of word embeddings. This is considered as $0^{th}$ layer of the Encoder. The $i^{th}$ layer is built upon the $(i-1)^{th}$ layer by applying the same encoding mechanism (recurrent layer, convolution layer or self-attention layer) to the output of the $(i-1)^{th}$. However the parameters of different layers are not shared.
+NMT's Encoder/Decoder is usually a stack of multiple layers. As described above, the input source sequence is mapped to a sequence of word embeddings. This is considered as $0^{th}$ layer of the Encoder. The $i^{th}$ layer is built upon the $(i-1)^{th}$ layer by applying the same encoding mechanism (recurrent layer, convolution layer or self-attention layer) to the output of the $(i-1)^{th}$. For example, \cite{Vaswani17attention} stacks 6 Transformer layers in both the encoder and the decoder of the NMT model. Deep NMT models are able to learn from very large-scale of parallel data \cite{Ott18scaling} and continually create new state-of-the-art performances. However Deep NMT models are harder to train because the gradient flow has to back-propagate through many layers. In order to prevent the gradient flow from vanishing, which happens when the value of the output of the linear transformation in some layer jumps outside the domain of the activation function, \citep{He16deep} proposes using residual connections, which replaces $f(x)$ by $f(x)+x$ where $x$ is the output of the lower layer and $f(.)$ is the transformation of the layer, to transit from the lower layers to their following layers. By using residual connections, a fraction of the gradient still reaches the lower layer and continues to propagate until the lowest layer.
+
+Deep NMT models also suffer from Internal Covariate Shift in which. Normalization method \citep{Ioffe15batch,Jimmy16layer}
 
 \begin{figure*}[htbp]
 \includegraphics[width=\textwidth]{graphics/multi_layer_decoder.png}
@@ -67,40 +69,48 @@ NMT's Encoder/Decoder is usually a stack of multiple layers. As described above,
 
 \section{Recurrent NMT} \label{sec:rrn}
 \nomenclature[rnn]{RNN}{Recurrent neural network}
-This section reviews the very first NMT architecture, which is Recurrent Neural Network. The RNN encoder usually encodes the input sentence into a context vector of a fixed length. This representation is expected to be a good summary of the meaning of the whole source sequence. The RNN decoder will generate the prediction from the context vector. The variants in the RNN category are different only in functions used to map sentences to latent spaces.
-\subsection{GRU, LSTM}
-\nomenclature[gru]{GRU}{Gated Recurrent Unit}
+This section reviews the very first NMT architecture the Recurrent Neural Network (RNN). Recurrent NMT (\nomenclature[rnmt]{RNMT}{Recurrent neural machine translation}) is composed of a Recurrent encoder, a Recurrent decoder and tables of word embeddings. Recurrent encoder and Recurrent decoder usually use the same type of layer such as Gated recurrent unit (GRU) and Long-short term memory (LSTM), which we will explain in the following section. Recurrent NMT is strictly auto-regressive as each hidden state in encoder/decoder has to go through every intermediate state to assess the information of any time step before it. The hidden states of RNMT inherit the information of the order, which is an advantage before Convolutional NMT and Attention-based NMT, from this encoding paradigm. However, lack of straightforward accesses to positions of the input sequence causes many difficulties to the training of RNMT.
+
+\subsection{GRU, LSTM layers}
+\nomenclature[gru]{GRU}{Gated recurrent unit}
 \nomenclature[lstm]{LSTM}{Long-short term memory}
-GRU and LSTM are the 2 most popular architectures in the group RNN. GRU stands for Gated Recurrent Unit while LSTM stands for Long Short Term Memory. Even though these architectures are in the same group, they are quite different in how they encode sentences. As we know, after mapping a source/target sentence to a sequence of word embeddings, the encoder/decoder uses GRU or LSTM to entangle the sequence of word embeddings producing highly abstract structures called contextualized embeddings. The encoding process goes from left to right, token by token. LSTM, which was first introduced by \cite{Hochreiter97long}, uses 4 gate
-functions including input gate i, output gate o, forget gate f and memory cell c. At each time step t, the contextualized embedding $h_t$ is computed as follows.
+Gated recurrent unit (GRU) and Long-short term memory (LSTM) are the 2 most popular layers in the group of Recurrent neural network. They follow the auto-regressive paradigm by constructing the hidden states one by one as follows.
+\begin{equation}
+\begin{array}{rcl}
+h^l_t = f(h^{l-1}_t, h^l_{t-1})
+\end{array}
+\end{equation}
+Where $h^{l-1}_t$ is the hidden state at time step $t$ of the $(l-1)^{th}$, $0^{th}$ layer is the sequence of word embeddings; the mapping f can be GRU cell or LSTM cell, which will be explained below.
+
+LSTM was first introduced \cite{Hochreiter97long}, uses 4 gating functions including input gate i, output gate o, forget gate f and memory cell c. At each time step t, the contextualized embedding $h_t$ is computed as follows.
 \begin{equation}
 \label{eq:lstm}
 \begin{array}{rcl}
-f_t &=& \sigma_g (W_f x_t + U_f h_{t-1} + b_f)\\
-i_t &=& \sigma_g (W_i x_t + U_i h_{t-1} + b_i)\\
-o_t &=& \sigma_g (W_o x_t + U_o h_{t-1} + b_o)\\
-\tilde{c}_t &=& \sigma_c (W_o x_t + U_o h_{t-1} + b_o)\\
+f_t &=& \sigma_g (W_f h^{l-1}_t + U_f h_{t-1} + b_f)\\
+i_t &=& \sigma_g (W_i h^{l-1}_t + U_i h_{t-1} + b_i)\\
+o_t &=& \sigma_g (W_o h^{l-1}_t + U_o h_{t-1} + b_o)\\
+\tilde{c}_t &=& \sigma_c (W_o h^{l-1}_t + U_o h_{t-1} + b_o)\\
 c_t &=& f_t \odot c_{t-1} + i_t \odot \tilde{c}_t\\
 h_t &=& o_t \odot \sigma_h(c_t)\\
 \end{array}
 \end{equation}
-where $x_t$ is word embedding of $t^{th}$ token, $\sigma_g$ is sigmoid function, $\sigma_c$ is hyperbolic tangent function, $\sigma_h$ is either hyperbolic tangent function or identity function and $\odot$ is element-wise multiplication. These functions are applied element-wise to intermediate vectors in the equations.
+where $\sigma_g$ is sigmoid function, $\sigma_c$ is hyperbolic tangent function, $\sigma_h$ is either hyperbolic tangent function or identity function and $\odot$ is element-wise multiplication. These functions are applied element-wise to intermediate vectors in the equations.
 
-The motivation behind this highly complex structure is to stabilize the exploding/diminishing gradients propagating during back-propagation through the network or particularly back-propagation through time (BPTT \nomenclature[bptt]{BPTT}{Back-propagation through time}) in the RNN network \citep{Pascanu13onthe}. The second architecture GRU, which was first introduced by \cite{Cho14properties} in an MT paper, mitigates the complexity of LSTM by using only three gate functions as follows.
+The motivation behind this highly complex structure is to stabilize the exploding/diminishing gradient flow \citep{Pascanu13onthe} conduceted by back-propagation through time (BPTT \nomenclature[bptt]{BPTT}{Back-propagation through time}) \cite{Hochreiter97long}. The second architecture GRU, which was proposed by \cite{Cho14properties}, mitigates the complexity of LSTM by using only three gates as follows.
 \begin{equation}
 \label{eq:gru}
 \begin{array}{rcl}
-z_t &=& \sigma_g (W_z x_t + U_z h_{t-1} + b_z)\\
-r_t &=& \sigma_g (W_r x_t + U_r h_{t-1} + b_r)\\
-\hat{h}_t &=& \sigma_h (W_h x_t + U_h (r_t \odot h_{t-1})+b_h)\\
+z_t &=& \sigma_g (W_z h^{l-1}_t + U_z h_{t-1} + b_z)\\
+r_t &=& \sigma_g (W_r h^{l-1}_t + U_r h_{t-1} + b_r)\\
+\hat{h}_t &=& \sigma_h (W_h h^{l-1}_t + U_h (r_t \odot h_{t-1}) + b_h)\\
 h_t &=& (1-z_t)\odot h_{t-1} + z_t \odot \hat{h}_t\\
 \end{array}
 \end{equation}
-
-Where $\sigma_h$ is a hyperbolic tangent function while other notations are the same as in the equations of LSTM.
+Where $\sigma_h$ is a hyperbolic tangent function while other notations are the same as in the equations \ref{eq:lstm}.
 \subsection{RNN encoder}
+RNN encoder uses LSTM or GRU layer to encode the source sequence. RNN encoder can use more than one layer to capture more fine-grained language representation \cite{Li20shallow}. The $0^{th}$ layer is a sequence of word embeddings, which are extracted from the look-up table of the source side using the indices provided by the source sequence. 
 
-\subsubsection{Bidirectional encoder}
+\subsubsection{Bidirectional RNN encoder}
 Unlike the decoder, the encoder is not obliged to process the input sequence from left to right. Effectively, the context of one token in the source sequence contains not only its preceding neighbors but also its following neighbors. Therefore, encoding the source sequence from left to right is not enough to cover the context of each token. To increase the coverage of contextualized embedding, the encoder process the source sequence both from left to right and from right to left at the same time, therefore becomes a bidirectional encoder. Bidirectional encoding results in two sequences of contextualized embeddings; the encoder simply combines two contextualized embeddings of a token into one real vector via either concatenation or summation. The resulting contextualized embedding captures information of every word in the source sequence around its corresponding token. 
 \subsection{RNN decoder}
 \subsection{Attention mechanism \label{ssec:attention}}
@@ -119,7 +129,7 @@ c_i &=& \sum_{j} \alpha_{ij} h_j \\
 e_{ik} &=& sim(s_{i-1},h_k)\\
 \end{array}
 \end{equation}
-where $h_j$ is the output of the last layer of the encoder, $s_{i-1}$ is the hidden state at $(i-1)^{th}$ time step of the last layer of the  decoder. This context vector will be used to compute the hidden state at $i^{th}$ position by Attention mechanism improves the translation quality of very long sentences. Indeed, the context vector produced by the RNN encoder struggles to capture all the dependence between tokens  of the input sentence because it lacks the direct links between 2 tokens. The information of a token vanishes while the encoder moves toward the far ending of the input sequence. The same problem happens with the decoder when it decodes the context vector into the output sequence. The attention mechanism provides the direct links from each output token to any input token, allows the decoder to capture the information of any input token regardless of its position.
+where $h_j$ is the output of the last layer of the encoder, $s_{i-1}$ is the hidden state at $(i-1)^{th}$ time step of the last layer of the  decoder. This context vector will be used to compute the hidden state at $i^{th}$ position by Attention mechanism improves the translation quality of very long sequences. Indeed, the context vector produced by the RNN encoder struggles to capture all the dependence between tokens  of the input sentence because it lacks the direct links between 2 tokens. The information of a token vanishes while the encoder moves toward the far ending of the input sequence. The same problem happens with the decoder when it decodes the context vector into the output sequence. The attention mechanism provides the direct links from each output token to any input token, allows the decoder to capture the information of any input token regardless of its position.
 
 \section{Convolution NMT} \label{sec:cnn}
 \nomenclature[cnn]{CNN}{Convolution neural network}
