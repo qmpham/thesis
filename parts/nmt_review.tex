@@ -6,7 +6,7 @@ Building a Neural Machine Translation model consists of 3 basic steps, including
 \section{Text preprocessing for NMT \label{sec:tokenization}} \label{sec:preprocessing}
 Text preprocessing includes several steps including text normalization and text tokenization. Text normalization aims to remove noise from the text. Tokenization transforms sentences into the input format of the NMT model. In practice, text normalization is optional while tokenization is obligatory.
 
-Text tokenization is an essential step in NMT and needs to be carefully conducted to build a powerful translation engine successfully. This step consists of transforming sentences into sequences of tokens, which will be transformed into sequences of integers and then serve as the input of the NMT model. We call this process tokenization. We have to tokenize sentences because NMT models only take a sequence of integers as input. Tokenization process is reversible because we need to convert the prediction of the NMT model, which is a sequence of tokens, into normal text. In practice, a token can be a word or a part of a word. There are three common types of a token, including word, sub-word, and character. These tokens are indexed by a predetermined corresponding vocabulary so we can map each token to an integer. The sequence of tokens is converted into a sequence of integers $IDs \in V$ where V is the set of the index of the corresponding vocabulary. The vocabulary of the NMT model is fixed before and after the training. Any out of vocabulary (OOV \nomenclature[oov]{OOV}{Out of vocabulary}) token is mapped to the UNK token, which stands for unknown. The size of the vocabulary of an NMT model is chosen to balance the coverage over the processed tokens with the practical constraint on the size of the model. The vocabulary of an NMT model is usually limited to 30-40 thousand tokens. From now, we denote $\Sigma_{x}$, $\Sigma_y$ the source vocabulary and the target vocabulary respectively. \nomenclature[$\Sigma_{x}$]{$\Sigma_{x}$}{source vocabulary})  
+Text tokenization is an essential step in NMT and needs to be carefully conducted to build a powerful translation engine successfully. This step consists of transforming sentences into sequences of tokens, which will be transformed into sequences of integers and then serve as the input of the NMT model. We call this process tokenization. We have to tokenize sentences because NMT models only take a sequence of integers as input. Tokenization process is reversible because we need to convert the prediction of the NMT model, which is a sequence of tokens, into normal text. In practice, a token can be a word or a part of a word. There are three common types of a token, including word, sub-word, and character. These tokens are indexed by a predetermined corresponding vocabulary so we can map each token to an integer. The sequence of tokens is converted into a sequence of integers $IDs \in V$ where V is the set of the index of the corresponding vocabulary. The vocabulary of the NMT model is fixed before and after the training. Any out of vocabulary (OOV \nomenclature[oov]{OOV}{Out of vocabulary}) token is mapped to the UNK token, which stands for unknown. The size of the vocabulary of an NMT model is chosen to balance the coverage over the processed tokens with the practical constraint on the size of the model. The vocabulary of an NMT model is usually limited to 30-40 thousand tokens. From now, we denote $\Sigma_{x}$, $\Sigma_y$ the source vocabulary and the target vocabulary respectively. \nomenclature[$\Sigma_{x}$]{$\Sigma_{x}$}{source vocabulary} \nomenclature[$\Sigma_{y}$]{$\Sigma_{y}$}{tgt vocabulary}  
 \subsection{Word tokenization}
 Word token is the most natural type of token because it does not need extra effort to split a sentence into a sequence of separated words. However, this approach has several disadvantages as it treats words as isolated units and therefore can not handle the large vocabulary of the corresponding language and the growing number of unseen words.
 \subsection{Sub-word tokenization}
@@ -70,7 +70,7 @@ Deep NMT models also suffer from Internal Covariate Shift in which the distribut
 
 \section{Recurrent NMT} \label{sec:rrn}
 \nomenclature[rnn]{RNN}{Recurrent neural network}
-This section reviews the very first NMT architecture the Recurrent Neural Network (RNN). Recurrent NMT (\nomenclature[rnmt]{RNMT}{Recurrent neural machine translation}) is composed of a Recurrent encoder, a Recurrent decoder and tables of word embeddings. Recurrent encoder and Recurrent decoder usually use the same type of layer such as Gated recurrent unit (GRU) and Long-short term memory (LSTM), which we will explain in the following section. Recurrent NMT is strictly auto-regressive as each hidden state in encoder/decoder has to go through every intermediate state to assess the information of any time step before it. The hidden states of RNMT inherit the information of the order, which is an advantage before Convolutional NMT and Attention-based NMT, from this encoding paradigm. However, lack of straightforward accesses to positions of the input sequence causes many difficulties to the training of RNMT.
+This section reviews the very first NMT architecture, the Recurrent Neural Network (RNN). Recurrent NMT (\nomenclature[rnmt]{RNMT}{Recurrent neural machine translation}) is composed of a Recurrent encoder, a Recurrent decoder, and tables of word embeddings. Recurrent encoder and Recurrent decoder usually use the same type of layer, such as Gated recurrent unit (GRU) and Long-short term memory (LSTM), which we will explain in the following section. Recurrent NMT is strictly auto-regressive as each hidden state in the encoder/decoder has to go through every intermediate state to assess the information of any time step before it. The hidden states of RNMT inherit the information of the order, which is an advantage before Convolutional NMT and Attention-based NMT, from this encoding paradigm. However, a lack of straightforward access to positions of the input sequence causes many difficulties in the training of RNMT.
 
 \subsection{GRU, LSTM layers}
 \nomenclature[gru]{GRU}{Gated recurrent unit}
@@ -97,7 +97,7 @@ h_t &=& o_t \odot \sigma_h(c_t)\\
 \end{equation}
 where $\sigma_g$ is sigmoid function, $\sigma_c$ is hyperbolic tangent function, $\sigma_h$ is either hyperbolic tangent function or identity function and $\odot$ is element-wise multiplication. These functions are applied element-wise to intermediate vectors in the equations.
 
-The motivation behind this highly complex structure is to stabilize the exploding/diminishing gradient flow \citep{Pascanu13onthe} conduceted by back-propagation through time (BPTT \nomenclature[bptt]{BPTT}{Back-propagation through time}) \cite{Hochreiter97long}. The second architecture GRU, which was proposed by \cite{Cho14properties}, mitigates the complexity of LSTM by using only three gates as follows.
+The motivation behind this highly complex structure is to stabilize the exploding/diminishing gradient flow \citep{Pascanu13onthe} conducted by back-propagation through time (BPTT \nomenclature[bptt]{BPTT}{Back-propagation through time}) \cite{Hochreiter97long}. The second architecture GRU, which was proposed by \cite{Cho14properties}, mitigates the complexity of LSTM by using only three gates as follows.
 \begin{equation}
 \label{eq:gru}
 \begin{array}{rcl}
@@ -115,15 +115,15 @@ RNN encoder uses LSTM or GRU layer to encode the source sequence. RNN encoder ca
 Unlike the decoder, the encoder is not obliged to process the input sequence from left to right. Effectively, the context of one token in the source sequence contains not only its preceding neighbors but also its following neighbors. Therefore, encoding the source sequence from left to right is not enough to cover the context of each token. To increase the coverage of contextualized embedding, the encoder process the source sequence both from left to right and from right to left at the same time, therefore becomes a bidirectional encoder. Bidirectional encoding results in two sequences of contextualized embeddings; the encoder simply combines two contextualized embeddings of a token into one real vector via either concatenation or summation. The resulting contextualized embedding captures information of every word in the source sequence around its corresponding token. 
 \subsection{RNN decoder}
 RNN decoder predicts the target sequence from left to right, one token per time step. It initializes the $0^{th}$ hidden state by zero vector or a linear transformation of the last hidden state of the last layer of the encoder. 
-\subsubsection{Attention mechanism \label{ssec:attention}}
-Attention mechanism consists 3 components: Query vectors, Key vectors and Value vectors. Given a sequence $Q_i$, $i \in [1 \cdots n]$, $K_j$, $j \in [1 \cdots m]$ and $V_j$, $j \in [1 \cdots m]$, the results
-of the attention mechanism composed by those vectors will be as follow.
+\subsubsection{Attentional mechanism \label{ssec:attention}}
+An attentional mechanism consists 3 components: Query vectors, Key vectors and Value vectors. Given a sequence $Q_i$, $i \in [1 \cdots n]$, $K_j$, $j \in [1 \cdots m]$ and $V_j$, $j \in [1 \cdots m]$, the results
+of the attentional mechanism composed by those vectors will be as follow.
 \begin{equation}
 Attention(Q,V,K)_i = \displaystyle{\mathop{\sum}_{j=1}^{m}} \frac{exp(sim(Q_i,K_j))}{\displaystyle{\mathop{\sum}_{p=1}^{m}}exp(sim(Q_i,K_p))}*V_j, i \in [1, \cdots, m]
 \end{equation}
 Where function $sim(x,y)$ can be a simple dot product $<x,y>$ \citep{Vaswani17attention}, a generalized dot product $<x,W_a*y>$ or $<v_a,tanh(W_a*[x,y])>$ \citep{Luong15stanford, Bahdanau15learning}.
 
-The attention mechanism manages and quantifies the dependence between the input sequence and the output sequence (e.g., source contextualized embeddings and target contextualized embeddings), or the input sequence itself (e.g., self-attention layers in Transformer \citep{Vaswani17attention}). In the RNN MT model, the attention mechanism is used to capture the dependence of each token in the target sequence on the tokens in the source sequence. For example, \cite{Bahdanau15learning} computes a context vector at $i^{th}$ time step in the decoder as follows.
+The attentional mechanism manages and quantifies the dependence between the input sequence and the output sequence (e.g., source contextualized embeddings and target contextualized embeddings), or the input sequence itself (e.g., self-attention layers in Transformer \citep{Vaswani17attention}). In the RNN MT model, the attentional mechanism is used to capture the dependence of each token in the target sequence on the tokens in the source sequence. For example, \cite{Bahdanau15learning} computes a context vector at $i^{th}$ time step in the decoder as follows.
 \begin{equation}
 \begin{array}{rcl}
 c_i &=& \sum_{j} \alpha_{ij} h_j \\
@@ -131,11 +131,11 @@ c_i &=& \sum_{j} \alpha_{ij} h_j \\
 e_{ik} &=& sim(s_{i-1},h_k)\\
 \end{array}
 \end{equation}
-where $h_j$ is the output of the last layer of the encoder, $s_{i-1}$ is the hidden state at $(i-1)^{th}$ time step of the last layer of the  decoder. This context vector will be used to compute the hidden state at $i^{th}$ position by Attention mechanism improves the translation quality of very long sequences. Indeed, the context vector produced by the RNN encoder struggles to capture all the dependence between tokens  of the input sequence because it lacks the direct links between 2 tokens. The information of a token vanishes while the encoder moves toward the far ending of the input sequence. The same problem happens with the decoder when it decodes the context vector into the output sequence. The attention mechanism provides the direct links from each output token to any input token, allows the decoder to capture the information of any input token regardless of its position.
+where $h_j$ is the output of the last layer of the encoder, $s_{i-1}$ is the hidden state at $(i-1)^{th}$ time step of the last layer of the decoder. This context vector will be used to compute the hidden state at $i^{th}$ position by the attentional mechanism improves the translation quality of very long sequences. Indeed, the context vector produced by the RNN encoder struggles to capture all the dependence between tokens of the input sequence because it lacks the direct links between 2 tokens. The information of a token vanishes while the encoder moves toward the far ending of the input sequence. The same problem happens with the decoder when it decodes the context vector into the output sequence. The attentional mechanism provides the direct links from each output token to any input token, allows the decoder to capture the information of any input token regardless of its position.
 
 \section{Convolutional NMT} \label{sec:cnn}
 \nomenclature[cnn]{CNN}{Convolutional neural network}
-Convolutional neural network was successfully applied to MT task in the work of \citet{Ghering17convolutional} that outperformed the current state-of-the-art performance of the RNN MT. As we aforementioned above, Convolutional MT does not construct the hidden states iteratively in one direction but considers the sequence as an image, of which each column of pixel is a word embedding, and applies convolutional kernels on it.
+The convolutional neural network was successfully applied to the MT task in the work of \citet{Ghering17convolutional} that outperformed the current state-of-the-art performance of the RNN MT. As we aforementioned above, Convolutional MT does not construct the hidden states iteratively in one direction but considers the sequence as an image, of which each column of pixels is a word embedding, and applies convolutional kernels on it.
 \subsection{Convolutional encoder}
 Concretely, each layer of Convolutional encoder contains an one dimensional convolution kernel followed by a non-linearity. We denote $h^l_i$ the $i^{th}$ hidden state of $l^{th}$ layer. Those hidden states are computed as follows.
 \begin{equation}
@@ -151,19 +151,19 @@ v([A,B]) = A \odot \sigma(B)
 \end{equation}
 Where $\odot$ is element-wise multiplication, $\sigma$ is sigmoid function.
 \subsection{Convolutional decoder}
-Unlikely the Convolutional encoder, in which each hidden states has access to its left and right neighbors, the decoder only allows left accesses to avoid conditioning the predictions on the following tokens, which will not exist before the prediction in the inference. Therefore, citet\{Ghering17convolutional} appends $k-1$ padding tokens in the left side of the output sequence, e.g $PAD$, $PAD$,$ <BOS>$,$je$,$t'$,$aime$ for convolution kernel of size 3 so that $\big[ PAD, PAD, <BOS>\big]$ predicts $je$, $\big[ PAD,<BOS>,je\big]$ predicts $t'$ etc.
-In the decoder, Convolutional NMT model also uses attention mechanism to improve the performance on the long sentences. \\citet{Ghering17convolutional} propose a version slightly different from ones of \citet{Luong15stanford, Bahdanau15learning}. For each $l^{th}$ decoder layer, the query will be a combination of the hidden state $h^l_i$ and the word embedding of the previous token $g_i$.
+Unlikely the Convolutional encoder, in which each hidden states has access to its left and right neighbors, the decoder only allows left accesses to avoid conditioning the predictions on the following tokens, which will not exist before the prediction in the inference. Therefore, \citet{Ghering17convolutional} appends $k-1$ padding tokens in the left side of the output sequence, e.g $PAD$, $PAD$,$ <BOS>$,$je$,$t'$,$aime$ for convolution kernel of size 3 so that $\big[ PAD, PAD, <BOS>\big]$ predicts $je$, $\big[ PAD,<BOS>,je\big]$ predicts $t'$ etc.
+The Convolutional decoder also uses an attention mechanism to improve the performance of long sentences. \\citet{Ghering17convolutional} propose a version slightly different from ones of \citet{Luong15stanford, Bahdanau15learning}. For each $l^{th}$ decoder layer, the query will be a combination of the hidden state $h^l_i$ and the word embedding of the previous token $g_i$.
 \begin{equation}
 \begin{array}{rcl}
-d^l_i = \W^l_dh^l_i + b^l_d + g_i
+d^l_i = W^l_d h^l_i + b^l_d + g_i
 \end{array}
 \end{equation}
-The keys are still the hidden states of the last layer of the encoder $z^u_j$. The values are the combinations of the hidden states $z^u_j$ and the word embedding $e_j$. The score attention is simply dot product between the query vector and the key vector followed by softmax function.
+The keys are still the hidden states of the last layer of the encoder $z^u_j$. The values are the combinations of the hidden states $z^u_j$ and the word embedding $e_j$. The score attention is the dot product between the query vector and the key vector followed by the softmax function.
 \subsection{Positional embedding}
-\citet{Ghering17convolutional} propose using embeddings corresponding to each position of the input sequence in order to equip the Convolutional NMT model with a sense of order as Convolution kernel does not take in account the order of tokens in the input sequence. Effectively, if we interchange the position of tokens outside the window of the kernel, the value of the hidden state does not change. Positional embeddings are real value vector having same dimension as word embeddings. Positional embeddings are added to word embeddings of the corresponding position before passing to the first layer.
+\citet{Ghering17convolutional} propose using embeddings corresponding to each position of the input sequence in order to equip the Convolutional NMT model with a sense of order as the Convolution kernel does not take into account the order of tokens in the input sequence. Effectively, if we interchange the position of tokens outside the window of the kernel, the value of the hidden state does not change. Positional embeddings are real value vectors having the same dimension as word embeddings. Positional embeddings are added to word embeddings of the corresponding position before passing to the first layer.
 
 \section{Attention-based NMT} \label{sec:transformer}
-Transformer architecture was first introduced by \cite{Vaswani17attention} and has quickly become the state-of-the-art architecture not only in MT but also in language modeling (LM)\cite{Devlin19bert,Brown20language,Conneau19cross}, text summarization \cite{Zhang20pegasus} etc. The Transformer model's power relies on the attention mechanism, which was discussed in the previous section \ref{ssec:attention}. The Transformer model consists of a fully attention-based encoder and decoder. 
+Transformer architecture was first introduced by \cite{Vaswani17attention} and has quickly become the state-of-the-art architecture not only in MT but also in language modeling (LM)\cite{Devlin19bert,Brown20language,Conneau19cross}, text summarization \cite{Zhang20pegasus} etc. The Transformer model's power relies on the attentional mechanism, which was discussed in the previous section \ref{ssec:attention}. The Transformer model consists of a fully attention-based encoder and decoder. 
 \subsection{Transformer encoder}
 The Transformer encoder consists of layers made of a multi-head self-attention sub-layer followed by a position-wise fully connected feed-forward network. The multi-head self-attention sub-layer is an extension of the self-attention sub-layer and is described by the following equation.
 \begin{equation}
@@ -173,7 +173,7 @@ head_i &=& Attention \big( QW_i^Q, VW_i^V, KW_i^K \big)\\
 \end{array}
 \end{equation}
 
-Where $W_i^Q, W_i^V, W_i^K \in \mathbb{R}^{d_k \times d_h}$ with $d_h \times h = d_k$, $d_k$ is the dimension of word embedding space and also the size of Transformer model. Unlike the version in the section \ref{ssec:attention}, the attention mechanism is simply as follows.
+Where $W_i^Q, W_i^V, W_i^K \in \mathbb{R}^{d_k \times d_h}$ with $d_h \times h = d_k$, $d_k$ is the dimension of word embedding space and also the size of Transformer model. Unlike the version in the section \ref{ssec:attention}, the attentional mechanism is simply as follows.
 \begin{equation}
 Attention\big( Q, V, K \big) = Softmax\big(\frac{Q K^T}{\sqrt{d_k}} \big) V
 \end{equation}
@@ -212,28 +212,71 @@ PE\big(pos,2i+1\big) &=& cos \big( \frac{pos}{1000^{\frac{2i}{d_k}}} \big)\\
 \end{array}
 \end{equation}
 The positional embedding will be added to the corresponding word embedding of the $i^{th}$ token of the input sequence.
-\section{NMT training} \label{sec:train}
-The values of the parameters in the NMT model is estimated by gradient descent method \citep{Nesterov14introductory}, which is one of the oldest approaches in the Optimization area \citep{Cauchy1847method}. The loss function is the traditional cross-entropy of the training data. 
+\section{Training NMT models} \label{sec:train}
+Training an NMT model means to find optimal values for its parameters so that the error of the model are minimal in the testing. To learn these optimal values, we need 3 type data sets, including training set, validation set and testing set. Training set is used to optimize the model's parameters via statistical learning algorithms such as Maximum likelihood estimation (\nomenclature[mle]{MLE}{Maximum likelihood estimation})\citep{Baum87Supervised}. Testing set is used to evaluate the model once it's optimized. The performance on the testing set shows us how good the model is and is used to compare different models. Validation set is not used to learn the model's parameters nor to evaluate the model but to prevent the "over-fitting" of the optimization. Effectively, training set is only an empirical estimation of the real distribution, which realizes the data. The learning algorithm is not aware of that causing bad performance in testing even when the error on training is extremely good. During the training, the model is evaluated on the validation set every $K$ iterations. The learning is represented by 2 learning curves, including the error on training set and the error on the validation set. The stopping criteria is whether the validation error does not improve after a predetermined number of consecutive evaluations.
+
+Concerning the optimization of the model on the training set, we usually use MLE, i.e.
 \begin{equation}
-L(\theta) = -\displaystyle{\mathop{\sum}_{x,y}}log P(y|x;\theta)
+\hat{\theta} = \displaystyle{\mathop{argmax}\mathop{\sum}_{x,y}}log P(y|x;\theta)
+\label{eq:mle}
 \end{equation}
-The gradient is computed by back-propagation algorithm \citep{Rumelhart88learning}. Like many deep learning models, the NMT model is usually trained with a massive amount of data that makes the gradient descent method is not computationally plausible. Therefore, stochastic gradient descent is proposed to mitigate the computational burden of large-scale models \citep{Herbert51stochastic,Kiefer52stochastic,Bottou10large}. However, Deep Neural networks are usually much harder to train because of their size and their complex structure \cite{Pascanu13onthe,Glorot10understanding}. Many approaches are proposed to facilitate the training of deep models such as Gradient clipping \citep{Pascanu13onthe}, Truncate back-propagation \citep{Jaeger02tutorial}, Normalization methods \citep{Ioffe15batch,Jimmy16layer}, Residual connections \citep{He16deep}, Noam schedule \citep{Vaswani17attention} etc.
+MLE is equivalent to minimizing the cross-entropy loss.
+\begin{equation}
+\begin{array}{rcl}
+L(\theta) &=& -\displaystyle{\mathop{\sum}_{x,y} \mathop{\sum}_{i}^{l_y}}log P(y_i|y_{<i},x;\theta) \\
+\hat{\theta} &=& \displaystyle{\mathop{argmax}} L(\theta)
+\end{array}
+\end{equation}
+In order to optimize this function, we often use gradient descent method, which is one of the oldest approaches in the Optimization area \citep{Cauchy1847method}. The gradient is computed by back-propagation algorithm \citep{Rumelhart88learning}. Like many deep learning models, the NMT model is usually trained with a massive amount of data that makes the gradient descent method is not computationally plausible. Therefore, stochastic gradient descent (\nomenclature[sgd]{SGD}{Stochastic gradient descent}) is proposed to mitigate the computational burden of large-scale models \citep{Herbert51stochastic,Kiefer52stochastic,Bottou10large}. In stead of calculating the gradient of the loss over every training examples, SGD samples a batch of examples from training set, calculates the gradient of the loss over this batch then updates the parameters according to this gradient.
+\subsection{Tips and tricks in training an NMT model}
+Deep Neural networks are usually very hard to train. Effectively, back-propagation through time in Recurrent NMT usually creates exploding or vanishing gradients \cite{Pascanu13onthe,Glorot10understanding}. Gradient clipping \citep{Pascanu13onthe}, Truncate back-propagation \citep{Jaeger02tutorial} are proposed to mitigate this problem.
 
-\section{Decoding algorithm} \label{sec:inference}
-The NMT model basically models the conditional probability $P(y|x)$of the translation sentence $y$ given the input sentence $x$. The prediction of the NMT model is the sentence with the highest conditional probability.
+Large NMT models are easily over-fitted to training data. \citet{Srivastava14Dropout} propose randomly freezing a subset of parameters during one training iteration, which prevents the whole model from being fitted to one example. We could interpret Dropout as an ensemble method that allows training many sub-networks in one training and ensembles them in testing. In practice, Dropout is essential to train neural models in general. 
 
+Besides, the Log-likelihood maximizing \ref{eq:mle} assumes that a ground-truth label is far more likely than all other labels, excessively discriminates between the likelihood of training examples and the likelihood of language that does not appear during training. The Log-likelihood maximizing can result in over-fitting to the training data, reducing the model's generalization in testing.
+
+\section{Inference with an NMT model} \label{sec:inference}
+An NMT model translates a source sentence $x$ by searching the target sequence y that gives the highest probability conditioned on $x$.
 \begin{equation}
 \hat{y} = \displaystyle{\mathop{\argmax}} P(y|x;\theta)
 \end{equation}
+However, the search space of $y$ is infinitely large, causing the implausibility of the exact search. Beam search \citep{Och98improving} is the most common inference algorithm in Neural Machine Translation and Statistical Machine Translation. For autoregressive NMT models, a single output token is produced at each inference step $j$. The prediction at step $j$ is conditioned by $x$ and the partial translation hypothesis up to step $j$.
+\begin{equation}
+\hat{y}_j = \displaystyle{\mathop{\argmax}_{y_j \in \Sigma_y}} P(y_j|y_{<i},x,\theta)
+\end{equation}
+Beam search tracks K most probable translation hypothesis. Beam search starts with K empty hypotheses, which are initialized by "begin of sentence" token $<BOS>$. In the $j^{th}$ inference step,
+for the $n^{th}$ partial hypothesis $[y^{n}_{<j}]$, the top-K most probable tokens according to $P(.| y_{<j},x;\theta)$ are picked and appended to the current hypothesis.
+\begin{equation}
+\hat{y}^n_j \in \displaystyle{\mathop{Top_{K}}_{y_j \in \Sigma_y}} P(y_j|y_{<j},x,\theta)
+\end{equation}
+The search space, therefore, is extended to $K*K$ hypotheses. Beam search selects only the top $K$ hypotheses from these $K*K$ hypotheses. Beam search stops extending an hypothesis when $<EOS>$ is predicted or  the hypothesis reaches the predefined length limit. 
 
-However, the search space of $y$ is infinitely large, causing the implausibility of the exact search. Beam search \citep{Och98improving} is the most common decoding algorithm in Neural Machine Translation and Statistical Machine Translation. 
-
-Beam search starts with K empty hypotheses, which are initialized by "begin of sentence" token $<BOS>$. For the $i^{th}$ current hypothesis $[y^{i}_{<t}]$, the top-K tokens, with the highest conditional probabilities $P(y_t = a_i | y_{<t},x;\theta)$, are picked and appended to the current hypothesis. The search space, therefore, is extended to $K*K$ hypotheses. Beam search selects only the top $K$ hypotheses from these $K*K$ hypotheses. Beam search stops extending the completed hypotheses, which are ended with the "end of sentence" token $<EOS>$ or reach the predefined length limit. Beside the left-to-right decoding, there are several variant decoding direction including non-monotonic decoding \citep{Welleck19non}, non auto-regressive decoding \citep{Jiatao17non}, synchronous bidirectional decoding \cite{Zhou19synchronous}. Because the decoding algorithms are not included in this research topic, we would like to be limited to this brief description.
+Beside the left-to-right decoding, there are several variant decoding direction including non-monotonic decoding \citep{Welleck19non}, non auto-regressive decoding \citep{Jiatao17non}, synchronous bidirectional decoding \cite{Zhou19synchronous}. Because the decoding algorithms are not included in this research topic, we would like to be limited to this brief description.
 \nomenclature[eos]{EOS}{end-of-sentence}
-
 \section{MT evaluation}
-\subsection{BLEU, sacreBLEU}
-\subsection{Domain errors}
+The evaluation of MT systems can be done automatically by comparing n-grams of generated translations and n-grams of gold references. The most popular MT metric is BLEU \citep{Papineni02bleu}. Recently, \citet{Post18A} propose standardizing hypotheses of MT systems before computing applying BLEU metric. 
+
+BLEU is computed on corpus-level, i.e., it compares a corpus of hypotheses and the corpus of references. BLEU score is the geometry average of n-gram precisions, including 1-gram, 2-grams, 3-grams and 4-grams weighted by brevity penalty (BP)
+\begin{equation}
+BLEU = BP exp(\frac{1}{4}\sum_{i=1}^4log p_i)
+\end{equation}
+
+The n-gram precision $p_n$ is computed as follows.
+\begin{equation}
+p_n = \frac{\sum_{hyp \in hyps}\sum_{n\text{-}gram \in n\text{-}grams} min(Count(Ref,n\text{-}gram), Count(hyp, n\text{-}gram))}{\sum_{hyp \in hyps}\sum_{n\text{-}gram \in n\text{-}grams} Count(Ref,n\text{-}gram)}
+\end{equation}
+Where $Count(C,g)$ is the number of occurrences of the n-gram $g$ in the corpus $C$.
+
+The Brevity penalty computed as follows. 
+\begin{equation}
+  BP =
+    \begin{cases}
+      1 & \text{if $|c| > |r|$ }\\
+      exp(1-\frac{|r|}{|c|}) & \text{otherwise}
+    \end{cases}       
+\end{equation}
+Where $c$ is the total length of the hypothesis corpus, $r$ is the total length of the reference corpus. The Brevity penalty assures that a high-scoring candidate translation must also match the reference translations in length.
+
 
 
 
