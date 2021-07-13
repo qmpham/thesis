@@ -38,6 +38,17 @@ doi = {10.1214/aoms/1177729392},
 URL = {https://doi.org/10.1214/aoms/1177729392}
 }
 
+@inproceedings{Baum87Supervised,
+ author = {Baum, Eric and Wilczek, Frank},
+ booktitle = {Neural Information Processing Systems},
+ editor = {D. Anderson},
+ pages = {},
+ publisher = {American Institute of Physics},
+ title = {Supervised Learning of Probability Distributions by Neural Networks},
+ url = {https://proceedings.neurips.cc/paper/1987/file/eccbc87e4b5ce2fe28308fd9f2a7baf3-Paper.pdf},
+ year = {1988}
+}
+
 @inbook{Rumelhart88learning,
 author = {Rumelhart, David E. and Hinton, Geoffrey E. and Williams, Ronald J.},
 title = {Learning Representations by Back-Propagating Errors},
@@ -299,7 +310,19 @@ isbn="978-3-662-08966-8"
   address = {Genoa, Italy},
   publisher = {European Language Resources Association (ELRA)},
  }
-
+@inproceedings{Blitzer06Domain,
+    title = "Domain Adaptation with Structural Correspondence Learning",
+    author = "Blitzer, John  and
+      McDonald, Ryan  and
+      Pereira, Fernando",
+    booktitle = "Proceedings of the 2006 Conference on Empirical Methods in Natural Language Processing",
+    month = jul,
+    year = "2006",
+    address = "Sydney, Australia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W06-1615",
+    pages = "120--128",
+}
 @incollection{Ben07analysis,
 title = {Analysis of Representations for Domain Adaptation},
 author = {Ben-David, Shai and John Blitzer and Crammer, Koby and Fernando Pereira},
@@ -456,6 +479,21 @@ note = "22nd Conference on Learning Theory, COLT 2009 ; Conference date: 18-06-2
  address = {Greenwich, CT, USA}
 } 
 
+@inproceedings{Nair10rectified,
+author = {Nair, Vinod and Hinton, Geoffrey E.},
+title = {Rectified Linear Units Improve Restricted Boltzmann Machines},
+year = {2010},
+isbn = {9781605589077},
+publisher = {Omnipress},
+address = {Madison, WI, USA},
+abstract = {Restricted Boltzmann machines were developed using binary stochastic hidden units. These can be generalized by replacing each binary unit by an infinite number of copies that all have the same weights but have progressively more negative biases. The learning and inference rules for these "Stepped Sigmoid Units" are unchanged. They can be approximated efficiently by noisy, rectified linear units. Compared with binary units, these units learn features that are better for object recognition on the NORB dataset and face verification on the Labeled Faces in the Wild dataset. Unlike binary units, rectified linear units preserve information about relative intensities as information travels through multiple layers of feature detectors.},
+booktitle = {Proceedings of the 27th International Conference on International Conference on Machine Learning},
+pages = {807–814},
+numpages = {8},
+location = {Haifa, Israel},
+series = {ICML'10}
+}
+
 @InProceedings{Moore10intelligent,
   author = 	"Moore, Robert C.
 		and Lewis, William",
@@ -478,6 +516,16 @@ note = "22nd Conference on Learning Theory, COLT 2009 ; Conference date: 18-06-2
   year      = {2010},
   url = {https://www.isca-speech.org/archive/iwslt_10/papers/slta_003.pdf}
 }  
+
+@article{Shai10A,
+title	= {A theory of learning from different domains},
+author	= {Shai Ben-David and John Blitzer and Koby Crammer and Alex Kulesza and Fernando Pereira and Jennifer Vaughan},
+year	= {2010},
+URL	= {http://www.springerlink.com/content/q6qk230685577n52/},
+journal	= {Machine Learning},
+pages	= {151--175},
+volume	= {79}
+}
 
 @inproceedings{Chang10necessity,
 	Address = {Cambridge, MA},
@@ -995,6 +1043,17 @@ abstract = {It was in the middle of the 1980s, when the seminal paper by Kar mar
     pages = "362--367",
 }
 
+@article{Srivastava14Dropout,
+  author  = {Nitish Srivastava and Geoffrey Hinton and Alex Krizhevsky and Ilya Sutskever and Ruslan Salakhutdinov},
+  title   = {Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
+  journal = {Journal of Machine Learning Research},
+  year    = {2014},
+  volume  = {15},
+  number  = {56},
+  pages   = {1929-1958},
+  url     = {http://jmlr.org/papers/v15/srivastava14a.html}
+}
+
 @inproceedings{Huck15mixed,
   title={Mixed-Domain vs. Multi-Domain Statistical Machine Translation},
   author={Matthias Huck and Alexandra Birch and Barry Haddow},
@@ -1449,7 +1508,15 @@ archivePrefix = {arXiv},
  address = {USA},
 }
 
-@inproceedings{Chen2016BilingualMF,
+@article{Servan16Domain,
+  title={Domain specialization: a post-training domain adaptation for Neural Machine Translation},
+  author={Christophe Servan and J. Crego and Jean Senellart},
+  journal={ArXiv},
+  year={2016},
+  volume={abs/1612.06141}
+}
+
+@inproceedings{Chen16Bilingual,
   title={Bilingual Methods for Adaptive Training Data Selection for Machine Translation},
   author={Boxing Chen and Roland Kuhn and George F. Foster and Colin Cherry and Fei Huang},
   year={2016}
@@ -1540,6 +1607,18 @@ url = {http://papers.nips.cc/paper/7209-learned-in-translation-contextualized-wo
     pages = "365--378",
     abstract = "Most existing machine translation systems operate at the level of words, relying on explicit segmentation to extract tokens. We introduce a neural machine translation (NMT) model that maps a source character sequence to a target character sequence without any segmentation. We employ a character-level convolutional network with max-pooling at the encoder to reduce the length of source representation, allowing the model to be trained at a speed comparable to subword-level models while capturing local regularities. Our character-to-character model outperforms a recently proposed baseline with a subword-level encoder on WMT{'}15 DE-EN and CS-EN, and gives comparable performance on FI-EN and RU-EN. We then demonstrate that it is possible to share a single character-level encoder across multiple languages by training a model on a many-to-one translation task. In this multilingual setting, the character-level encoder significantly outperforms the subword-level encoder on all the language pairs. We observe that on CS-EN, FI-EN and RU-EN, the quality of the multilingual character-level translation even surpasses the models specifically trained on that language pair alone, both in terms of the BLEU score and human judgment.",
 }
+
+@article{Imamura17Multi,
+author = {Imamura, Kenji and Sumita, Eiichiro},
+year = {2017},
+month = {09},
+pages = {597-618},
+title = {Multi-domain Adaptation for Statistical Machine Translation Based on Feature Augmentation},
+volume = {24},
+journal = {Journal of Natural Language Processing},
+doi = {10.5715/jnlp.24.597}
+}
+
 
 @InProceedings{Chen17cost,
   author = 	"Chen, Boxing
@@ -1828,21 +1907,6 @@ url = {http://papers.nips.cc/paper/7209-learned-in-translation-contextualized-wo
 	Year = {2017},
 	Bdsk-Url-1 = {http://aclweb.org/anthology/D17-1155}}
 
-@InProceedings{Miceli17regularize,
-  author = 	"Miceli Barone, Antonio Valerio
-		and Haddow, Barry
-		and Germann, Ulrich
-		and Sennrich, Rico",
-  title = 	"Regularization techniques for fine-tuning in neural machine translation",
-  booktitle = 	"Proceedings of the 2017 Conference on Empirical Methods in Natural      Language Processing    ",
-  year = 	"2017",
-  publisher = 	"Association for Computational Linguistics",
-  pages = 	"1489--1494",
-  address = 	"Copenhagen, Denmark",
-  doi = 	"10.18653/v1/D17-1156",
-  url = 	"http://aclweb.org/anthology/D17-1156"
-}
-
 @inproceedings{Domhan2017using,
     title = "Using Target-side Monolingual Data for Neural Machine Translation through Multi-task Learning",
     author = "Domhan, Tobias  and
@@ -1990,6 +2054,23 @@ url = {http://papers.nips.cc/paper/7209-learned-in-translation-contextualized-wo
   author={Dominik Mach{\'a}cek and Jon{\'a}s Vidra and Ondrej Bojar},
   booktitle={TSD},
   year={2018}
+}
+
+@inproceedings{Ott18scaling,
+    title = "Scaling Neural Machine Translation",
+    author = "Ott, Myle  and
+      Edunov, Sergey  and
+      Grangier, David  and
+      Auli, Michael",
+    booktitle = "Proceedings of the Third Conference on Machine Translation: Research Papers",
+    month = oct,
+    year = "2018",
+    address = "Brussels, Belgium",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W18-6301",
+    doi = "10.18653/v1/W18-6301",
+    pages = "1--9",
+    abstract = "Sequence to sequence learning models still require several days to reach state of the art performance on large benchmark datasets using a single machine. This paper shows that reduced precision and large batch training can speedup training by nearly 5x on a single 8-GPU machine with careful tuning and implementation. On WMT{'}14 English-German translation, we match the accuracy of Vaswani et al. (2017) in under 5 hours when training on 8 GPUs and we obtain a new state of the art of 29.3 BLEU after training for 85 minutes on 128 GPUs. We further improve these results to 29.8 BLEU by training on the much larger Paracrawl dataset. On the WMT{'}14 English-French task, we obtain a state-of-the-art BLEU of 43.2 in 8.5 hours on 128 GPUs.",
 }
 
 @inproceedings{Rebuffi18efficient,
@@ -2364,6 +2445,20 @@ url = {http://papers.nips.cc/paper/8046-algorithms-and-theory-for-multiple-sourc
   url       = {https://aclanthology.info/papers/C18-1086/c18-1086},
 }
 
+@inproceedings{Post18A,
+    title = "A Call for Clarity in Reporting {BLEU} Scores",
+    author = "Post, Matt",
+    booktitle = "Proceedings of the Third Conference on Machine Translation: Research Papers",
+    month = oct,
+    year = "2018",
+    address = "Brussels, Belgium",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W18-6319",
+    doi = "10.18653/v1/W18-6319",
+    pages = "186--191",
+    abstract = "The field of machine translation faces an under-recognized problem because of inconsistency in the reporting of scores from its dominant metric. Although people refer to {``}the{''} BLEU score, BLEU is in fact a parameterized metric whose values can vary wildly with changes to these parameters. These parameters are often not reported or are hard to find, and consequently, BLEU scores between papers cannot be directly compared. I quantify this variation, finding differences as high as 1.8 between commonly used configurations. The main culprit is different tokenization and normalization schemes applied to the reference. Pointing to the success of the parsing community, I suggest machine translation researchers settle upon the BLEU scheme used by the annual Conference on Machine Translation (WMT), which does not allow for user-supplied reference processing, and provide a new tool, SACREBLEU, to facilitate this.",
+}
+
 @InProceedings{Chu18multilingual,
   author = 	 {Chenhui Chu and Raj Dabre},
   title = 	 {Multilingual and multi-domain adaptation for neural machine translation},
@@ -2720,6 +2815,23 @@ archivePrefix = {arXiv},
     abstract = "We investigate adaptive ensemble weighting for Neural Machine Translation, addressing the case of improving performance on a new and potentially unknown domain without sacrificing performance on the original domain. We adapt sequentially across two Spanish-English and three English-German tasks, comparing unregularized fine-tuning, L2 and Elastic Weight Consolidation. We then report a novel scheme for adaptive NMT ensemble decoding by extending Bayesian Interpolation with source information, and report strong improvements across test domains without access to the domain label.",
 }
 
+@inproceedings{Saunders19domain,
+    title = "Domain Adaptive Inference for Neural Machine Translation",
+    author = "Saunders, Danielle  and
+      Stahlberg, Felix  and
+      de Gispert, Adri{\`a}  and
+      Byrne, Bill",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1022",
+    doi = "10.18653/v1/P19-1022",
+    pages = "222--228",
+    abstract = "We investigate adaptive ensemble weighting for Neural Machine Translation, addressing the case of improving performance on a new and potentially unknown domain without sacrificing performance on the original domain. We adapt sequentially across two Spanish-English and three English-German tasks, comparing unregularized fine-tuning, L2 and Elastic Weight Consolidation. We then report a novel scheme for adaptive NMT ensemble decoding by extending Bayesian Interpolation with source information, and report strong improvements across test domains without access to the domain label.",
+}
+
 @inproceedings{Pham19generic,
 	Address = {Hong-Kong, CN},
 	Author = {Pham, Minh Quang AND Crego, Josep-Maria AND Senellart, Jean AND Yvon, Fran\c{c}ois},
@@ -2747,6 +2859,59 @@ archivePrefix = {arXiv},
  primaryClass = {cs.CL},
        adsurl = {https://ui.adsabs.harvard.edu/abs/2020arXiv200715779G},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+@inproceedings{Banon20Paracrawl,
+    title = "{P}ara{C}rawl: Web-Scale Acquisition of Parallel Corpora",
+    author = "Ba{\~n}{\'o}n, Marta  and
+      Chen, Pinzhen  and
+      Haddow, Barry  and
+      Heafield, Kenneth  and
+      Hoang, Hieu  and
+      Espl{\`a}-Gomis, Miquel  and
+      Forcada, Mikel L.  and
+      Kamran, Amir  and
+      Kirefu, Faheem  and
+      Koehn, Philipp  and
+      Ortiz Rojas, Sergio  and
+      Pla Sempere, Leopoldo  and
+      Ram{\'\i}rez-S{\'a}nchez, Gema  and
+      Sarr{\'\i}as, Elsa  and
+      Strelec, Marek  and
+      Thompson, Brian  and
+      Waites, William  and
+      Wiggins, Dion  and
+      Zaragoza, Jaume",
+    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.acl-main.417",
+    doi = "10.18653/v1/2020.acl-main.417",
+    pages = "4555--4567",
+    abstract = "We report on methods to create the largest publicly available parallel corpora by crawling the web, using open source software. We empirically compare alternative methods and publish benchmark data sets for sentence alignment and sentence pair filtering. We also describe the parallel corpora released and evaluate their quality and their usefulness to create machine translation systems.",
+}
+
+@inproceedings{Li20shallow,
+    title = "Shallow-to-Deep Training for Neural Machine Translation",
+    author = "Li, Bei  and
+      Wang, Ziyang  and
+      Liu, Hui  and
+      Jiang, Yufan  and
+      Du, Quan  and
+      Xiao, Tong  and
+      Wang, Huizhen  and
+      Zhu, Jingbo",
+    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    month = nov,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.emnlp-main.72",
+    doi = "10.18653/v1/2020.emnlp-main.72",
+    pages = "995--1005",
+    abstract = "Deep encoders have been proven to be effective in improving neural machine translation (NMT) systems, but training an extremely deep encoder is time consuming. Moreover, why deep models help NMT is an open question. In this paper, we investigate the behavior of a well-tuned deep Transformer system. We find that stacking layers is helpful in improving the representation ability of NMT models and adjacent layers perform similarly. This inspires us to develop a shallow-to-deep training method that learns deep models by stacking shallow models. In this way, we successfully train a Transformer system with a 54-layer encoder. Experimental results on WMT{'}16 English-German and WMT{'}14 English-French translation tasks show that it is 1:4 faster than training from scratch, and achieves a BLEU score of 30:33 and 43:29 on two tasks. The code is publicly available at \url{https://github.com/libeineu/SDT-Training}.",
 }
 
 @inproceedings{Aharoni20unsupervised,
@@ -2777,7 +2942,7 @@ archivePrefix = {arXiv},
 }
 
 
-@inproceedings{Pham20study,
+@inproceedings{Pham20Study,
     title = "A Study of Residual Adapters for Multi-Domain Neural Machine Translation",
     author = "Pham, Minh Quang  and
       Crego, Josep Maria  and
@@ -2793,7 +2958,7 @@ archivePrefix = {arXiv},
     abstract = "Domain adaptation is an old and vexing problem for machine translation systems. The most common approach and successful to supervised adaptation is to fine-tune a baseline system with in-domain parallel data. Standard fine-tuning however modifies all the network parameters, which makes this approach computationally costly and prone to overfitting. A recent, lightweight approach, instead augments a baseline model with supplementary (small) adapter layers, keeping the rest of the mode unchanged. This has the additional merit to leave the baseline model intact, and adaptable to multiple domains. In this paper, we conduct a thorough analysis of the adapter model in the context of a multidomain machine translation task. We contrast multiple implementations of this idea on two language pairs. Our main conclusions are that residual adapters provide a fast and cheap method for supervised multi-domain adaptation; our two variants prove as effective as the original adapter model, and open perspective to also make adapted models more robust to label domain errors.",
 }
 
-@inproceedings{Aharoni20unsupervised,
+@inproceedings{Aharoni20Unsupervised,
     title = "Unsupervised Domain Clusters in Pretrained Language Models",
     author = "Aharoni, Roee  and
       Goldberg, Yoav",
@@ -2808,7 +2973,24 @@ archivePrefix = {arXiv},
     abstract = "The notion of {``}in-domain data{''} in NLP is often over-simplistic and vague, as textual data varies in many nuanced linguistic aspects such as topic, style or level of formality. In addition, domain labels are many times unavailable, making it challenging to build domain-specific systems. We show that massive pre-trained language models implicitly learn sentence representations that cluster by domains without supervision {--} suggesting a simple data-driven definition of domains in textual data. We harness this property and propose domain data selection methods based on such models, which require only a small set of in-domain monolingual data. We evaluate our data selection methods for neural machine translation across five diverse domains, where they outperform an established approach as measured by both BLEU and precision and recall with respect to an oracle selection.",
 }
 
-@inproceedings{Pham20priming,
+@inproceedings{Jiang20Multi,
+    title = "Multi-Domain Neural Machine Translation with Word-Level Adaptive Layer-wise Domain Mixing",
+    author = "Jiang, Haoming  and
+      Liang, Chen  and
+      Wang, Chong  and
+      Zhao, Tuo",
+    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.acl-main.165",
+    doi = "10.18653/v1/2020.acl-main.165",
+    pages = "1823--1834",
+    abstract = "Many multi-domain neural machine translation (NMT) models achieve knowledge transfer by enforcing one encoder to learn shared embedding across domains. However, this design lacks adaptation to individual domains. To overcome this limitation, we propose a novel multi-domain NMT model using individual modules for each domain, on which we apply word-level, adaptive and layer-wise domain mixing. We first observe that words in a sentence are often related to multiple domains. Hence, we assume each word has a domain proportion, which indicates its domain preference. Then word representations are obtained by mixing their embedding in individual domains based on their domain proportions. We show this can be achieved by carefully designing multi-head dot-product attention modules for different domains, and eventually taking weighted averages of their parameters by word-level layer-wise domain proportions. Through this, we can achieve effective domain knowledge sharing and capture fine-grained domain-specific knowledge as well. Our experiments show that our proposed model outperforms existing ones in several NMT tasks.",
+}
+
+@inproceedings{Pham20Priming,
     title = "Priming Neural Machine Translation",
     author = "Pham, Minh Quang  and
       Xu, Jitao  and
@@ -2825,7 +3007,7 @@ archivePrefix = {arXiv},
     abstract = "Priming is a well known and studied psychology phenomenon based on the prior presentation of one stimulus (cue) to influence the processing of a response. In this paper, we propose a framework to mimic the process of priming in the context of neural machine translation (NMT). We evaluate the effect of using similar translations as priming cues on the NMT network. We propose a method to inject priming cues into the NMT network and compare our framework to other mechanisms that perform micro-adaptation during inference. Overall, experiments conducted in a multi-domain setting confirm that adding priming cues in the NMT decoder can go a long way towards improving the translation accuracy. Besides, we show the suitability of our framework to gather valuable information for an NMT network from monolingual resources.",
 }
 
-@InProceedings{Zhang20pegasus,
+@InProceedings{Zhang20Pegasus,
   title =        {{PEGASUS}: Pre-training with Extracted Gap-sentences for Abstractive Summarization},
   author =       {Zhang, Jingqing and Zhao, Yao and Saleh, Mohammad and Liu, Peter},
   booktitle =    {Proceedings of the 37th International Conference on Machine Learning},
@@ -2843,7 +3025,7 @@ http://proceedings.mlr.press/v119/zhang20ae.html
   abstract =     {Recent work pre-training Transformers with self-supervised objectives on large text corpora has shown great success when fine-tuned on downstream NLP tasks including text summarization. However, pre-training objectives tailored for abstractive text summarization have not been explored. Furthermore there is a lack of systematic evaluation across diverse domains. In this work, we propose pre-training large Transformer-based encoder-decoder models on massive text corpora with a new self-supervised objective. In PEGASUS, important sentences are removed/masked from an input document and are generated together as one output sequence from the remaining sentences, similar to an extractive summary. We evaluated our best PEGASUS model on 12 downstream summarization tasks spanning news, science, stories, instructions, emails, patents, and legislative bills. Experiments demonstrate it achieves state-of-the-art performance on all 12 downstream datasets measured by ROUGE scores. Our model also shows surprising performance on low-resource summarization, surpassing previous state-of-the-art results on 6 datasets with only 1000 examples. Finally we validated our results using human evaluation and show that our model summaries achieve human performance on multiple datasets.}
 }
 
-@article{Saunders21asurvey,
+@article{Saunders21Asurvey,
   author    = {Danielle Saunders},
   title     = {Domain Adaptation and Multi-Domain Adaptation for Neural Machine Translation: {A} Survey},
   journal   = {CoRR},
@@ -2854,13 +3036,13 @@ http://proceedings.mlr.press/v119/zhang20ae.html
   eprint    = {2104.06951},
 }
 
-@PhdThesis{Saunders21domain,
+@PhdThesis{Saunders21Domain,
   author = 	 {Danielle Saunders},
   title = 	 {Domain Adaptation for Neural Machine Translation},
   school = 	 {Department of Engineering, University of Cambridge},
   year = 	 2021}
 
-@article{Pham21revisiting,
+@article{Pham21Revisiting,
       author = {Minh Quang Pham and Josep Crego and François Yvon},
       title = {Revisiting Multi-Domain Machine Translation},
       journal = {Transactions of the Association for Computational Linguistics},
@@ -2873,7 +3055,13 @@ http://proceedings.mlr.press/v119/zhang20ae.html
      url = {https://transacl.org/index.php/tacl/article/view/2327}
 }
 
-
+@article{Stergiadis21Multi,
+  title={Multi-Domain Adaptation in Neural Machine Translation Through Multidimensional Tagging},
+  author={Emmanouil Stergiadis and Satendra Kumar and Fedor Kovalev and Pavel Levin},
+  journal={ArXiv},
+  year={2021},
+  volume={abs/2102.10160}
+}
 
 
 

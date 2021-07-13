@@ -68,6 +68,7 @@
 {0pt}{1.5ex}{2.0ex}
 \titlespacing*{\subsection}
 {0pt}{1.0ex}{1.0ex}
+\usepackage{xspace}
 
 \setlength{\belowdisplayskip}{8pt} \setlength{\belowdisplayshortskip}{8pt}
 \setlength{\abovedisplayskip}{8pt} \setlength{\abovedisplayshortskip}{8pt}
@@ -112,6 +113,10 @@
 \setlength\cftbeforesecskip{1pt}
 \setlength\cftaftertoctitleskip{2pt}
 
+%subfigure
+\usepackage{caption}
+\usepackage{subcaption}
+
 % new command
 \def\-{\raisebox{.75pt}{-}}
 \DeclareMathOperator*{\argmax}{argmax}
@@ -133,7 +138,17 @@
         }
     }
 }
+
+\newcommand{\revision}[1]{\textcolor{red}{#1}}
+\newcommand{\revisiondel}[1]{}
+\newcommand{\src}{\ensuremath{\mathbf{f}}} % source sentence
+\newcommand{\trg}{\ensuremath{\mathbf{e}}} % target sentence
+\newcommand{\domain}[1]{\texttt{\textsc{#1}}}
 \newcommand{\system}[1]{\texttt{{#1}}}
+
+\newcommand{\vlambda}{\ensuremath{\boldsymbol\lambda}\xspace} % parameters vector for a distribution
+\newcommand{\vtheta}{\ensuremath{\boldsymbol\theta}\xspace} % parameters vector for a distribution
+\newcommand{\vpsi}{\ensuremath{\boldsymbol\psi}\xspace} % parameters vector for a distribution
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

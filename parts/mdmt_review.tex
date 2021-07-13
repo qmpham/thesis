@@ -1,5 +1,5 @@
 \chapter{MT (multi-)domain adaptation's review}
-In this chapter, we would like to do our best to give a thorough review of the research literature on the MT (multi-)domain adaptation problem. MT (multi-)domain adaptation has a long history as the area has been actively studied for almost two decades and is still being explored to better communicate many languages in many fields. Earliest domain adaptation methods was explored for SMT systems. Recently, most of the effort has been done to better adapt NMT systems to domains for NMT has surpassed SMT to be state-of-the art architecture.
+In this chapter, we would like to do our best to give a thorough review of the research literature on the MT (multi-)domain adaptation problem. MT (multi-)domain adaptation has a long history as the area has been actively studied for almost two decades and is still being explored to better communicate many languages in many fields. Earliest domain adaptation methods were explored for SMT systems. Recently, most of the effort has been done to better adapt NMT systems to domains for NMT has surpassed SMT to be state-of-the art architecture.
 
 We divide this chapter into 5 sections. In the first section \ref{sec:domain}, we would like to discuss about how we usually define a domain, how translations differ between domains and the importance of domain adaptation in the real applications. In the second section \ref{sec:multi-facet} we would like to regroup 2 notions domain adaptation and multi-domain adaptation; then divide the large problem MT (multi-)domain adaptation into 4 sub-problems. We dedicate 4 following sections to those sub-problems. In each of 4 following sections, we review groups of methods according to \citet{Chu18survey}, that match the requirement of the corresponding problem.
 
@@ -13,51 +13,113 @@ In the context of binary classification problem, \citet{Shai10A} defines a domai
 
 Despite many specifications, domains share the same grammar of the corresponding language. The grammar, the textual style or the structure of text are abstract to machine translation models. MT models learn to translate from examples without being explicitly explained how to do it. They are supposed to learn this knowledge to translate but until now, we are not able to tell whether they do it.
 
-Solving the MT (multi-)domain adaptation problem is essential for deploying MT in real context. Machine Translation has applications in many sectors, such as translating legal documents, news, scientific documents, books, movie subtitles, etc. Every domain has its own specific vocabulary, registers(formal or informal), and genres (e.g., talk, instruction). Therefore, tailoring MT models to a target domain is essential to achieve good translation in that domain. In practice, MT models (SMT, NMT) trained with domain-related data always perform much better in the domain of interest than ones trained with the same amount of less relevant data \citep{Rico13domain, Saunders21domain}. The more domain-relevant data is available, the better the MT system performs in the target domain. However, not every domain has enough data to train an MT models. The state-of-the-art architecture ANMT will need millions parallel sentence pairs to learn its parameters. Therefore, we have to work around in the situation where there is very few data or even no data at all. Domain Adaptation aims to improve performance of MT model in low-resourced domains. Besides, multi-domain adaptation aims to achieve best performance in more than one domain. However, the domains of interest in multi-domain adaptation are not limited to be low-resourced domains. The motivation of having one model adapted to many domains is to optimize the storage, the training time and the deploying time. Having one model per domain increases the storage, the time accessing to a model, thus the latency of the translation. Online translation services, such as Google Translate, Systran Translate or DL Translate, have to translate text from any possible domain while minimizing the latency of translation in order to be beneficial.
-
-In conclusion, the variety of text between fields requires domain adaptation while being fast and robust requires multi-domain adaptation.
+Solving the MT (multi-)domain adaptation problem is essential for deploying MT in real context. Machine Translation has applications in many sectors, such as translating legal documents, news, scientific documents, books, movie subtitles, etc. Every domain has its own specific vocabulary, registers(formal or informal), and genres (e.g., talk, instruction). Therefore, tailoring MT models to a target domain is essential to achieve good translation in that domain. In practice, MT models (SMT, NMT) trained with domain-related data always perform much better in the domain of interest than ones trained with the same amount of less relevant data \citep{Rico13domain, Saunders21Domain}. The more domain-relevant data is available, the better the MT system performs in the target domain. However, not every domain has enough data to train an MT models. The state-of-the-art architecture ANMT will need millions parallel sentence pairs to learn its parameters. Therefore, we have to work around in the situation where there is very few data or even no data at all. Domain Adaptation aims to improve performance of MT model in low-resourced domains. Besides, multi-domain adaptation aims to achieve best performance in more than one domain. However, the domains of interest in multi-domain adaptation are not limited to be low-resourced domains. The motivation of having one model adapted to many domains is to optimize the storage, the training time and the deploying time. Having one model per domain increases the storage, the time accessing to a model, thus the latency of the translation. Online translation services, such as Google Translate, Systran Translate or DL Translate, have to translate text from any possible domain while minimizing the latency of translation in order to be beneficial. In conclusion, the variety of text between fields requires domain adaptation while fast and robust translation requires multi-domain adaptation.
 
 \section{Multi-facet of MT (multi-)domain adaptation problem}
 \label{sec:multi-facet}
 \subsection{From domain adaptation MT to multi-domain adaptation MT}
-Even though domain adaptation and multi-domain adaptation do not have same motivation as one focuses on low-resourced domain whereas the other focuses on adapting to as many as possible domains, they can be cast on one general framework. Moreover, the methods proposed for domain adaptation can be applied to multi-domain adaptation and vice versa. Both problems are under a typical setting in machine translation in which we collect the largest possible collection of parallel data for the chosen language pair, with the intent to achieve optimal performance for the task of interest. In such situations, the training data distribution is opportunistic, while the test data distribution is chosen and fixed; a key component in training is then to mitigate the detrimental effects of a possible mismatch between these distributions. 
+Even though domain adaptation and multi-domain adaptation do not have same motivation as one focuses on low-resourced domain whereas the other focuses on adapting to as many as possible domains, they can be cast under one general framework. Formally, training instances are distributed according to a mixture $\mathcal{D_S}$ such that $\mathcal{D_S}(x) = \sum_{d=1}^{n_d} \lambda^{s}(d) \mathcal{D}_d(x)$, with $\{\lambda^{s}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{s}(d)=1$. The target domains are represented in the test distribution which is also a mixture of $\mathcal{D_T}(x) = \sum_{d=1}^{n_d} \lambda^{t}(d) \mathcal{D}_d(x)$, with $\{\lambda^{t}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{t}(d)=1$. We assume $\mathcal{D}_d(x), d=1 \dots n_d\}$ is the support of the both source and target distribution. Domain adaptation solves the case where $\lambda^s * \lambda^t = 0$ and $\lambda^t$ is one-hot vector while multi-domain adaptation happens to solve the case where $\lambda^t$ is not one-hot vector. We illustrate this formulation in figure %\ref{fig:mdmt-lambdas}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{graphics/mdmt-lambdas}
+  \caption{Training and testing with distribution mismatch. We consider just three domains, and represent vectors of mixture weights $\vlambda^{s}$ and $\vlambda^{t}$ in the 3-dimensional simplex. Training with weights in (a) and testing with weights in (c) is supervised multi-source domain adaptation to domain~2 ($d_2$), while (b)-(c) is the unsupervised version, with no training data from $d_2$; training with weights in (a) and testing with weights in (d) is multi-domain learning, also illustrated with configurations (a)-(e) (training domain $d_1$ is not seen in test), and (b)-(d)  (test domain $d_2$ is unseen in training).}
+  \label{fig:mdmt-lambdas}
+\end{figure}
 
+This framework is realistic because, in a typical setting in machine translation, we collect the largest possible collection of parallel data for the chosen language pair with the intent to achieve optimal performance for the task of interest. In such situations, the training data distribution is opportunistic, while the test data distribution is chosen and fixed; a key component in training is then to mitigate the detrimental effects of a possible mismatch between these distributions. Training data may be a mixture of many domains such as the JRC-Acquis Communautaire corpus (\domain{law}-domain) \citep{Steinberger06acquis} or documentation for KDE, Ubuntu, GNOME and PHP from the Opus collection \citep{Tiedemann09news} (\domain{it}-domain). We also leverage a collection of data with no specific topic and genre, such as Paracrawl \citep{Banon20Paracrawl}. The testing data represent the domains of interest. In multi-domain adaptation, because there are multiple target domains, the testing is composed of multiple tests. The performance of an MT system is usually the average of its performance on these tests. However, we can access the quality of the multi-domain MT system with different priorities over target domains using weighted mean. The evaluation of multi-domain MT system should be clarified before training as early stopping criteria relies on the evaluation over validation tests.
 \subsection{4 main sub-problems}
-Recently the work of \citet{Chu18survey} significantly captured the landscape of MT domain adaptation by categorizing methods in 2 main classes: data-centric and model-centric. More precisely, the data-centric category includes methods that manipulate the training distribution to better resemble to the distribution of the target domain. Model-centric methods improve the internalization of domain dependence by alternating the different properties of NMT models, including the architecture, the optimization procedure, and the inference procedure. This taxonomy is largely adopted in MT domain adaptation's research. However, we find a naivety in this classification as it misses to deliver an answer for the most ultimate question that is "which method solves which problem?". We propose adding another dimension, which is the context of MT adaptation problem, to form a Cartesian map of the MT (multi-)domain adaptation area. In this work, we would like to categorize the domain adaptation context by two following questions.
+From our study on many previous works, we realize that the (multi-)domain adaptation problem is a multifaceted problem. Effectively, all the cases of (Multi-)domain adaptation can be classified into four groups by answering two following questions:
 \begin{itemize}
-	\item Is the domain label is available in training?
-	\item Is the domain label is available in testing?
+	\item Is/Are the domain(s) of the training well defined?
+	\item Is/Are the domain(s) of the testing well defined?
 \end{itemize}
-Therefore, there are 4 contexts in 
-We believe that this coupling of methods and problems will allow us to better navigate in this forest that has been growing for almost two decades, to put more research on unexplored adaptation problems or to find another application of an existing method.
+More precisely, first question asks whether the content of the training data is known a priori. For example, the domain of a mixture of multiple corpora of specific topics, such as JRC-Acquis Communautaire corpus (\domain{law}-domain) and KDE (\domain{it}-domain), is well defined. However, the domain of Paracrawl \citep{Banon20Paracrawl} is not well defined as its content is unknown. The second question asks whether the domain of the testing data is well-defined. If there exist a collection of text (monolingual or parallel), that defines the domain of the testing, then its domain is well defined and vice versa. 
 
-MT (multi-)domain adaptation is indeed a rich landscape where many problems have not been given a shot. The work of \citet{Pham21revisiting} recently gave an attempt of formulating the context of (multi-)domain adaptation problems.
+Our first case of (multi-)domain adaptation \ref{sec:case1} is supervised multi-domain adaptation in which domain labels are both available in training and testing. Furthermore, the target domains in testing are included in the training. This case might be the easiest situation. Many approaches in multi-domain MT conducted their experiments in this setting \cite{Pham21revisiting}. 
 
-The domain label is usually extracted from the metadata of the corpora. A domain label can be the name of the field from which the text is collected or just the name of the corpora. Domain labeling depends on the source and the clustering strategy of the researcher. For example, Ubuntu and Gnome can be two different domains or mixed into one domain. The separation facilitates the capturing of the subtle unique properties of the text but loses the generalization, and on the contrary, the combination helps the generalization but loses the in-domain uniqueness. We envy such (multi-)domain adaptation method that is robust to any domain labeling strategy. Domain label is important for almost all adaptation methods. However, this additional information is not always available. Effectively, enormous corpora such as Paracrawl, Commoncrawl, and Newscrawl, which are grossly collected from webs, contain many different text genres and topics but lack domain labels. Exploiting those corpora in (multi-)domain adaptation needs more effort. Unsupervised clustering can be a good direction for this problem \citep{Aharoni20unsupervised,Pham21revisiting}.
+The second case \ref{sec:case2} considers the use of the parallel data crudely collected from webs such as Paracrawl \citep{Banon20Paracrawl} or Commoncrawl \footnote{\url{https://commoncrawl.org/}}. The content of these corpora varies from many topics, but unfortunately, there is not any available domain label for sentences. Fortunately, in the second case, the target domains are known, i.e., there exist data of these domains, which can be used to adapt the model supervisedly or unsupervisedly. The second case focuses on the exploitation of opportunistic text. 
 
-We present in 4 following sections 4 principle sub-problems of the (multi-)domain adaptation problem and the groups of methods that matches the requirement of each sub-problem.
+The third case \ref{sec:case3} assumes a well domain-labeled training data while allowing the testing sentence from any possible domain. This case focuses on the robustness of the MT system against any possible shift distribution in testing. The third setting is very closed to real applications where the provenance of the input text is unknown. 
+
+Finally, the last setting \ref{sec:case4} focuses on both exploiting opportunistic data in training and being robust against unknown testing distribution. We dedicate the four following sections to discuss more details of each setting.
+
+Recently the work of \citet{Chu18survey} significantly captured the landscape of MT domain adaptation by categorizing previous methods in 2 main classes: data-centric and model-centric. The data-centric category includes methods that manipulate the training distribution to better resemble the distribution of the target domain. The model-centric methods focus on changing the architecture, modifying the training procedure and improving the inference.
+
+According to \citet{Chu18asurvey}, the data-centric focuses on 3 paradigms, including: 1) collecting parallel data related to the domain target, 2) creating synthetic data resembling the domain target and 3) using the monolingual data of the domain target. The first paradigm searches similar examples to the ones of the domain target in order to enlarge the training data of the domain target. The second paradigm aims to create pseudo examples resembling the data of the domain target. We place the third paradigm to model-centric group as it consists of training NMT model with auxiliary losses computed only on monolingual data. 
+
+This taxonomy is largely adopted in MT domain adaptation's research. However, we find a naivety in this classification as it misses to deliver an answer for the most ultimate question that is "which method solves which problem?". We propose adding another dimension, the context of the MT adaptation problem, to form a Cartesian map of the MT (multi-)domain adaptation area. The four following sections will explain how model-centric and data-centric categories solve 4 (multi-)domain adaptation cases. We believe that this coupling of methods and cases will allow us to better navigate in the (multi-)domain adaptation forest that has been growing for almost two decades, to put more research on unexplored adaptation problems, or to find another application of an existing method. The work of \citet{Pham21revisiting} recently gave a brief review of several well-known adaptation methods via a reevaluation with different domain adaptation cases. However, the experiments are still limited in the first case \ref{sec:case1} and the third case \ref{sec:case3} by excluding crawled corpora.
 
 \section{Supervised (multi-)domain adaptation}
-In the supervised (multi-)domain adaptation, the domain label is available in both training and testing. Furthermore, the domain(s) in testing is (are) available in training. In this problem, we would like to achieve a unique model, that performs the best in one or many target domains, given training data from those domains and probably from other domains. This setting is the most popular situation on which DA research papers focus. 
-
+\label{sec:case1}
+In the supervised (multi-)domain adaptation, the domain label is available in both training and testing. Furthermore, the domain(s) in testing is (are) available in training. In this problem, we would like to achieve a unique model, that performs the best in one or many target domains, given training data from those domains and probably from other domains. This setting is the most popular situation on which multi-domain machine translation research papers focus. The first case represents the least requirement as the MT need to achieve best performance on the domains it learned from. The difficulty of this situation is to both exploit the proximity between domains while mitigate the interference due to inter-domain heterogeneity. Effectively, similar topics, such as legal and administrative, might improve the vocabulary coverage of each other as both domains share the same specific terminologies. However, distant topics, such as religious and IT, might confuse MT system when sharing the same parameters. In the following sections, we will discover how model-centric methods and data-centric methods solve this case.
 \subsection{Model-centric}
+In the case of supervised multi-domain adaptation, model-centric methods focus on adding domain-specified parameters to reduce the interference between domains while keeping the number of parameters small. The simplest methods use domain tag. For example, \citet{Kobus17domain} proposed appending a special token to each source sequence indicating its domain such as $<Domain=IT>$ and train NMT model with this format. However, this format requires domain tags in testing, hence we have to predict them in case the source sentences are from unknown origin. \cite{Britz17effective} originally propose appending domain tag to the target sequence so that the decoder will predict the domain in which it will generate the translation. Instead of using domain tag, \citep{Kobus17domain, Pham19generic} propose using domain embedding to incorporate the domain information to the context of the translation. \citet{Kobus17domain} concatenates an embedding of small size (e.g., 4) to the embedding of each token in the input sequence. Each small embedding corresponds to a domain. Instead of using the same domain embedding for the tokens in the same domain \citet{Pham19generic} uses lexicalized domain representation, which is a small embedding correspond to the domain and the token. Besides domain embedding, we can use domain specified layers that can be plugged between 2 consecutive layers of NMT model without changing the architecture. There are 2 types of plug-in layers: 1) residual adapter \citep{Bapna19simple, Pham20Study} and 2) learning hidden unit contribution \citep{Vilar18learning}. Residual adapters were first introduced by \citet{Rebuffi17learning} in computer vision. \citet{Bapna19simple} proposed this fine-tuning paradigm for domain adaptation. They introduced a new version of residual adapter composed of 2 linear projection and the ReLU activation function. The adapters are plugged to the NMT model as follow
+\begin{equation}
+\begin{array}{rcl}
+h_{enc/dec}^l = h_{enc/dec}^{l} + ADAP_{enc/dec}^l(h_{enc/dec}^{l})
+\end{array}
+\end{equation}
+where $ADAP_{enc/dec}^l$ is the adapter corresponding to the $l^{th}$ layer of the encoder/the decoder. \cite{Pham20Study} study the use of the residual adapters for multi-domain adaptation and propose several techniques, including regularization, gating mechanism, to improve the robustness of the model. The learning hidden unit contribution (LHUC \nomenclature[lhuc]{LHUC}{Learning hidden unit contribution}) method was proposed by \cite{Vilar18learning} to adapt an NMT model to a domain. The author applied LHUC layer to the model as follow
+\begin{equation}
+h_{enc/dec}^l = h_{enc/dec}^{l} \odot a(\rho^{l}_{enc/dec})
+\end{equation}
+where $\rho^{l}_{enc/dec}$ is the adapter corresponding to the $l^{th}$ layer of the encoder/the decoder and $\rho^{l}_{enc/dec} \in \mathbb{R}^d$. $a(.)$ is a scaled
+element-wise sigmoid function.
+$$a(x) = \frac{2}{1+e^{-x}}$$
+Residual adapter and learning hidden unit contribution layer are used to adapt a pretrained model without changing its parameters. 
+
+\cite{Britz17effective}
+
+\cite{Zeng18multidomain}
+
+\cite{Michel2018extreme}
+
+\citet{Jiang20Multi}
+
+
+Recently \citet{Pham21Revisiting} has conducted a empirical comparison between several methods, including domain embedding, domain tag and residual adapter with 6 domains. We observe that the more domain-specified parameters the better result.
+
+We illustrate several well-known model-centric methods for supervised domain adaptation problem in Figure~\ref{fig:model-centric-case1-case2}.
+\begin{figure}[htbp]
+\begin{subfigure}{1.0\textwidth}
+  \centering
+  \includegraphics[width=1.0\textwidth]{graphics/supervised_mdmt}
+\end{subfigure}
+\newline
+\begin{subfigure}{1.0\textwidth}
+  \centering
+  \fbox{\begin{tabular}{ll}
+\textcolor{red}{$\blacksquare$} & \citep{Zeng18multidomain} \\
+\textcolor{violet}{$\blacksquare$} & \citep{Vilar18learning} \\
+\end{tabular}}
+\end{subfigure}
+\caption{Each color different from the bleu corresponds to one model-centric method. The bleu represents the NMT model.}
+\label{fig:model-centric-case1-case2}
+\end{figure}
 
 \subsection{Data-centric}
+Because data-centric methods usually consider the training as a generic domain, we will discuss how they solve both the first case and the second case in the section \ref{ssec:case-2-data}.
 
 \section{Unlabeled training, labeled testing}
-
+\label{sec:case2}
+The second case focuses on the adaptation of NMT model with unknown source domain while the target domain is well defined. There are 2 situations: 1) there exist parallel data in the target domain 2) there exist only monolingual data in the target domain. The two following sections will discuss how each group of method solve this problem.
 \subsection{Model-centric}
 
+First, we can consider the domain adaptation case. If there exist parallel data of the target domain, we can apply the same techniques proposed for supervised (multi-)domain adaptation by considering the domain of the training as a generic domain. Besides, finetuning is very efficient approach for this problem\citep{Luong15stanford,Miceli17regularization,Servan16Domain,Freitag16fast}. We first train an NMT model with the mixture of source domains, then continue training this model with the target domain. According to a recent review of multi-domain adaptation conducted by \citet{Pham20Priming}, finetuning is the strongest baseline in supervised domain adaptation. However, finetuned NMT models usually suffer from catastrophic forgetting \citep{Michael89catastrophic} as their performances drop dramatically in the source domains. To mitigate the catastrophic forgetting, several regularization techniques were introduced, including mixed finetuning \citep{Chu17empirical}, uniform weight-decay \citep{Miceli17regularization}, elastic weight consolidation \citep{Brian19overcoming, Kirk16overcoming,Saunders19domain} and knowledge distillation \citep{Dakwle17fine}. More precisely, mixed finetuning finetunes the NMT model with the mixture of the source domain and the target domain (by oversampling the target domain). \citep{Miceli17regularization} regularizes the loss with $\hat{\theta} = $
+
+ Besides, \cite{Freitag16fast} propose ensembling the pretrained model and the finetuned model in order to combine the advantage of both models: the specialization in the target domain and the generalization over general text. Instead of continuing the training with target domain only, \cite{Chen17cost} differentiate directly domain-relevant instances and irrelevant instances via weighted cross-entropy loss. The authors compute the weight of each instance by a domain classifier, that is trained with source sequences. The training will maximize the following objective $\hat{\theta} = \displaystyle{\mathop{\arg max}_{\theta} \mathop{\sum}_{(x,y)\in D_{in} \cap D_{out}}} (1+p_d(x))log(P(y|x,\theta))$, in which $D_{in}$, $D_{out}$ are the target domain and other domains, $p_d(x)$ is the probability of sequence x originating from the target domain. 
+
 \subsection{Data-centric}
+\label{ssec:case-2-data}
 
 \section{Labeled training, unlabeled testing}
-
+\label{sec:case3}
 \subsection{Model-centric}
 
 \subsection{Data-centric}
 
 \section{Unlabeled training, unlabeled testing}
-
+\label{sec:case4}
 \subsection{Model-centric}
 
 \subsection{Data-centric}
