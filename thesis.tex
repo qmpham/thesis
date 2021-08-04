@@ -125,6 +125,8 @@
 \newcommand{\fyTodostar}[1]{\Todo*[FY:]{\textcolor{orange}{#1}}}
 \newcommand{\fyDone}[1]{\done[FY]\Todo[FY:]{\textcolor{orange}{#1}}}
 \newcommand{\fyDonestar}[1]{\done[FY]\Todo[FY:]{\textcolor{orange}{#1}}}
+\newcommand{\fyFuture}[1]{\done[FY]\Todo[FY:]{\textcolor{red}{#1}}}
+
 \usepackage{titlesec}
 \pgfkeys{
     /tr/rowfilter/.style 2 args={
@@ -149,6 +151,13 @@
 \newcommand{\vlambda}{\ensuremath{\boldsymbol\lambda}\xspace} % parameters vector for a distribution
 \newcommand{\vtheta}{\ensuremath{\boldsymbol\theta}\xspace} % parameters vector for a distribution
 \newcommand{\vpsi}{\ensuremath{\boldsymbol\psi}\xspace} % parameters vector for a distribution
+\newcommand{\indic}[1]{\ensuremath{\mathbb{I}(#1)}}
+\newcommand{\SB}[1]{\textbf{#1}}
+\newcommand{\SW}[1]{\underline{#1}}
+\renewcommand\textfraction{.1}
+\renewcommand\floatpagefraction{.95}
+\newcommand{\sbcl}[2]{{\scriptsize #1 \hfill $|$ \hfill  #2}}
+\usepackage{multirow}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -197,6 +206,7 @@
 	\input{parts/introduction.tex}
 	\input{parts/nmt_review.tex}
 	\input{parts/mdmt_review.tex}
+	\input{parts/revisiting.tex}
 	
 {\linespread{0.7}\selectfont\bibliography{bibliography}}
 \bibliographystyle{apa-good}
