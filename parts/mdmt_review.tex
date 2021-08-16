@@ -14,14 +14,14 @@ Despite many specifications, domains share the same grammar of the corresponding
 
 Solving the MT (multi-)domain adaptation problem is essential for deploying MT in a real context. Machine Translation has applications in many sectors, such as translating legal documents, news, scientific documents, books, movie subtitles, etc. Every domain has its own specific vocabulary, registers(formal or informal), and genres (e.g., talk, instruction). Therefore, tailoring MT models to a target domain is essential to achieve good translation in that domain. In practice, MT models (SMT, NMT) trained with domain-related data always perform much better in the domain of interest than ones trained with the same amount of less relevant data \citep{Rico13domain, Saunders21Domain}. The more domain-relevant data is available, the better the MT system performs in the target domain. However, not every domain has enough data to train an MT model. The state-of-the-art architecture ANMT will need millions of parallel sentence pairs to learn its parameters. Therefore, we have to work around the situation where there is very little data or even no data. Domain Adaptation aims to improve the performance of an MT model in low-resourced domains. Besides, multi-domain adaptation seeks to achieve the best performance in more than one domain. However, the domains of interest in multi-domain adaptation are not limited to be low-resourced domains. The motivation of having one model adapted to many domains is to optimize the storage, the training time, and the deploying time. Having one model per domain increases the storage, the time retrieving a model, and thus the translation latency. Online translation services, such as Google Translate, Systran Translate, or DL Translate, have to translate text from any possible domain while minimizing the latency of translation in order to be beneficial. In conclusion, the variety of text between fields requires domain adaptation, while fast and robust translation requires multi-domain adaptation.
 
-\section{Multi-facet of MT (multi-)domain adaptation problem}
+\section{Machine translation (multi-)domain adaptation a multi-faceted problem}
 \label{sec:multi-facet}
 \subsection{From domain adaptation MT to multi-domain adaptation MT}
 Even though domain adaptation and multi-domain adaptation do not have same motivation as one focuses on low-resourced domain whereas the other focuses on adapting to as many as possible domains, they can be cast under one general framework. Formally, training instances are distributed according to a mixture $\mathcal{D_S}$ such that $\mathcal{D_S}(x) = \sum_{d=1}^{n_d} \lambda^{s}(d) \mathcal{D}_d(x)$, with $\{\lambda^{s}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{s}(d)=1$. The target domains are represented in the test distribution which is also a mixture of $\mathcal{D_T}(x) = \sum_{d=1}^{n_d} \lambda^{t}(d) \mathcal{D}_d(x)$, with $\{\lambda^{t}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{t}(d)=1$. We assume $\mathcal{D}_d(x), d=1 \dots n_d\}$ is the support of the both source and target distribution. Domain adaptation solves the case where $\lambda^s * \lambda^t = 0$ and $\lambda^t$ is one-hot vector while multi-domain adaptation happens to solve the case where $\lambda^t$ is not one-hot vector. We illustrate this formulation in figure %\ref{fig:mdmt-lambdas}.
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.5\textwidth]{graphics/mdmt-lambdas}
-  \caption{Training and testing with distribution mismatch. We consider just three domains, and represent vectors of mixture weights $\vlambda^{s}$ and $\vlambda^{t}$ in the 3-dimensional simplex. Training with weights in (a) and testing with weights in (c) is supervised multi-source domain adaptation to domain~2 ($d_2$), while (b)-(c) is the unsupervised version, with no training data from $d_2$; training with weights in (a) and testing with weights in (d) is multi-domain learning, also illustrated with configurations (a)-(e) (training domain $d_1$ is not seen in test), and (b)-(d)  (test domain $d_2$ is unseen in training).}
+  \caption[Training and testing with distribution mismatch]{Training and testing with distribution mismatch. We consider just three domains, and represent vectors of mixture weights $\vlambda^{s}$ and $\vlambda^{t}$ in the 3-dimensional simplex. Training with weights in (a) and testing with weights in (c) is supervised multi-source domain adaptation to domain~2 ($d_2$), while (b)-(c) is the unsupervised version, with no training data from $d_2$; training with weights in (a) and testing with weights in (d) is multi-domain learning, also illustrated with configurations (a)-(e) (training domain $d_1$ is not seen in test), and (b)-(d)  (test domain $d_2$ is unseen in training).}
   \label{fig:mdmt-lambdas}
 \end{figure}
 
@@ -113,7 +113,7 @@ We illustrate several well-known model-centric methods for the supervised domain
 \textcolor{violet}{$\blacksquare$} & \citep{Vilar18learning} \\
 \end{tabular}}
 \end{subfigure}
-\caption{Each color different from the bleu corresponds to one model-centric method. The bleu represents the NMT model.}
+\caption[Model-centric's brief overview]{Each color different from the bleu corresponds to one model-centric method. The bleu represents the NMT model.}
 \label{fig:model-centric-case1-case2}
 \end{figure}
 
@@ -206,24 +206,33 @@ Besides well-known metrics for domain-relevance, \citet{Zhang19curriculum} propo
 \mathit{f}(x,y) = V \cdot \mathbf{F}(x,y),
 \end{equation}
 where feature vector $\mathbf{F}(x,y)$ was extracted from the example, and weight vector $V$ was learned by Bayesian optimization. Each element of $\mathbf{F}(x,y)$ represented the relevance of the example to a target domain. Once the scorer was optimized, the training was conducted similarly as in \citet{Wees17dynamic,Wang19dynamically}.
+
 \section{Domain-deterministic training, non domain-deterministic testing}
 \label{sec:case3}
-The third case is interesting because it resembles the real context of machine translation's applications. Effectively, the users' text can be from any possible topic or for any possible purpose (genre). In this situation, the NMT model need to be both robust to the unseen domains and adapted to the known domains. 
+The third case is interesting because it resembles the real context of machine translation's applications. Effectively, the users' text can be from any possible topic or for any possible purpose (genre). In this situation, the NMT model needs to be both robust to the unseen domains and adapted to the known domains. 
 \subsection{Model-centric}
-Mixture model is effective to this situation as it combines domain-adapted systems to perform the translation. The performance of mixture model is guaranteed in the source domains while using a convex combination of predictions produced by expert systems can give more robust translation in unseen domains. Mixture model has been successfully applied for SMT models \citep{Sennrich12perplexity, Carpuat14linear, Sennrich12mixture}. Recently, ensembling decoding was applied to NMT models by \citet{Saunders19domain} using Bayesian Interpolation \citep{Allauzen11bayesian}. Formally 
-, mixture-model, domain robustness
-\cite{Muller20domain}
-\subsection{Data-centric}
-Cannot be applied as there is no fixed target domain. 
+Mixture model is effective to this situation as it combines domain-adapted systems to perform the translation. Effectively, the performance of mixture model is guaranteed in the source domains while using a convex combination of the adapted systems is robust against the unseen domains. Mixture model has been successfully applied for SMT models \citep{Sennrich12perplexity, Carpuat14linear, Sennrich12mixture}. \citet{Sajjad17neural, Saunders19domain,Freitag16fast} applied mixture model to NMT models. The contribution of each adapted model to the combination was uniform in \citet{Freitag16fast} while \cite{Sajjad17neural} pre-finetuned them by bayesian optimization on a development set. However, heuristic static weight is sub-optimal when the testing domain is highly variable. \citet{Saunders19domain} proposed computing the weights of the mixture for each source sentence $x$ at $i^{th}$ decoding step as follow
+\begin{equation}
+\begin{array}{rcl}
+W_{k,i} &=& \displaystyle{\mathop{\sum}_{t} P(t|h_i,x)\lambda_{k,t}}, \\
+&where& \\
+P(t|h_i,x) = P(t|x) &=& \frac{\displaystyle{P^k_{LM}(x)}}{\displaystyle{\mathop{\sum}_{k'} P^{k'}_{LM}(x)}},\\
+\end{array}
+\end{equation}
+where $P^{k'}_{LM}(x)$ is the probability of the source sentence $x$ according to the language model learned from domain $k'$, $\lambda_{k,t}$ can be uniform, identity or pre-finetuned with a development set. \citet{Saunders19domain} also proposed varying the mixture's weights during the inference by conditioning the domain posterior probability on both $x$ and $h_i$ as follow
+\begin{equation}
+P(t|h_i,x) = \frac{P(h_i|t,x) P(t|x)}{\displaystyle{\mathop{\sum}_{k'} P(h_i|k',x) P(k'|x)}}.
+\end{equation} 
+However, one might be more interested in domain robustness than domain specialization. The mixture model does not include the domain robustness in the training objective. \cite{Muller20domain} discussed several regularization methods to mitigate the problem, including subword regularization \citep{Taku18subword}, defensive distillation \citep{Papernot16distillation}, reconstruction \cite{Tu17neural} and neural noisy channel reranking \citep{Li16mutual}. Distributional robustness \citep{Oren19distributionally,BenTal13robust} is also a promising paradigm as the methods optimized learning models so that they perform well over a wide range of potential test distributions. However, the application of this paradigm to neural machine translation is not yet discovered.
+\subsection{Data-centric} \label{ssec:data-centric}
+Data-centric can not be applied to this situation as non domain-deterministic testing does not provide the domain of the test sentences. Effectively, data-centric requires the monolingual data of the target domain to create the pseudo in-domain data while the testing domain is non deterministic.
 \section{Non domain-deterministic training, non domain-deterministic testing}
 \label{sec:case4}
 \subsection{Model-centric}
-Distributional robustness, priming, sentence adaptive fine-tuning.
-\cite{Oren19distributionally}
-\cite{Li18onesentence}
-\cite{Farajian17multidomain}
+\cite{Li18onesentence, Farajian17multidomain} proposed finetuning on-the-fly the pretrained model to a mini-batch similar to the source sentence before translating it. The authors chose the learning rate and the number of finetuning iterations according to the score of similarity between the mini-batch and the source sentence so that the higher similarity the higher the learning rate, the more iterations. \cite{Pham20Priming,xu20boosting,Bulte19neural} proposed learning NMT model to reuse memory translations whose source sentence is similar to the source sentence. 
 \subsection{Data-centric}
-Cannot be applied as there is no fixed target domain. 
+The data-centric paradigm can not be applied to this situation for the same reason as the previous section \ref{ssec:data-centric}
+
 
 
 

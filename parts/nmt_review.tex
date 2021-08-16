@@ -257,7 +257,7 @@ The purpose of training NMT model is to find optimal values for its parameters s
 
 Concerning the optimization of the model on the training set, we usually use MLE, i.e.
 \begin{equation}
-\hat{\theta} = \displaystyle{\mathop{argmax}\mathop{\sum}_{x,y} \in \mathit{D}}log P(y|x;\theta),
+\hat{\theta} = \displaystyle{\mathop{argmax}\mathop{\sum}_{x,y \in \mathit{D}}}log P(y|x;\theta),
 \label{eq:mle}
 \end{equation}
 where $\mathit{D}$ is the sampling distribution of the training data.
