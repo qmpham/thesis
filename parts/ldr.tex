@@ -1,4 +1,5 @@
 \chapter{Lexicalized domain representation}
+\textit{This chapter draws from the following publications: \citet{Pham19generic}}
 \section{Motivation}
   We study here \emph{supervised multi-domain adaptation} setting \ref{sec:case1}, where the number of domains is potentially large and adapting separately to each domain would waste training resources. Our proposal transposes to neural machine translation the feature expansion technique of (Daum\'e III, 2007): it isolates domain-agnostic from domain-specific lexical representations, while sharing the most of the network across domains.
   
@@ -395,7 +396,7 @@ Let us first consider the full words in the left column of Table~\ref{tab:embedd
 Let us now consider the list of putative monosemic words (on the right part of Table~\ref{tab:embeddings}), ie.\ words for which the nearest neighbors are the same in all domains. This list contains mostly words for which we do not expect much variation in translation: adjectives (``previous'', ``better''), adverbs (``virtually``), generic verbs (``handling'', ``coordinated''). Further down this list, we will also find prepositions (``at'', ``in''), auxiliary (``been'') etc.  
 
 \section{Conclusions}
-In this paper, we have presented a new technique for multi-domain machine translation,  adapting the ``frustratingly easy'' idea of \cite{Daume07frustratingly} to two standard NMT architectures. 
+In this chapter, we have presented a new technique for multi-domain machine translation,  adapting the ``frustratingly easy'' idea of \cite{Daume07frustratingly} to two standard NMT architectures. 
 Our experiments have shown that for both architectures and for two language pairs, our multi-domain models improve over several baselines of the literature and that it is robust to noise in domain labels. 
 It is noticeable that these results are obtained without impacting the architecture or training complexity
 , making our approach an effective baseline for further studies in multi-domain translation.

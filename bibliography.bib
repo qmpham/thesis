@@ -525,6 +525,22 @@ pages={1345-1359},
   topic  =        {Parallel corpora}
 }
 
+@inproceedings{Bengio09curriculum,
+author = {Bengio, Yoshua and Louradour, J\'{e}r\^{o}me and Collobert, Ronan and Weston, Jason},
+title = {Curriculum Learning},
+year = {2009},
+isbn = {9781605585161},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1553374.1553380},
+doi = {10.1145/1553374.1553380},
+abstract = {Humans and animals learn much better when the examples are not randomly presented but organized in a meaningful order which illustrates gradually more concepts, and gradually more complex ones. Here, we formalize such training strategies in the context of machine learning, and call them "curriculum learning". In the context of recent research studying the difficulty of training in the presence of non-convex training criteria (for deep deterministic and stochastic neural networks), we explore curriculum learning in various set-ups. The experiments show that significant improvements in generalization can be achieved. We hypothesize that curriculum learning has both an effect on the speed of convergence of the training process to a minimum and, in the case of non-convex criteria, on the quality of the local minima obtained: curriculum learning can be seen as a particular form of continuation method (a general strategy for global optimization of non-convex functions).},
+booktitle = {Proceedings of the 26th Annual International Conference on Machine Learning},
+pages = {41–48},
+numpages = {8},
+location = {Montreal, Quebec, Canada},
+series = {ICML '09}
+}
+
 @inproceedings{Finkel09hierarchical,
 	Address = {Boulder, Colorado},
 	Author = {Finkel, Jenny Rose and Manning, Christopher D.},
@@ -1490,6 +1506,18 @@ doi = {10.1109/CVPR.2016.90}
  address = {USA},
 }
 
+@inproceedings{Brebisson16anexploration,
+  author={Alexandre de Brébisson and Pascal Vincent},
+  title={An Exploration of Softmax Alternatives Belonging to the Spherical Loss Family},
+  year={2016},
+  url={http://arxiv.org/abs/1511.05042},
+  booktitle={Proceedings of the 4th International Conference on Learning Representation},
+  series = {ICLR},
+  editor   = {Yoshua Bengio and Yann LeCun},
+  address  = {San Juan, Puerto Rico},
+  year      = {2016},
+}
+
 @InProceedings{Sennrich16controlling,
   author = 	"Sennrich, Rico
 		and Haddow, Barry
@@ -2210,7 +2238,7 @@ doi = {10.5715/jnlp.24.597}
     pages = "1500--1505",
     abstract = "The performance of Neural Machine Translation (NMT) models relies heavily on the availability of sufficient amounts of parallel data, and an efficient and effective way of leveraging the vastly available amounts of monolingual data has yet to be found. We propose to modify the decoder in a neural sequence-to-sequence model to enable multi-task learning for two strongly related tasks: target-side language modeling and translation. The decoder predicts the next target word through two channels, a target-side language model on the lowest layer, and an attentional recurrent model which is conditioned on the source representation. This architecture allows joint training on both large amounts of monolingual and moderate amounts of bilingual data to improve NMT performance. Initial results in the news domain for three language pairs show moderate but consistent improvements over a baseline trained on bilingual data only.",
 }
-
+@InProceedings{Graves17automated, title = {Automated Curriculum Learning for Neural Networks}, author = {Alex Graves and Marc G. Bellemare and Jacob Menick and R{\'e}mi Munos and Koray Kavukcuoglu}, booktitle = {Proceedings of the 34th International Conference on Machine Learning}, pages = {1311--1320}, year = {2017}, editor = {Precup, Doina and Teh, Yee Whye}, volume = {70}, series = {Proceedings of Machine Learning Research}, month = {06--11 Aug}, publisher = {PMLR}, pdf = {http://proceedings.mlr.press/v70/graves17a/graves17a.pdf}, url = { http://proceedings.mlr.press/v70/graves17a.html }, abstract = {We introduce a method for automatically selecting the path, or syllabus, that a neural network follows through a curriculum so as to maximise learning efficiency. A measure of the amount that the network learns from each data sample is provided as a reward signal to a nonstationary multi-armed bandit algorithm, which then determines a stochastic syllabus. We consider a range of signals derived from two distinct indicators of learning progress: rate of increase in prediction accuracy, and rate of increase in network complexity. Experimental results for LSTM networks on three curricula demonstrate that our approach can significantly accelerate learning, in some cases halving the time required to attain a satisfactory performance level.} }
 @inproceedings{Wees17dynamic,
     title = "Dynamic Data Selection for Neural Machine Translation",
     author = "van der Wees, Marlies  and
@@ -2440,6 +2468,20 @@ doi = {10.5715/jnlp.24.597}
   timestamp = {Wed, 16 Oct 2019 14:14:50 +0200},
   biburl    = {https://dblp.org/rec/conf/cvpr/RebuffiBV18.bib},
   bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{Post18call,
+    title = "A Call for Clarity in Reporting {BLEU} Scores",
+    author = "Post, Matt",
+    booktitle = "Proceedings of the Third Conference on Machine Translation: Research Papers",
+    month = oct,
+    year = "2018",
+    address = "Brussels, Belgium",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/W18-6319",
+    doi = "10.18653/v1/W18-6319",
+    pages = "186--191",
+    abstract = "The field of machine translation faces an under-recognized problem because of inconsistency in the reporting of scores from its dominant metric. Although people refer to {``}the{''} BLEU score, BLEU is in fact a parameterized metric whose values can vary wildly with changes to these parameters. These parameters are often not reported or are hard to find, and consequently, BLEU scores between papers cannot be directly compared. I quantify this variation, finding differences as high as 1.8 between commonly used configurations. The main culprit is different tokenization and normalization schemes applied to the reference. Pointing to the success of the parsing community, I suggest machine translation researchers settle upon the BLEU scheme used by the annual Conference on Machine Translation (WMT), which does not allow for user-supplied reference processing, and provide a new tool, SACREBLEU, to facilitate this.",
 }
 
 @inproceedings{Niu18multitask,
@@ -2986,6 +3028,20 @@ archivePrefix = {arXiv},
     doi = "10.18653/v1/2020.acl-main.165",
     pages = "1823--1834",
     abstract = "Many multi-domain neural machine translation (NMT) models achieve knowledge transfer by enforcing one encoder to learn shared embedding across domains. However, this design lacks adaptation to individual domains. To overcome this limitation, we propose a novel multi-domain NMT model using individual modules for each domain, on which we apply word-level, adaptive and layer-wise domain mixing. We first observe that words in a sentence are often related to multiple domains. Hence, we assume each word has a domain proportion, which indicates its domain preference. Then word representations are obtained by mixing their embedding in individual domains based on their domain proportions. We show this can be achieved by carefully designing multi-head dot-product attention modules for different domains, and eventually taking weighted averages of their parameters by word-level layer-wise domain proportions. Through this, we can achieve effective domain knowledge sharing and capture fine-grained domain-specific knowledge as well. Our experiments show that our proposed model outperforms existing ones in several NMT tasks.",
+}
+
+@inproceedings{Platanios19competence,
+    title = "Competence-based Curriculum Learning for Neural Machine Translation",
+    author = "Platanios, Emmanouil Antonios and Stretcu, Otilia and Neubig, Graham and Poczos, Barnabas and Mitchell, Tom",
+    booktitle = "Proceedings of the 2019 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)",
+    month = jun,
+    year = "2019",
+    address = "Minneapolis, Minnesota",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/N19-1119",
+    doi = "10.18653/v1/N19-1119",
+    pages = "1162--1172",
+    abstract = "Current state-of-the-art NMT systems use large neural networks that are not only slow to train, but also often require many heuristics and optimization tricks, such as specialized learning rate schedules and large batch sizes. This is undesirable as it requires extensive hyperparameter tuning. In this paper, we propose a curriculum learning framework for NMT that reduces training time, reduces the need for specialized heuristics or large batch sizes, and results in overall better performance. Our framework consists of a principled way of deciding which training samples are shown to the model at different times during training, based on the estimated difficulty of a sample and the current competence of the model. Filtering training samples in this manner prevents the model from getting stuck in bad local optima, making it converge faster and reach a better solution than the common approach of uniformly sampling training examples. Furthermore, the proposed method can be easily applied to existing NMT models by simply modifying their input data pipelines. We show that our framework can help improve the training time and the performance of both recurrent neural network models and Transformers, achieving up to a 70{\%} decrease in training time, while at the same time obtaining accuracy improvements of up to 2.2 BLEU.",
 }
 
 @article{So19theevolved,
@@ -3715,6 +3771,20 @@ http://proceedings.mlr.press/v119/wang20p.html
     abstract = "Most data selection research in machine translation focuses on improving a single domain. We perform data selection for multiple domains at once. This is achieved by carefully introducing instance-level domain-relevance features and automatically constructing a training curriculum to gradually concentrate on multi-domain relevant and noise-reduced data batches. Both the choice of features and the use of curriculum are crucial for balancing and improving all domains, including out-of-domain. In large-scale experiments, the multi-domain curriculum simultaneously reaches or outperforms the individual performance and brings solid gains over no-curriculum training.",
 }
 
+@inproceedings{Zhou20uncertainty,
+    title = "Uncertainty-Aware Curriculum Learning for Neural Machine Translation",
+    author = "Zhou, Yikai and Yang, Baosong and Wong, Derek F. and Wan, Yu and Chao, Lidia S.",
+    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/2020.acl-main.620",
+    doi = "10.18653/v1/2020.acl-main.620",
+    pages = "6934--6944",
+    abstract = "Neural machine translation (NMT) has proven to be facilitated by curriculum learning which presents examples in an easy-to-hard order at different training stages. The keys lie in the assessment of data difficulty and model competence. We propose uncertainty-aware curriculum learning, which is motivated by the intuition that: 1) the higher the uncertainty in a translation pair, the more complex and rarer the information it contains; and 2) the end of the decline in model uncertainty indicates the completeness of current training stage. Specifically, we serve cross-entropy of an example as its data difficulty and exploit the variance of distributions over the weights of the network to present the model uncertainty. Extensive experiments on various translation tasks reveal that our approach outperforms the strong baseline and related methods on both translation quality and convergence speed. Quantitative analyses reveal that the proposed strategy offers NMT the ability to automatically govern its learning schedule.",
+}
+
 @InProceedings{Zhang20Pegasus,
   title =        {{PEGASUS}: Pre-training with Extracted Gap-sentences for Abstractive Summarization},
   author =       {Zhang, Jingqing and Zhao, Yao and Saleh, Mohammad and Liu, Peter},
@@ -3750,7 +3820,7 @@ http://proceedings.mlr.press/v119/zhang20ae.html
   school = 	 {Department of Engineering, University of Cambridge},
   year = 	 2021}
 
-@article{Pham21Revisiting,
+@article{Pham21revisiting,
       author = {Minh Quang Pham and Josep Crego and François Yvon},
       title = {Revisiting Multi-Domain Machine Translation},
       journal = {Transactions of the Association for Computational Linguistics},
@@ -3771,8 +3841,16 @@ http://proceedings.mlr.press/v119/zhang20ae.html
   volume={abs/2102.10160}
 }
 
-
-
+@article{Kumar21learning,
+  title={Learning Policies for Multilingual Training of Neural Machine Translation Systems},
+  author={Kumar, Gaurav and Koehn, Philipp and Khudanpur, Sanjeev},
+  journal   = {CoRR},
+  volume    = {abs/2103.06964},
+  year      = {2021},
+  url       = {https://arxiv.org/abs/2103.06964},
+  archivePrefix = {arXiv},
+  eprint    = {2103.06964},
+  }
 
 
 
