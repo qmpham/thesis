@@ -90,7 +90,15 @@
 \usepackage{spverbatim}
 
 % reference
-\usepackage[hidelinks]{hyperref}
+%\usepackage[hidelinks]{hyperref}
+% hyperlinks:
+\ifthenelse{\isundefined{\hypersetup}}{%
+ 
+\usepackage[hidelinks=true,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=violet,citebordercolor=violet,pagebackref=true,backref=true]{hyperref}
+   \renewcommand{\backrefxxx}[3]{%
+     [\hyperlink{page.#1}{cited page #1}]}
+   \urlstyle{same} % normal text font (alternatives: tt, rm, sf)
+}{}
 
 % abbreviation package
 \usepackage[nottoc]{tocbibind}
@@ -105,7 +113,7 @@
 %%\nomenclature[⟨prefix⟩]{⟨symbol⟩}{⟨description⟩}: the prefix is used to sort the abbreviations in the printing list.
 
 %bibliography
-\usepackage{natbib}
+\usepackage[numbers]{natbib}
 \setlength{\bibsep}{10.0pt}
 
 %table of content
@@ -126,6 +134,10 @@
 \NewDocumentCommand{\normL}{ s O{} m }{%
   \IfBooleanTF{#1}{\norm*{#3}}{\norm[#2]{#3}}_{2}%
 }
+\renewcommand{\UrlFont}{\ttfamily\small}
+\renewcommand{\S}{\scriptsize}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
 \usepackage[draft]{todo}
@@ -242,6 +254,7 @@
 	\input{parts/ldr.tex}
 	\input{parts/mdmt_res.tex}
 	\input{parts/mdac.tex}
+	\input{parts/priming.tex}
 \clearpage{}
 {\linespread{0.7}\selectfont\bibliography{bibliography}}
 \bibliographystyle{apa-good}
@@ -249,7 +262,7 @@
 
 \section*{Appendices}
 
-\subsection*{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisting})}
+\subsection*{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisiting})}
 
 We use the following setups for MDMT systems.
 \begin{itemize}
@@ -266,9 +279,9 @@ Training use a batch size of~$12,288$ tokens; optimization uses Adam with parame
 The learning rate is set
 as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system{FT-full} and \system{FT-Res}, we continue training using the same learning rate schedule, continuing the incrementation of the number of steps. All other MDMT systems reported in Tables~\ref{tab:performance} and \ref{tab:redomains} use a combined validation set comprising 6,000 lines, obtained by merging the six development sets. For the results in Table~\ref{tab:warmrestart} we also append the validation set of \domain{news} to the multi-domain validation set. In any case, training stops if either training reaches the maximum number of iterations (50,000) or the score on the validation set does not increase for three consecutive evaluations. We average five checkpoints to get the final model.
 
-\subsection*{B - Experiments with continual learning \label{ssec:full-continual}(Chapter \ref{chap:revisting})}
+\subsection*{B - Experiments with continual learning \label{ssec:full-continual}(Chapter \ref{chap:revisiting})}
 
-\begin{table*}
+\begin{table*}[h!]
   \centering
   \begin{tabular}{|p{1.6cm}|*{9}{r|}} \hline
     \footnotesize
@@ -310,7 +323,7 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
   \label{tab:warmrestart}
 \end{table*}
 
-\subsection*{C - Experiments with automatic domains \label{ssec:full-automatic}(Chapter \ref{chap:revisting})}
+\subsection*{C - Experiments with automatic domains \label{ssec:full-automatic}(Chapter \ref{chap:revisiting})}
 
 \begin{table*}[t]
   \centering
