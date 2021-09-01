@@ -101,7 +101,9 @@ V_i^t &=& \sum_{j=1}^K V^tW_{i,j}^V*\mathit{D}_j(x_t),\\
 head_i &=& Attention \big( Q_i, K_i, V_i\big),
 \end{array}
 \end{equation}
-where the subscript $t$ indicates the position of the vector in the sequence of hidden representations, $\mathit{D}(x_t) \in \mathbb{R}^{K}$ is the domain proportion of the corresponding token $x_t$. The proportion of domains of a token is computed by a domain classifier, that take the input embedding of that token as input. The novel model adapt the hidden representation of a token to a domain to which the token likely belongs. Therefore, the model is able to discriminate domains in domain-specific tokens while transfering knowledge between domains in domain-agnostic tokens. However, the size of the model is proportional to the number of domains, which is not practical in the real applications. However, in our opinion, the idea can be applied to lightweight adapter or learning hidden unit contribution layer.
+where the subscript $t$ indicates the position of the vector in the sequence of hidden representations, $\mathit{D}(x_t) \in \mathbb{R}^{K}$ is the domain proportion of the corresponding token $x_t$. The proportion of domains of a token is computed by a domain classifier, that take the input embedding of that token as input. The novel model adapt the hidden representation of a token to a domain to which the token likely belongs. Therefore, the model is able to discriminate domains in domain-specific tokens while transferring knowledge between domains in domain-agnostic tokens. However, the size of the model is proportional to the number of domains, which is not practical in the real applications. The idea can be applied to lightweight adapter or learning hidden unit contribution layer.
+
+Recently, \citet{Gong21Pay} proposed learning domain-specific head selection from multi-head attention mechanism to mitigate the interference between domains/languages. The author used a variational NMT model with discrete latent variables $z^{(h)}_t$ from a Bernoulli distribution indicating whether task $t$ selects attention head $h$. The training jointly learns the NMT model and the inference networks $q_{\theta^{(h)}_t}(z)$ for the pairs of (task $t$, head $h$) by optimizing the evidence lower bound (ELBO) \cite{zhang16variational}.
 
 Besides the model-centric methods related to the architecture, multi-task training is another solution to the supervised (multi-)domain adaptation problem. 
 
@@ -115,8 +117,15 @@ We illustrate several well-known model-centric methods for the supervised domain
 \begin{subfigure}{1.0\textwidth}
   \centering
   \fbox{\begin{tabular}{ll}
-\textcolor{red}{$\blacksquare$} & \citep{Zeng18multidomain} \\
-\textcolor{violet}{$\blacksquare$} & \citep{Vilar18learning} \\
+ 
+\textcolor{darkcornflowerblue}{$\blacksquare$} & \citet{Kobus17domain} \\
+\textcolor{darkblue}{$\blacksquare$} & \citet{Dou19unsupervised} \\
+\textcolor{yellow}{$\blacksquare$} & \citet{Bapna19simple} \\
+\textcolor{red}{$\blacksquare$} & \citet{Zeng18multidomain} \\
+\textcolor{magenta}{$\blacksquare$} & \citet{Vilar18learning} \\
+\textcolor{green}{$\blacksquare$} & \citet{Dakwle17fine} \\
+\textcolor{lightorange}{$\blacksquare$} & \citet{Michel18extreme} \\
+\textcolor{lightred}{$\blacksquare$} & \citet{Brian19overcoming} \\
 \end{tabular}}
 \end{subfigure}
 \caption[Model-centric's brief overview]{Each color different from the bleu corresponds to one model-centric method. The bleu represents the NMT model.}
@@ -217,7 +226,7 @@ Besides well-known metrics for domain-relevance, \citet{Zhang19curriculum} propo
 \end{equation}
 where feature vector $\mathbf{F}(x,y)$ was extracted from the example, and weight vector $V$ was learned by Bayesian optimization. Each element of $\mathbf{F}(x,y)$ represented the relevance of the example to a target domain. Once the scorer was optimized, the training was conducted similarly as in \citet{Wees17dynamic,Wang19dynamically}.
 
-\section{Domain-deterministic training, non domain-deterministic testing}
+\section{Domain-deterministic training, non-domain-deterministic testing}
 \label{sec:case3}
 The third case is interesting because it resembles the real context of machine translation's applications. Effectively, the users' text can be from any possible topic or for any possible purpose (genre). In this situation, the NMT model needs to be both robust to the unseen domains and adapted to the known domains. 
 \subsection{Model-centric}
@@ -236,7 +245,7 @@ P(t|h_i,x) = \frac{P(h_i|t,x) P(t|x)}{\displaystyle{\mathop{\sum}_{k'} P(h_i|k',
 However, one might be more interested in domain robustness than domain specialization. The mixture model does not include the domain robustness in the training objective. \citet{Muller20domain} discussed several regularization methods to mitigate the problem, including subword regularization \citep{Taku18subword}, defensive distillation \citep{Papernot16distillation}, reconstruction \citep{Tu17neural} and neural noisy channel reranking \citep{Li16mutual}. Distributional robustness \citep{Oren19distributionally,BenTal13robust} is also a promising paradigm as the methods optimized learning models so that they perform well over a wide range of potential test distributions. However, the application of this paradigm to neural machine translation is not yet discovered.
 \subsection{Data-centric} \label{ssec:data-centric}
 Data-centric can not be applied to this situation as non domain-deterministic testing does not provide the domain of the test sentences. Effectively, data-centric requires the monolingual data of the target domain to create the pseudo in-domain data while the testing domain is non deterministic.
-\section{Non domain-deterministic training, non domain-deterministic testing}
+\section{Non-domain-deterministic training, non-domain-deterministic testing}
 \label{sec:case4}
 \subsection{Model-centric}
 \citet{Li18onesentence, Farajian17multidomain} proposed finetuning on-the-fly the pretrained model to a mini-batch similar to the source sentence before translating it. The authors chose the learning rate and the number of finetuning iterations according to the score of similarity between the mini-batch and the source sentence so that the higher similarity the higher the learning rate, the more iterations. \citet{Pham20Priming,xu20boosting,bulte19neural,bapna19non} proposed learning NMT model to reuse memory translations whose source sentence is similar to the source sentence. 
@@ -244,6 +253,7 @@ Data-centric can not be applied to this situation as non domain-deterministic te
 The data-centric paradigm can not be applied to this situation for the same reason as the previous section \ref{ssec:data-centric}
 
 \section{Multi-domain and multi-lingual machine translation}
+We can put multi-domain and multi-lingual machine translation under the same umbrella of multi-task learning where a task is one language pair or one domain. Most of the model-centric approaches can be applied to both of these task. For example, the target-language prefix token used in one-to-many multilingual NMT model \citep{Aharoni19massively,Johnson17google} has a similar role as the domain tag used in multi-domain NMT \citep{Kobus17domain}. \citet{Bapna19simple} used the residual adapters for both domain-adaptation and multilingual NMT. Multi-domain NMT and multi-lingual NMT aim to improve the quality of low-resourced domain/language by exploiting the proximity between the low-resourced target domain/language and the high-resourced domains/languages. \citet{Gong21Pay} learned domain/language-specific head selection to improve the multi-domain/multi-lingual NMT system.
 
 
 

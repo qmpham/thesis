@@ -203,6 +203,11 @@
 \newcommand{\sbcl}[2]{{\scriptsize #1 \hfill $|$ \hfill  #2}}
 \usepackage{multirow}
 
+%Color command
+\definecolor{darkblue}{rgb}{0.0, 0.592, 0.655}
+\definecolor{darkcornflowerblue}{rgb}{0.149, 0.2588, 0.5451}
+\definecolor{lightorange}{rgb}{0.9961, 0.8471, 0.6941}
+\definecolor{lightred}{rgb}{1.0, 0.80, 0.7961}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand\blankpage{%
@@ -255,12 +260,13 @@
 	\input{parts/mdmt_res.tex}
 	\input{parts/mdac.tex}
 	\input{parts/priming.tex}
+	\input{parts/conclusion.tex}
 \clearpage{}
 {\linespread{0.7}\selectfont\bibliography{bibliography}}
 \bibliographystyle{apa-good}
 \clearpage{}
 
-\section*{Appendices}
+\chapter*{Appendix}
 
 \subsection*{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisiting})}
 

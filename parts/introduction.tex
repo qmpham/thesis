@@ -1,10 +1,13 @@
 \chapter{Introduction}
 \section{Motivation}
-A neural machine translation (NMT\nomenclature[nmt]{NMT}{Neural machine translation}) model usually has trouble translating sentences that are less similar to the sentences used for training the model. This is a common limitation of the data-driven machine learning methods, whose performance is guaranteed by assuming that the training and testing distribution are identical. Therefore, to achieve high performance in a given domain, we must carefully tailor the NMT model to the domain. Moreover, in real applications, an MT engine has to translate text from many domains, whose genre and topic are highly variable, making the strategy "one specialized NMT model per domain" costly in computation and storage. This thesis aims to study the approaches to adapting an NMT system to many domains with a small computation and storage cost.
+A neural machine translation (NMT\nomenclature[nmt]{NMT}{Neural machine translation}) model usually has trouble translating sentences that are less similar to the sentences used for training the model. This is a common limitation of the data-driven machine learning methods, whose performance is guaranteed by assuming that the training and testing distribution are identical. Therefore, to achieve high performance in a given domain, we must carefully tailor the NMT model to the domain. The problem of tailoring an NMT model to a target domain is referred to as the domain adaptation problem. Two factors make this problem so complex, including the scarcity of training data from the target domain and the catastrophic forgetting problem of the deep models. The lack of training data effectively forces us to leverage non-related parallel data from other domains to train our NMT model as the neural network-based models need many data to optimize their parameters. Therefore, we usually have to adapt our NMT model to the target domain using lots of out-of-domain data with a small amount of data from the target domain. Secondly, several approaches to adapting an NMT model by finetuning it with the in-domain data only make the model's performance very brittle to the out-of-domain test. This problem is referred to as catastrophic forgetting in training neural networks. The neural models tend to perform dramatically worse in previous tasks after being trained to perform their current tasks. In real application, we aim to achieve the significant improvement in the performance in the target domain and the robustness of NMT models against previous training domains.
 
-The problem of tailoring an NMT model to a target domain is referred to as the domain adaptation problem. Two factors make this problem so complex, including the scarcity of training data from the target domain and the catastrophic forgetting problem of the deep models. The lack of training data effectively forces us to leverage non-related parallel data from other domains to train our NMT model as the neural network-based models need many data to optimize their parameters. Therefore, we usually have to adapt our NMT model to the target domain using lots of out-of-domain data with a small amount of data from the target domain. Secondly, several approaches to adapting an NMT model by finetuning it with the in-domain data only make the model's performance very brittle to the out-of-domain test. This problem is referred to as catastrophic forgetting in training neural networks. The neural models tend to perform dramatically worse in previous tasks after being trained to perform their current tasks. Despite the significant improvement in the performance in the target domain, the robustness of NMT models against previous training domains is always desirable.
+The domain problem is addressed by domain adaptation approaches as long as the testing domain is known before training. However, in many applications, such as online translation as Google Translate, the text to translate can be from any domain. We consider this situation "non domain-deterministic testing" in our review chapter(\ref{chap:mdmt-review}). In this situation, we could build domain-expert models for the source domains and combine their predictions during the inference \citep{Saunders19domain} to get a domain-adapted translation on-the-fly. Beside the mixture of model paradigm, several methods use context to improve the translation of similar sentences. However, these methods do not guarantee the domain robustness against out-of-domain text.
 
-The domain problem is addressed by domain adaptation approaches as long as the testing domain is known before training. However, in many applications, such as online translation as Google Translate, the text to translate can be from any domain. We consider this situation "non domain-deterministic" in our review chapter(\ref{chap:mdmt-review}). Non-domain-deterministic and domain robustness share a common goal is to scope with unfamiliar testing sentences. But non-domain-deterministic also aims to achieve higher translation quality in testing cases similar to the training data. According to our study on the domain-related problems in machine translation, this situation is not yet fully studied. Several methods use context to improve the translation of similar sentences but omit the domain robustness and vice versa.
+Moreover, in real applications, an MT engine has to translate text from many domains, whose genre and topic are highly variable, making the strategy "one specialized NMT model per domain" costly in computation and storage.  
+
+This thesis aims to provide a complete overview of multi-domain adaptation problem in machine translation and study the approaches to adapting an NMT system to many domains with a small computation and storage cost.
+
 \section{Contributions}
 In this thesis, our contributions are as follows.
 
@@ -21,4 +24,37 @@ Next, we improved the data sampling from the mix of in-domain corpora by replaci
 Finally, we proposed a novel method that incorporates similar translations to the context of the translation. Our approach largely improved the quality of the translation.
 
 \section{Outline}
+The structure of our thesis is as follows.
+
+The second chapter \ref{chap:nmt-review} is a review of neural machine translation. The chapter provides a basic knowledge in the text processing for neural machine translation systems, neural architectures for machine translation, the training procedure and the inference procedure of neural machine translation models.
+
+The third chapter \ref{chap:mdmt-review} reviews the literature of (multi-)domain adaptation in machine translation. We introduce 4 main sub-problems of (multi-)domain adaptation and provide an overview of the approaches for each sub-problem.
+
+The remainder of the thesis consists of our original work. Chapter \ref{chap:revisiting} proposes a novel multi-criteria evaluation of multi-domain machine translation systems. We reevaluated a large set of model-centric approaches using a relatively large collection of domains. Chapter \ref{chap:ldr} proposes a (multi-)domain NMT system with very low computation cost by using sparse word embedding, that zeros out a number of domain-specific units. Chapter \ref{chap:res} proposes several approaches to regularize the residual adapters \citep{Bapna19simple} in the (multi-)domain setting. In this chapter, we proposes two variants of the residual adapter, that allow to modularize the domain-agnostic and domain-specific encoding and to improve the performance of the adapted NMT model against out-of-domain examples. In chapter \ref{chap:mdac}, we study different dynamic sampling approaches for training NMT model in the (multi-)domain setting. We propose a novel method that automatically iteratively adapt the sampling distribution to any pre-determined testing distribution. Chapter \ref{chap:priming} proposes a novel method for non-domain-deterministic test sets by reusing similar translation memories.
+
+Finally, in chapter \ref{chap:conclusion}, we draw conclusions on the progress of each main problem in (multi-)domain adaptation machine translation. In addition, we propose a new direction to improve the domain-robustness of NMT systems.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
