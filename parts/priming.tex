@@ -1,35 +1,19 @@
 \chapter{Priming neural machine translation}
 \label{chap:priming}
+This chapter draws from the following publication: \citet{Pham20Priming}
 \section{Motivation}
-Priming is a well known and studied psychology phenomenon based on the prior presentation of one stimulus (cue) to influence the processing of a response. 
-In this paper, we propose a framework to mimic the process of priming in the context of neural machine translation (NMT). 
-We evaluate the effect of using similar translations as priming cues on the NMT network. 
-We propose a method to inject priming cues into the NMT network
-and compare our framework to other mechanisms that perform micro-adaptation during inference. 
-Overall, experiments conducted in a multi-domain setting confirm that adding priming cues in the NMT decoder can go a long way towards improving the translation accuracy.
-Besides, we show the suitability of our framework to gather valuable information for an NMT network from monolingual resources. 
+In this chapter, we propose a novel method for non-domain-deterministic testing problem in domain adaptation. This situation require the NMT system adapting to a latent domain of the test sentence on the fly. We are inspired by the idea of \citet{Li18onesentence, Farajian17multidomain}, which used similar sentences to adapt the NMT system to the test sentence. The authors proposed finetuning the NMT model over a batch of similar sentences retrieved from a translation memory. However, we find finetuning the model for each test sentence extremely expensive. Therefore, we propose a novel NMT model, which incorporates the information of retrieved translations to the translation. Our approach relies on a psychology phenomenon called "Priming". 
+
+%Priming is a well known and studied psychology phenomenon based on the prior presentation of one stimulus (cue) to influence the processing of a response. In this work, we propose a framework to mimic the process of priming in the context of neural machine translation (NMT). We evaluate the effect of using similar translations as priming cues on the NMT network. We propose a method to inject priming cues into the NMT network and compare our framework to other mechanisms that perform micro-adaptation during inference. Overall, experiments conducted in a multi-domain setting confirm that adding priming cues in the NMT decoder can go a long way towards improving the translation accuracy. Besides, we show the suitability of our framework to gather valuable information for an NMT network from monolingual resources. 
 
 Priming is a well studied human cognitive phenomenon, founded on the establishment of associations between a stimulus and a response~\cite{Tulving82Priming}. Multiple studies have shown how external stimuli (cues) may have a profound effect on perception.
 %
-In the case of language translation, external stimuli having such effects are said to prime language understanding and potentially have a impact the actions of a human translator. 
-Imagine for instance a translator facing the ambiguous sentence {\it I was in the bank}, and the effect on translation accuracy if primed with the cue {\it river}. Most likely, the human translator would consider the ``edge of river" sense rather than ``financial institution" for translation.\fyDone{Priming is also X-lingual in bilingual subjects} 
-In the context of human translation, cross-lingual priming is particularly effective as cues in the target language may 
-notably influence the final translation word choice.
-\fyFuture{Semantic priming says something about the organization of lexicon, also short term memory effects}
+In the case of language translation, external stimuli having such effects are said to prime language understanding and potentially have a impact the actions of a human translator. Imagine for instance a translator facing the ambiguous sentence {\it I was in the bank}, and the effect on translation accuracy if primed with the cue {\it river}. Most likely, the human translator would consider the ``edge of river" sense rather than ``financial institution" for translation. In the context of human translation, cross-lingual priming is particularly effective as cues in the target language may notably influence the final translation word choice.
 
-Several research works have introduced the priming analogy in deep neural networks.
-%
-In computer vision priming has been broadly studied: for instance, in~\citet{Rosenfeld18Priming}, the authors introduce a cue about the presence of a certain class of object in an image that significantly improves object detection performance.
-%
-Concerning language generation, \citet{Brown20language}~use a combination of prompt and example to guide the GPT-3 network when performing a task, where the prompt is a sentence that describes the task ({\it i.e. ``Translate from English to French"}); and is followed by an example of the task ({\it i.e. ``sea otter $\leadsto$ loutre de mer"}).
-%
-In the context of NMT, experiments reported~\cite{Sennrich16politeness,Kobus17domain,dinu-etal-2019-training} aim at influencing translation inference with respectively politeness, domain and terminology constraints.
-%
-More related to our work,~\cite{bulte19neural,xu20boosting} introduce a simple and elegant framework where similar translations (cues) are used to prime an NMT model, effectively boosting translation accuracy.
+Several research works have introduced the priming analogy in deep neural networks. In computer vision priming has been broadly studied: for instance, in~\citet{Rosenfeld18Priming}, the authors introduce a cue about the presence of a certain class of object in an image that significantly improves object detection performance. Concerning language generation, \citet{Brown20language}~use a combination of prompt and example to guide the GPT-3 network when performing a task, where the prompt is a sentence that describes the task ({\it i.e. ``Translate from English to French"}); and is followed by an example of the task ({\it i.e. ``sea otter $\leadsto$ loutre de mer"}). In the context of NMT, experiments reported~\cite{Sennrich16politeness,Kobus17domain,dinu19training} aim at influencing translation inference with respectively politeness, domain and terminology constraints. More related to our work,~\cite{bulte19neural,xu20boosting} introduce a simple and elegant framework where similar translations (cues) are used to prime an NMT model, effectively boosting translation accuracy.
 In all cases, priming is performed by injecting cues in the input stream prior to inference decoding.
 
-In this paper, we extend a framework that mimics the priming process in neural networks, in the context of machine translation. 
-Following up on previous work~\cite{bulte19neural,xu20boosting}, we consider similar translations as external cues that can influence the translation process. We push this concept further:
+In this work, we extend a framework that mimics the priming process in neural networks, in the context of machine translation. Following up on previous work~\cite{bulte19neural,xu20boosting}, we consider similar translations as external cues that can influence the translation process. We push this concept further:
 a) by proposing a novel scheme to integrate similar translation cues into the NMT network. We examine the attention mechanism of the network and confirm that priming stimuli are actually taken into account;
 b) by extending an efficient network to train distributed representations of sentences
 that are used to identify accurate translations used as priming cues\footnote{\url{https://github.com/jmcrego/cbon}}; 
@@ -39,10 +23,10 @@ Finally, we show that our priming approach can also be used with monolingual dat
 %
 Our proposal does not require to change the NMT architectures or algorithms, relying solely on input preprocessing and on prefix (forced) decoding \cite{santy19inmt,rebecca16neural}, a feature already implemented in many NMT toolkits.
 
-The remainder of the paper is organized as follows: Section~\ref{sec:priming} gives details regarding our priming approach. The experimental framework is presented in Section~\ref{sec:eperiments}. Results and discussion are respectively in Sections~\ref{sec:results} and~\ref{sec:discussion}. We review related work in Section~\ref{sec:related} and conclude in Section~\ref{sec:conclusions}.
+The remainder of the chapter is organized as follows: Section~\ref{sec:priming-chap8} gives details regarding our priming approach. The experimental framework is presented in Section~\ref{sec:eperiments-chap8}. Results and discussion are respectively in Sections~\ref{sec:results-chap8} and~\ref{sec:discussion-chap8}. We review related work in Section~\ref{sec:related-chap8} and conclude in Section~\ref{sec:conclusions-chap8}.
 
 \section{NMT Priming On-the-fly}
-\label{sec:priming}
+\label{sec:priming-chap8}
 
 This section describes our framework for priming neural MT with similar translations. 
 We follow the work by ~\cite{bulte19neural,xu20boosting} and build a translation model that incorporates similar translations from a translation memory (TM) to boost translation accuracy. In this work, TMs are parallel corpora containing translations falling in the same domain as test sentences.
@@ -50,7 +34,7 @@ We follow the work by ~\cite{bulte19neural,xu20boosting} and build a translation
 We first describe the methods employed in this work to compute sentence similarity. We then introduce various augmentation schemes considered to prime the NMT network with retrieved similar translations. Overall, we pay special attention to efficiency, since retrieval is applied on a sentence-by-sentence basis at inference.
 
 \subsection{Similarity Computation}
-\label{ssec:sim}
+\label{ssec:sim-chap8}
 
 We detail the sentence similarity tools evaluated in this work. The first employs discrete word representations\fyDone{As opposed to? why not discrete / continuous}, while the rest rely on building distributed representations of sentences to perform similar sentence retrieval:
 
@@ -59,7 +43,7 @@ We detail the sentence similarity tools evaluated in this work. The first employ
 \paragraph{\system{FM}:} fuzzy matching is a lexicalized matching method aimed to identify non-exact matches of a given sentence. Following~\citet{xu20boosting}, we use \texttt{FuzzyMatch}\footnote{\url{https://github.com/systran/FuzzyMatch}}, where the fuzzy match score $\operatorname{FM} (s_i,s_j)$ between two sentences $s_i$ and $s_j$ is:
     \begin{equation*}
     \operatorname{FM} (s_i,s_j) = 1 - \frac{\operatorname{ED} (s_i,s_j)}{max(|s_i|,|s_j|)}
-    \label{eq:FM}
+    \label{eq:FM-chap8}
     \end{equation*}
     \noindent with $\operatorname{ED}(s_i,s_j)$ being the Edit Distance between $s_i$ and $s_j$, and $|s|$ is the length of $s$. 
 \paragraph{\system{S2V}:} we use \texttt{sent2vec}\footnote{\url{https://github.com/epfml/sent2vec}}~\cite{pagliardini18unsupervised} to generate sentence embeddings. The network implements a simple but efficient unsupervised objective to train distributed representations for sentences. 
@@ -93,7 +77,7 @@ Once the model is trained, the embedding of sentence $s$ ($h_s$) is obtained as 
 The similarity score $\operatorname{EM} (s_i,s_j)$ between two sentences $s_i$ and $s_j$ is then defined via the cosine similarity of their sentence vector representations $h_i$ and $h_j$:\fyDone{$h$ is earlier a dimension ?}
 \begin{equation*}
 \operatorname{EM} (s_i, s_j) = \frac{h_i \cdot h_j}{||h_i|| \times ||h_j||},
-\label{eq:EM}
+\label{eq:EM-chap8}
 \end{equation*}
 \noindent where $||h||$ denotes the norm of vector $h$.
 
@@ -101,7 +85,7 @@ Note that models differ in their vocabularies, which are built selecting the mos
 Both models implement Negative Sampling to avoid the softmax computation. %In contrast to \texttt{sent2vec}, \texttt{CBON} does not considers subsampling positive words.
 
 \subsection{Priming Schemes}
-\label{ssec:schemes}
+\label{ssec:schemes-chap8}
 
 We now explore various ways to integrate similar translations for priming NMT:
 
@@ -151,7 +135,7 @@ Word embeddings are built after concatenating both factor embeddings.
 
 Note that this solution is computationally expensive as it requires to identify related/unrelated tokens in each input sentence and in the corresponding similar translations, based in \citet{xu20boosting} on word alignments and edit distance computations.
 
-\paragraph{\system{s+t$^k$}} the solution proposed in this paper also addresses the {\em unrelated word} problem, at a much reduced computational cost. It considers both sides of similar translations ($s^k$ and $t^k$). Training streams take the form:
+\paragraph{\system{s+t$^k$}} the solution proposed in this work also addresses the {\em unrelated word} problem, at a much reduced computational cost. It considers both sides of similar translations ($s^k$ and $t^k$). Training streams take the form:
 
 \begin{center}
 \begin{tabular}{rl}
@@ -177,10 +161,10 @@ Following our approach the NMT model learns to attend to priming cues on both so
 Besides, our solution removes the need to mix source and target vocabularies as in  previous schemes.
 
 \section{Experimental Framework}
-\label{sec:eperiments}
+\label{sec:eperiments-chap8}
 
 \subsection{Corpora}
-\label{ssec:corpora}
+\label{ssec:corpora-chap8}
 
 We experiment with the English-French language pair and data originating from eight domains, corresponding to texts from three European institutions: 
 the European Parliament (\domain{EPPS}), 
@@ -191,7 +175,7 @@ IT-domain corpora corresponding to \domain{KDE4} and \domain{GNOME};
 News Commentaries (\domain{NEWS});
 and parallel sentences extracted from Wikipedia (\domain{WIKI}).
 %
-Table~\ref{tab:corpora} contains statistics regarding the corpora used in this work\footnote{Freely available from~\url{http://opus.nlpl.eu}}~\cite{Tiedemann12parallel}. Statistics are computed after splitting off punctuation.
+Table~\ref{tab:corpora-chap8} contains statistics regarding the corpora used in this work\footnote{Freely available from~\url{http://opus.nlpl.eu}}~\cite{Tiedemann12parallel}. Statistics are computed after splitting off punctuation.
 
 \begin{table}[!ht]
 \begin{center}
@@ -221,7 +205,7 @@ Table~\ref{tab:corpora} contains statistics regarding the corpora used in this w
 \end{tabular}
 }
 \end{center}
-\caption{\label{tab:corpora} Corpora statistics. Note that K stands for thousands and $L_{mean}$ is the average length in words.}
+\caption{\label{tab:corpora-chap8} Corpora statistics. Note that K stands for thousands and $L_{mean}$ is the average length in words.}
 \end{table}
 
 Each corpora is considered as a different domain. Training data sets are also employed as TM of the corresponding domain.
@@ -235,7 +219,7 @@ We randomly split the parallel corpora by keeping $500$ sentences for validation
 All data is preprocessed using the OpenNMT tokenizer\footnote{\url{https://github.com/OpenNMT/Tokenizer}} (conservative mode). 
 
 \subsection{System Configurations}
-\label{ssec:config}
+\label{ssec:config-chap8}
 
 This section gives learning/inference details of the various systems used in this work.
 
@@ -275,7 +259,7 @@ We re-implement the work of \citet{Farajian17multidomain} as a contrastive model
 Adaptation is run on a sentence-by-sentence basis.
 
 \section{Results}
-\label{sec:results}
+\label{sec:results-chap8}
 
 Retrieval algorithms employed in this work are significantly faster than NMT Transformer decoding, thus implying a limited decoding overhead.
 %
@@ -303,10 +287,10 @@ Model & Schema & Vector & Retrieval & NMT\\
 \end{tabular}
 }
 \end{center}
-\caption{\label{tab:performance} Efficiency (tokens/second) of each step for different inference configurations. All steps run on CPU (16 cores). K stands for thousands.}
+\caption{\label{tab:performance-chap8} Efficiency (tokens/second) of each step for different inference configurations. All steps run on CPU (16 cores). K stands for thousands.}
 \end{table}
 
-Table~\ref{tab:performance} reports efficiency scores (tokens/second) for computing vector representations (Vector), performing sentence retrieval (Retrieval) and translation (NMT) for the \domain{WIKI} test set according to the similarity model and priming schema used. Results show that the computational cost is dominated by the NMT step. This step, in turn, is affected by the length of the input (and prefix) streams. Table~\ref{tab:results1} reports \texttt{BLEU} scores for our various configurations, tested on $8$ domain-specific test sets. The last column (avg) reports average results. This table also reports the number of input sentences (out of $1,000$)  for which at least one similar sentence was retrieved (in a smaller font).
+Table~\ref{tab:performance-chap8} reports efficiency scores (tokens/second) for computing vector representations (Vector), performing sentence retrieval (Retrieval) and translation (NMT) for the \domain{WIKI} test set according to the similarity model and priming schema used. Results show that the computational cost is dominated by the NMT step. This step, in turn, is affected by the length of the input (and prefix) streams. Table~\ref{tab:results1-chap8} reports \texttt{BLEU} scores for our various configurations, tested on $8$ domain-specific test sets. The last column (avg) reports average results. This table also reports the number of input sentences (out of $1,000$)  for which at least one similar sentence was retrieved (in a smaller font).
 
 \begin{table*}[ht!]
 \begin{center}
@@ -351,14 +335,14 @@ Table~\ref{tab:performance} reports efficiency scores (tokens/second) for comput
   }
 \end{center}
   \caption{\texttt{BLEU} scores for various model configurations and $8$ test domains. Smaller numbers correspond to the number of input sentences in each domain for which at least one similar sentence is found.}
-  \label{tab:results1}
+  \label{tab:results1-chap8}
 \end{table*}
 
-All NMT models are built using the concatenation of the original parallel corpora in Table~\ref{tab:corpora}.
+All NMT models are built using the concatenation of the original parallel corpora in Table~\ref{tab:corpora-chap8}.
 Our \system{Base} configuration does not integrate similar sentences in the training data.
-All other models extend the original corpora with sentences retrieved following similarity methods (Sim) introduced in Section~\ref{ssec:sim} and integration schemes presented in Section~\ref{ssec:schemes} (Scheme).
+All other models extend the original corpora with sentences retrieved following similarity methods (Sim) introduced in Section~\ref{ssec:sim-chap8} and integration schemes presented in Section~\ref{ssec:schemes-chap8} (Scheme).
 
-The second block of results in Table~\ref{tab:results1} displays scores obtained when performing translations extended with fuzzy matches \system{FM}. In line with results presented by \citet{xu20boosting}, using a second stream to mark related/unrelated tokens (\system{+STU}) yields a boost in performance of around $1$ \texttt{BLEU} points. 
+The second block of results in Table~\ref{tab:results1-chap8} displays scores obtained when performing translations extended with fuzzy matches \system{FM}. In line with results presented by \citet{xu20boosting}, using a second stream to mark related/unrelated tokens (\system{+STU}) yields a boost in performance of around $1$ \texttt{BLEU} points. 
 When the \system{s+t$^1$} scheme is used, the average improvement reaches $1.25$ \texttt{BLEU} points. % Scheme \system{s+t$^1$} obtains the highest accuracy scores.
 \fyDone{Obvious, no ? Why this?} 
 
@@ -369,13 +353,13 @@ The idiosyncrasy of fuzzy matching does not enable to find multiple similar sent
 Overall best results are obtained by the \system{CBON s+t$^5$} configuration.\fyDone{Could this be the higher number of neighbours? It could if you use CBON when S2V fails.}
 Note that as expected, the number of similar translations found using distributed representations is larger than those found by fuzzy matching.
 
-Finally, the last block in Table~\ref{tab:results1} gives results for a system that retrieves similar sentences to dynamically adapt the model on a sentence-per-sentence basis~\cite{Farajian17multidomain,Li18onesentence}. We show micro-adaptation results when similar sentences are found by \system{CBON} and \system{FM} models (\system{$\mu$adapt}).
+Finally, the last block in Table~\ref{tab:results1-chap8} gives results for a system that retrieves similar sentences to dynamically adapt the model on a sentence-per-sentence basis~\cite{Farajian17multidomain,Li18onesentence}. We show micro-adaptation results when similar sentences are found by \system{CBON} and \system{FM} models (\system{$\mu$adapt}).
 In our experiments, micro-adaptation does not yield the gains observed with priming methods. As previously stated, the best performing variants of the adaptation method presented in ~\citet{Farajian17multidomain} were not included in our comparison. Variants employ a dynamically adapted learning rate and number of epochs. \fyDone{Variants of $\mu$adapt}
 
 \subsection*{Monolingual Corpora}
 \fyDone{Comment on the news very small retrieval rate?}
 
-Retrieval results shown in Table~\ref{tab:results1} (small font numbers) indicate a reduced number of similar sentences found for some domains (\domain{NEWS}, \domain{EPPS} and \domain{WIKI}). 
+Retrieval results shown in Table~\ref{tab:results1-chap8} (small font numbers) indicate a reduced number of similar sentences found for some domains (\domain{NEWS}, \domain{EPPS} and \domain{WIKI}). 
 In the context of scarce similar sentences, the boost in translation quality observed for most domains is subsequently reduced. The case of the \system{NEWS} domain is particularly harmful since worst results are always obtained when compared to our \system{Base} system.
 
 However, very large monolingual collections of texts exist, far exceeding the amount of available parallel corpora. The latter are more expensive to collect and typically only exist for a limited number of domains and language pairs. With the objective to enhance NMT with monolingual corpora, we now apply the methods presented above to monolingual corpora. 
@@ -385,9 +369,9 @@ Once translated into English, the various priming approaches identify similar sy
 %
 Note that cross-lingual sentence embedding models exist~\cite{sabet2019robust,schwenk17learning,Conneau19crosslingual} but our preliminary experiments using these tools did not show satisfactory results.
 
-Thus, we exploit large collections of French texts for the News and Wikipedia domains (as detailed in Table~\ref{tab:corpora}) that we translate into English to enable similarity retrieval. 
+Thus, we exploit large collections of French texts for the News and Wikipedia domains (as detailed in Table~\ref{tab:corpora-chap8}) that we translate into English to enable similarity retrieval. 
 %
-Table~\ref{tab:results2} reports \texttt{BLEU} scores obtained by our best performing network \system{CBON} following the \system{s+t$^5$} scheme.
+Table~\ref{tab:results2-chap8} reports \texttt{BLEU} scores obtained by our best performing network \system{CBON} following the \system{s+t$^5$} scheme.
 
 
 The supplementary number of similar sentences (468 input sentences have similar translations) collected for the \domain{WIKI} domain over parallel and monolingual\footnote{Test French sentences entirely found in monolingual \domain{WIKI} corpora are not considered as similar translations.} corpora (par+mon) yields an improvement of 2 \texttt{BLEU} points.
@@ -414,18 +398,18 @@ As outlined by~\citet{bulte19neural} and \citet{xu20boosting} the accuracy of ne
   \end{tabular}
   }
 \end{center}
-  \caption{Translation performance for the \texttt{NEWS} and \texttt{WIKI} domain test sets using similar sentences retrieved from parallel data (par) and from both parallel and monolingual (par+mon) data. The first two rows correspond to experiments already shown in Table~\ref{tab:results1}.}
-  \label{tab:results2}
+  \caption{Translation performance for the \texttt{NEWS} and \texttt{WIKI} domain test sets using similar sentences retrieved from parallel data (par) and from both parallel and monolingual (par+mon) data. The first two rows correspond to experiments already shown in Table~\ref{tab:results1-chap8}.}
+  \label{tab:results2-chap8}
 \end{table}
 
 \section{Discussion}
-\label{sec:discussion}
+\label{sec:discussion-chap8}
 
 \subsection*{Unrelated Words} 
 
-As previously outlined in Section~\ref{sec:priming}, \citet{xu20boosting} raised a problem regarding {\em unrelated} words. 
+As previously outlined in Section~\ref{sec:priming-chap8}, \citet{xu20boosting} raised a problem regarding {\em unrelated} words. 
 It concerns those words that, even through they appear in similar translations, must not be used to translate input sentences. 
-An example of translation with unrelated word is given in Section~\ref{ssec:schemes}
+An example of translation with unrelated word is given in Section~\ref{ssec:schemes-chap8}
 %
 where the input sentence with similar translation:
 \begin{center}
@@ -440,7 +424,7 @@ The problem is particularly hurting when it involves keywords (like the proper n
 
 The work by~\citet{xu20boosting}, that we denoted \system{tgt$^1$+STU}, obtains an average reduction of these erroneous words in the translation hypotheses of 8\%. We conduct the same experiment to analyse the performance of the new scheme \system{s+t$^1$} introduced in this work.
 %
-Table~\ref{tab:rwords} reports the total number of unrelated words in 1-best similar sentences obtained by fuzzy matching\footnote{We follow the procedure detailed in~\citet{xu20boosting} to identify related/unrelated words.}. As can be seen, the scheme \system{s+t$^1$} further mitigates the apparition of unrelated words in translations, with a drop of -8.3\%.\fyDone{I do not get this.}
+Table~\ref{tab:rwords-chap8} reports the total number of unrelated words in 1-best similar sentences obtained by fuzzy matching\footnote{We follow the procedure detailed in~\citet{xu20boosting} to identify related/unrelated words.}. As can be seen, the scheme \system{s+t$^1$} further mitigates the apparition of unrelated words in translations, with a drop of -8.3\%.\fyDone{I do not get this.}
 
 \begin{table*}[h!]
 \begin{center}
@@ -460,7 +444,7 @@ Table~\ref{tab:rwords} reports the total number of unrelated words in 1-best sim
 
 \end{center}
   \caption{Number of unrelated words appearing in test sets according to different augmentation schemes. The last row indicates the total number of unrelated words included in 1-best \system{FM} similar sentences.}
-  \label{tab:rwords}
+  \label{tab:rwords-chap8}
 \end{table*}
 
 \subsection*{NMT Attention}
@@ -471,10 +455,10 @@ We analyse the Encoder and Decoder self-attention layers, aiming to better under
     \includegraphics[width=.92\linewidth]{graphics/attention_enc.png}
     \includegraphics[width=.92\linewidth]{graphics/attention_dec.png}
 \caption{Average attention values of all heads through all layers for the encoder (top) and decoder (bottom). Dashed lines are used to separate similar and input sentences.}
-\label{fig:attn}
+\label{fig:attn-chap8}
 \end{figure}
 
-Figure \ref{fig:attn} displays the attention\footnote{We use the average of all heads through all layers.} values for sentence $s=$ [{\bf I am thinking of three important factors .}] when translated into $t=$ [{\bf Je pense à trois facteurs essentiels .}] using the similar translation example $s^1=$ [{\it I am thinking of three ideas .}] and $t^1=$ [\textcolor{blue}{{\it Je pense à trois idées .}}]. For visualization purposes we mask the attention of the sentence separator token $\circ$.
+Figure \ref{fig:attn-chap8} displays the attention\footnote{We use the average of all heads through all layers.} values for sentence $s=$ [{\bf I am thinking of three important factors .}] when translated into $t=$ [{\bf Je pense à trois facteurs essentiels .}] using the similar translation example $s^1=$ [{\it I am thinking of three ideas .}] and $t^1=$ [\textcolor{blue}{{\it Je pense à trois idées .}}]. For visualization purposes we mask the attention of the sentence separator token $\circ$.
 
 Concerning the encoder self-attention (top), we can clearly observe that the encoder pays attention to the words in the similar sentence (down-left) when embedding the input sentence (down-right). 
 %
@@ -490,7 +474,7 @@ The priming network leverages similar sentences from a TM so as to yield more ac
 
 To evaluate the intuition that $P(t|s, s^1,t^1)$\fyDone{conditional probability} gives better translations than $P(t|s)$, we report the average of $\log P(t|s,s^1,t^1)$ computed by \system{CBON s+t$^5$} and of $\log P(t|s)$ computed by \system{Base} over test sets sentences with similar sentences translations.
 
-Table~\ref{tab:probabilities} reports the difference between the token average of $\log P(t|s,s^1,t^1)$ and the token average of $\log P(t|s)$. More precisely, for each test sentence $s$, we compute the log probability of predicting reference $t$, we then sum all the calculated log probabilities and divide the sum by the total number of tokens in the references. For each test set, we computed the average log probability of model \system{CBON s+t$^5$} and \system{Base}. We report the difference in the average of both models. 
+Table~\ref{tab:probabilities-chap8} reports the difference between the token average of $\log P(t|s,s^1,t^1)$ and the token average of $\log P(t|s)$. More precisely, for each test sentence $s$, we compute the log probability of predicting reference $t$, we then sum all the calculated log probabilities and divide the sum by the total number of tokens in the references. For each test set, we computed the average log probability of model \system{CBON s+t$^5$} and \system{Base}. We report the difference in the average of both models. 
 %of model \system{CBON s+t$^5$} and model \system{Base}.
 Results indicate that $\log P_{\system{CBON s+t$^5$}}(t|s^1,s,t^1)$ are actually greater than $\log P_{\system{Base}}(t|s)$ in most cases, with the exception of \domain{EPPS} and \domain{NEWS} for which the base system yields higher probabilities. We observe a strong correlation between values reported and the gap in \texttt{BLEU} score for the same model configurations.\fyDone{for the same model?}
 
@@ -514,16 +498,16 @@ Results indicate that $\log P_{\system{CBON s+t$^5$}}(t|s^1,s,t^1)$ are actually
   }
 \end{center}
   \caption{Differences of token average log probability between \system{CBON s+t$^5$} and \system{Base} model.}
-  \label{tab:probabilities}
+  \label{tab:probabilities-chap8}
 \end{table}
 
 \subsection*{Similarity over Synthetic Sentences}
 
-Results in Table~\ref{tab:results2} show a clear boost in performance ($\sim$2 \texttt{BLEU} points) when making use of synthetic translations of the \domain{WIKI} monolingual data set.
+Results in Table~\ref{tab:results2-chap8} show a clear boost in performance ($\sim$2 \texttt{BLEU} points) when making use of synthetic translations of the \domain{WIKI} monolingual data set.
 We now want to measure the noise introduced by synthetic translations when compared to human translations.
 Thus, we consider the input sentences of the \domain{WIKI} test set for which we found similar sentences in both the parallel (human translation) and monolingual (synthetic translation) corpus (279 sentences).
 
-Results in Table \ref{tab:bt} show a clear drop in \texttt{BLEU} scores when using synthetic matches.
+Results in Table \ref{tab:bt-chap8} show a clear drop in \texttt{BLEU} scores when using synthetic matches.
 As expected, machine translation quality degrades the results of similarity search which in turns provides less valuable similar translations.\fyFuture{We need translations, or just the results of encoding?}
 
 \begin{table}[h!]
@@ -540,11 +524,11 @@ As expected, machine translation quality degrades the results of similarity sear
   }
 \end{center}
   \caption{Results for a reduced test set (279 sentences) using \system{CBON} when priming with human and synthetic (back-translated) translations.}
-  \label{tab:bt}
+  \label{tab:bt-chap8}
 \end{table}
 
 \section{Related Work}
-\label{sec:related}
+\label{sec:related-chap8}
 
 Our work relates to the ideas introduced in \citet{bulte19neural} and \citet{xu20boosting}.
 Both of them leverage similar translations from parallel corpora and inject similar sentences in the NMT network.
@@ -574,18 +558,9 @@ In~\citet{xu19lexical} the model is dynamically adapted to a entire test set to 
 In computer vision, priming network has been recently studied. For the object detection task , \citet{Rosenfeld18Priming} primed the network via an external information that affects all the processing layers. Upon processing each image in the network, \citet{Rosenfeld18Priming} also presented the network with the category of the object in the image; this information is injected at all layers. \fyDone{Style}
 
 \section{Conclusions and outlook}
-\label{sec:conclusions}
-
-Inspired by the human psychological phenomenon of priming, we have presented a simple framework for priming NMT networks.
-%
-Following other research works, we used similar translations as priming cues to influence the NMT network.
-%
-We presented a novel method that injects similar translations in the NMT network as prefixes of the decoder.
-The proposed method obtains higher translation accuracy results and reduces the undesirable effect observed in previous methods of copying unrelated words when performing translations. 
-
-We also proposed an extension to \texttt{sent2vec} that considers larger $n$-gram orders. It allows us to identify similar sentences (cues) that yield higher accuracy rates as measured on translation test sets.
+\label{sec:conclusions-chap8}
+We presented a novel method that injects similar translations in the NMT network as prefixes of the decoder. The proposed method obtains higher translation accuracy results and reduces the undesirable effect observed in previous methods of copying unrelated words when performing translations. 
 
 We evaluate results on a multi-domain setting using a single model trained on a heterogeneous data set, built from multiple corpora and domains, achieving better results when compared to previous micro-adaptation approaches. In addition, we showed the suitability of our approach to gather valuable information from large monolingual corpora. 
 
-In our future work, we would like to explore alternative algorithms to compute distributed sentence representations from word embeddings, such as TF-IDF. Furthermore, we would like to consider source sentence coverage when selecting $n$-best similar translations.
-As regards distributed representations we plan to experiment with cross-lingual networks to retrieve similar translations directly from human-crafted monolingual data in order to eliminate the noise introduced by synthetic translations.
+In our future work, we would like to explore alternative algorithms to compute distributed sentence representations from word embeddings, such as TF-IDF. Furthermore, we would like to consider source sentence coverage when selecting $n$-best similar translations. As regards distributed representations we plan to experiment with cross-lingual networks to retrieve similar translations directly from human-crafted monolingual data in order to eliminate the noise introduced by synthetic translations.

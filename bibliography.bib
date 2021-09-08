@@ -3655,6 +3655,23 @@ archivePrefix = {arXiv},
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
+@inproceedings{dinu19training,
+    title = "Training Neural Machine Translation to Apply Terminology Constraints",
+    author = "Dinu, Georgiana  and
+      Mathur, Prashant  and
+      Federico, Marcello  and
+      Al-Onaizan, Yaser",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1294",
+    doi = "10.18653/v1/P19-1294",
+    pages = "3063--3068",
+    abstract = "This paper proposes a novel method to inject custom terminology into neural machine translation at run time. Previous works have mainly proposed modifications to the decoding algorithm in order to constrain the output to include run-time-provided target terms. While being effective, these constrained decoding methods add, however, significant computational overhead to the inference step, and, as we show in this paper, can be brittle when tested in realistic conditions. In this paper we approach the problem by training a neural MT system to learn how to use custom terminology when provided with the input. Comparative experiments show that our method is not only more effective than a state-of-the-art implementation of constrained decoding, but is also as fast as constraint-free decoding.",
+}
+
 @inproceedings{Xuan19curriculum,
   author    = {Xuan Zhang and
                Pamela Shapiro and
@@ -4030,6 +4047,23 @@ archivePrefix = {arXiv},
  volume = {33},
  year = {2020}
 }
+
+@inproceedings{currey20distilling,
+    title = "Distilling Multiple Domains for Neural Machine Translation",
+    author = "Currey, Anna  and
+      Mathur, Prashant  and
+      Dinu, Georgiana",
+    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    month = nov,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.emnlp-main.364",
+    doi = "10.18653/v1/2020.emnlp-main.364",
+    pages = "4500--4511",
+    abstract = "Neural machine translation achieves impressive results in high-resource conditions, but performance often suffers when the input domain is low-resource. The standard practice of adapting a separate model for each domain of interest does not scale well in practice from both a quality perspective (brittleness under domain shift) as well as a cost perspective (added maintenance and inference complexity). In this paper, we propose a framework for training a single multi-domain neural machine translation model that is able to translate several domains without increasing inference time or memory usage. We show that this model can improve translation on both high- and low-resource domains over strong multi-domain baselines. In addition, our proposed model is effective when domain labels are unknown during training, as well as robust under noisy data conditions.",
+}
+
 @inproceedings{Sharaf20metalearning,
     title = "Meta-Learning for Few-Shot {NMT} Adaptation",
     author = "Sharaf, Amr and Hassan, Hany  and Daum{\'e} III, Hal",
