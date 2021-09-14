@@ -59,7 +59,7 @@
 % space package
 \usepackage{setspace}
 \usepackage{calc}
-\usepackage{color,soul}
+\usepackage{color,soul,colortbl}
 \usepackage{cancel}
 \usepackage{listings}
 \usepackage{titlesec}
@@ -125,6 +125,8 @@
 %subfigure
 \usepackage{caption}
 \usepackage{subcaption}
+
+\usepackage{bm}
 
 % new command
 \def\-{\raisebox{.75pt}{-}}
@@ -192,9 +194,9 @@
 \newcommand{\domain}[1]{\texttt{\textsc{#1}}}
 \newcommand{\system}[1]{\texttt{{#1}}}
 
-\newcommand{\vlambda}{\ensuremath{\boldsymbol\lambda}\xspace} % parameters vector for a distribution
-\newcommand{\vtheta}{\ensuremath{\boldsymbol\theta}\xspace} % parameters vector for a distribution
-\newcommand{\vpsi}{\ensuremath{\boldsymbol\psi}\xspace} % parameters vector for a distribution
+\newcommand{\vlambda}{\ensuremath{\bm{\lambda}}\xspace} % parameters vector for a distribution
+\newcommand{\vtheta}{\ensuremath{\bm{\theta}}\xspace} % parameters vector for a distribution
+\newcommand{\vpsi}{\ensuremath{\bm{\psi}}\xspace} % parameters vector for a distribution
 \newcommand{\indic}[1]{\ensuremath{\mathbb{I}(#1)}}
 \newcommand{\SB}[1]{\textbf{#1}}
 \newcommand{\SW}[1]{\underline{#1}}
@@ -235,6 +237,7 @@
 
 	\input{parts/acknowledgement.tex}
 
+\newpage
 %\thispagestyle{empty}
 \tableofcontents
 %\clearpage
@@ -267,9 +270,8 @@
 \clearpage{}
 
 \chapter*{Appendix}
-
-\subsection*{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisiting})}
-
+\section*{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisiting})}
+\label{appendix:a}
 We use the following setups for MDMT systems.
 \begin{itemize}
 \item \system{Mixed-Nat}, \system{FT-full}, \system{TTM}, \system{DC-Tag} use a medium Transformer model of \cite{Vaswani17attention} with the following settings: embeddings size and hidden layers size are set to~$512$. Multi-head attention comprises 8 heads in each of the 6 layers; the inner feedforward layer contains~$2048$ cells. 
@@ -283,10 +285,10 @@ Training use a batch size of~$12,288$ tokens; optimization uses Adam with parame
 \end{itemize}
 \paragraph{Training} For each domain, we create train/dev/test sets by randomly splitting each corpus. We maintain the size of validation sets and of test sets equal to 1,000 lines for every domain.
 The learning rate is set
-as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system{FT-full} and \system{FT-Res}, we continue training using the same learning rate schedule, continuing the incrementation of the number of steps. All other MDMT systems reported in Tables~\ref{tab:performance} and \ref{tab:redomains} use a combined validation set comprising 6,000 lines, obtained by merging the six development sets. For the results in Table~\ref{tab:warmrestart} we also append the validation set of \domain{news} to the multi-domain validation set. In any case, training stops if either training reaches the maximum number of iterations (50,000) or the score on the validation set does not increase for three consecutive evaluations. We average five checkpoints to get the final model.
+as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system{FT-full} and \system{FT-Res}, we continue training using the same learning rate schedule, continuing the incrementation of the number of steps. All other MDMT systems reported in Tables~\ref{tab:performance-chap4} and \ref{tab:redomains-chap4} use a combined validation set comprising 6,000 lines, obtained by merging the six development sets. For the results in Table~\ref{tab:warmrestart} we also append the validation set of \domain{news} to the multi-domain validation set. In any case, training stops if either training reaches the maximum number of iterations (50,000) or the score on the validation set does not increase for three consecutive evaluations. We average five checkpoints to get the final model.
 
-\subsection*{B - Experiments with continual learning \label{ssec:full-continual}(Chapter \ref{chap:revisiting})}
-
+\section*{B - Experiments with continual learning \label{ssec:full-continual}(Chapter \ref{chap:revisiting})}
+\label{appendix:b}
 \begin{table*}[h!]
   \centering
   \begin{tabular}{|p{1.6cm}|*{9}{r|}} \hline
@@ -325,12 +327,12 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
                         &  \sbcl{+0.2}{-0.2} & \sbcl{+0.4}{+0.5} & \sbcl{+0.1}{0.0} & \sbcl{-0.9}{-0.4}  & \sbcl{-0.1}{-0.2} &  \sbcl{+0.9}{-0.2} & \sbcl{\SW{-8.0}}{\SW{-0.8}} & \sbcl{+0.1}{-0.2} & \sbcl{+0.1}{-0.1} \\
      \hline
   \end{tabular}
-  \caption{Ability to handle a new domain. We report BLEU scores for a complete training session with 7 domains, as well as differences with (left) training with 6 domains (from Table~\ref{tab:performance}); (right) continuous training mode. Averages only take into account six domains (\domain{News} excluded). Underline denotes a significant loss, bold a significant gain.}
+  \caption{Ability to handle a new domain. We report BLEU scores for a complete training session with 7 domains, as well as differences with (left) training with 6 domains (from Table~\ref{tab:performance-chap4}); (right) continuous training mode. Averages only take into account six domains (\domain{News} excluded). Underline denotes a significant loss, bold a significant gain.}
   \label{tab:warmrestart}
 \end{table*}
 
-\subsection*{C - Experiments with automatic domains \label{ssec:full-automatic}(Chapter \ref{chap:revisiting})}
-
+\section*{C - Experiments with automatic domains \label{ssec:full-automatic}(Chapter \ref{chap:revisiting})}
+\label{appendix:c}
 \begin{table*}[t]
   \centering
   \footnotesize
@@ -375,8 +377,10 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
 This experiment aims to simulate with automatic domains a scenario where the number of ``domains'' is large and where some ``domains'' are close and can effectively share information. Full results in Table~\ref{tab:automatic_domains}. Cluster size vary from approximately 8k sentences (cluster~24) up to more than 350k sentences. More than 2/3 of these clusters mostly comprise texts from one single domain, as for cluster 12 which is predominantly \domain{med}, the remaining clusters typically mix 2 domains. Fine-tuning with small domains is often outperformed by other MDMT techniques, an issue that a better regularization strategy might mitigate. Domain-control (\system{DC-Feat}) is very effective for small domains, but again less so in larger data conditions. Among the MD models, approaches using residual adapters have the best average performance.
 
 \section*{D - Generalized Multi-Domain Dynamic Adaptation Curriculum Algorithm (Chapter \ref{chap:mdac})}
-The pseudo-code for the generalized Multi-Domain Adaptation Dynamic Sampling Algorithm  is in algorithm~\ref{alg:mdmt}.
+\label{appendix:d}
+The pseudo-code for the generalized Multi-Domain Adaptation Dynamic Sampling Algorithm  is in algorithm~\label{alg:mdmt}.
 \section*{E - Experiments with automatic domains (Chapter \ref{chap:mdac})}
+\label{appendix:e}
 \begin{table*}[htbp]
   \centering
   \footnotesize
@@ -419,10 +423,10 @@ The pseudo-code for the generalized Multi-Domain Adaptation Dynamic Sampling Alg
 \hline
 \end{tabular}
 \caption{Automatic clustering experiments. We report the size of each cluster. In the 6 left columns, each line gives the proportions of the domains in each cluster. In the 6 right columns, each column corresponds to a MDAC experiment; each line gives the cumulated proportion of the corresponding cluster in the training data. For instance, when targeting the domain \domain{ecb}, cluster~4 (mostly \domain{law}) is sampled with a probability of $0.07$, and cluster~16 (mostly \domain{ecb}) is sampled with probability $0.08$. For each system, we underline the most often sampled clusters.}
-\label{tab:automatic_domains}
+\label{tab:automatic_domains-appendix}
 \end{table*}
 
-This experiment aims to simulate with automatic domains a scenario where the number of ``domains'' is large and where some ``domains'' are close and can effectively share information. Full results are in Table~\ref{tab:automatic_domains}. Cluster sizes vary from approximately 8k sentences (cluster~24) up to more than 350k sentences. More than 2/3 of these clusters mostly comprise texts from one single domain, as for cluster 12, which is predominantly \domain{med}, the remaining clusters typically mix 2 domains. According to the table, for each system, the clusters most sampled by MDAC contain most of the data of the corresponding domain. This demonstrates that MDAC is able to find related data to the task automatically. However, MDAC performance is still far behind that of the supervised scenario, as we explain in the paper. 
+This experiment aims to simulate with automatic domains a scenario where the number of ``domains'' is large and where some ``domains'' are close and can effectively share information. Full results are in Table~\ref{tab:automatic_domains-appendix}. Cluster sizes vary from approximately 8k sentences (cluster~24) up to more than 350k sentences. More than 2/3 of these clusters mostly comprise texts from one single domain, as for cluster 12, which is predominantly \domain{med}, the remaining clusters typically mix 2 domains. According to the table, for each system, the clusters most sampled by MDAC contain most of the data of the corresponding domain. This demonstrates that MDAC is able to find related data to the task automatically. However, MDAC performance is still far behind that of the supervised scenario, as we explain in the paper. 
 \\
 \\
 \\

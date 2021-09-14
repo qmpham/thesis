@@ -1202,6 +1202,22 @@ The main contributions of this thesis are as follows:
     doi = "10.3115/v1/E14-1035",
     pages = "328--337",
 }
+
+@inproceedings{pennington14glove,
+    title = "{G}lo{V}e: Global Vectors for Word Representation",
+    author = "Pennington, Jeffrey  and
+      Socher, Richard  and
+      Manning, Christopher",
+    booktitle = "Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing ({EMNLP})",
+    month = oct,
+    year = "2014",
+    address = "Doha, Qatar",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D14-1162",
+    doi = "10.3115/v1/D14-1162",
+    pages = "1532--1543",
+}
+
 @inproceedings{Cuong14latent,
   author    = {Cuong Hoang and
                Khalil Sima'an},
@@ -1358,6 +1374,20 @@ abstract = {It was in the middle of the 1980s, when the seminal paper by Kar mar
   Title = {Stanford Neural Machine Translation Systems for Spoken Language Domain},
   Year = {2015}}
 
+@article{levy15improving,
+    title = "Improving Distributional Similarity with Lessons Learned from Word Embeddings",
+    author = "Levy, Omer  and
+      Goldberg, Yoav  and
+      Dagan, Ido",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "3",
+    year = "2015",
+    url = "https://aclanthology.org/Q15-1016",
+    doi = "10.1162/tacl_a_00134",
+    pages = "211--225",
+    abstract = "Recent trends suggest that neural-network-inspired word embedding models outperform traditional count-based distributional models on word similarity and analogy detection tasks. We reveal that much of the performance gains of word embeddings are due to certain system design choices and hyperparameter optimizations, rather than the embedding algorithms themselves. Furthermore, we show that these modifications can be transferred to traditional distributional models, yielding similar gains. In contrast to prior reports, we observe mostly local or insignificant performance differences between the methods, with no global advantage to any single approach over the others.",
+}
+
 @inproceedings{Ranzato15sequence,
   author    = {Marc'Aurelio Ranzato and
                Sumit Chopra and
@@ -1457,6 +1487,39 @@ location = {Lille, France},
 series = {ICML'15}
 }
 
+@inproceedings{jean5using,
+    title = "On Using Very Large Target Vocabulary for Neural Machine Translation",
+    author = "Jean, S{\'e}bastien  and
+      Cho, Kyunghyun  and
+      Memisevic, Roland  and
+      Bengio, Yoshua",
+    booktitle = "Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)",
+    month = jul,
+    year = "2015",
+    address = "Beijing, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P15-1001",
+    doi = "10.3115/v1/P15-1001",
+    pages = "1--10",
+}
+
+@inproceedings{luong15addressing,
+    title = "Addressing the Rare Word Problem in Neural Machine Translation",
+    author = "Luong, Thang  and
+      Sutskever, Ilya  and
+      Le, Quoc  and
+      Vinyals, Oriol  and
+      Zaremba, Wojciech",
+    booktitle = "Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)",
+    month = jul,
+    year = "2015",
+    address = "Beijing, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P15-1002",
+    doi = "10.3115/v1/P15-1002",
+    pages = "11--19",
+}
+
 @inproceedings{Yang15unified,
 	title = {A unified perspective on multi-domain and multi-task learning},
 	author = {Yongxin Yang and Timothy M. Hospedales},
@@ -1504,6 +1567,34 @@ series = {ICML'15}
     url = "https://aclanthology.org/D16-1050",
     doi = "10.18653/v1/D16-1050",
     pages = "521--530",
+}
+
+@inproceedings{Li16towards,
+author = {Li, Xiaoqing and Zhang, Jiajun and Zong, Chengqing},
+title = {Towards Zero Unknown Word in Neural Machine Translation},
+year = {2016},
+isbn = {9781577357704},
+publisher = {AAAI Press},
+abstract = {Neural Machine translation has shown promising results in recent years. In order to
+control the computational complexity, NMT has to employ a small vocabulary, and massive
+rare words outside the vocabulary are all replaced with a single  unk  symbol. Besides
+the inability to translate rare words, this kind of simple approach leads to much
+increased ambiguity of the sentences since meaningless  unk s break the structure
+of sentences, and thus hurts the translation and reordering of the in-vocabulary words.
+To tackle this problem, we propose a novel substitution-translation-restoration method.
+In substitution step, the rare words in a testing sentence are replaced with similar
+in-vocabulary words based on a similarity model learnt from monolingual data. In translation
+and restoration steps, the sentence will be translated with a model trained on new
+bilingual data with rare words replaced, and finally the translations of the replaced
+words will be substituted by that of original ones. Experiments on Chinese-to-English
+translation demonstrate that our proposed method can achieve more than 4 BLEU points
+over the attention-based NMT. When compared to the recently proposed method handling
+rare words in NMT, our method can also obtain an improvement by nearly 3 BLEU points.},
+booktitle = {Proceedings of the Twenty-Fifth International Joint Conference on Artificial Intelligence},
+pages = {2852–2858},
+numpages = {7},
+location = {New York, New York, USA},
+series = {IJCAI'16}
 }
 
 @InProceedings{Sennrich16politeness,
@@ -1554,6 +1645,25 @@ doi = {10.1109/CVPR.2016.90}
   journal={ArXiv},
   year={2016},
   volume={abs/1607.06450}
+}
+
+@inproceedings{Xiao16learning,
+  author    = {Tong Xiao and
+               Hongsheng Li and
+               Wanli Ouyang and
+               Xiaogang Wang},
+  title     = {Learning Deep Feature Representations with Domain Guided Dropout for
+               Person Re-identification},
+  booktitle = {2016 {IEEE} Conference on Computer Vision and Pattern Recognition,
+               {CVPR} 2016, Las Vegas, NV, USA, June 27-30, 2016},
+  pages     = {1249--1258},
+  publisher = {{IEEE} Computer Society},
+  year      = {2016},
+  url       = {https://doi.org/10.1109/CVPR.2016.140},
+  doi       = {10.1109/CVPR.2016.140},
+  timestamp = {Fri, 26 Feb 2021 08:54:57 +0100},
+  biburl    = {https://dblp.org/rec/conf/cvpr/XiaoLOW16.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
 @InProceedings{Wang16connecting,
@@ -1698,6 +1808,23 @@ doi = {10.1109/CVPR.2016.90}
   doi = 	"10.18653/v1/D16-1012",
   url = 	"http://aclweb.org/anthology/D16-1012"
 }
+
+@INPROCEEDINGS{Szegedy16rethinking,
+author = {C. Szegedy and V. Vanhoucke and S. Ioffe and J. Shlens and Z. Wojna},
+booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+title = {Rethinking the Inception Architecture for Computer Vision},
+year = {2016},
+volume = {},
+issn = {1063-6919},
+pages = {2818-2826},
+keywords = {convolution;computer architecture;training;computational efficiency;computer vision;benchmark testing;computational modeling},
+doi = {10.1109/CVPR.2016.308},
+url = {https://doi.ieeecomputersociety.org/10.1109/CVPR.2016.308},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month = {jun}
+}
+
 
 @ARTICLE{Gulcehre16monolingual,
     author = {G{\"{u}}l{\c c}ehre, {\c C}ağlar and Firat, Orhan and Xu, Kelvin and Cho, Kyunghyun and Barrault, Lo{\"{\i}}c and Lin, Huei-Chi and Bougares, Fethi and Schwenk, Holger and Bengio, Yoshua},
@@ -2873,6 +3000,22 @@ doi = {10.5715/jnlp.24.597}
     abstract = "Corpus-based approaches to machine translation rely on the availability of clean parallel corpora. Such resources are scarce, and because of the automatic processes involved in their preparation, they are often noisy. This paper describes an unsupervised method for detecting translation divergences in parallel sentences. We rely on a neural network that computes cross-lingual sentence similarity scores, which are then used to effectively filter out divergent translations. Furthermore, similarity scores predicted by the network are used to identify and fix some partial divergences, yielding additional parallel segments. We evaluate these methods for English-French and English-German machine translation tasks, and show that using filtered/corrected corpora actually improves MT performance.",
 }
 
+@inproceedings{Guillaume18unsupervised,
+  author    = {Guillaume Lample and
+               Alexis Conneau and
+               Ludovic Denoyer and
+               Marc'Aurelio Ranzato},
+  title     = {Unsupervised Machine Translation Using Monolingual Corpora Only},
+  booktitle = {6th International Conference on Learning Representations, {ICLR} 2018,
+               Vancouver, BC, Canada, April 30 - May 3, 2018, Conference Track Proceedings},
+  publisher = {OpenReview.net},
+  year      = {2018},
+  url       = {https://openreview.net/forum?id=rkYTTf-AZ},
+  timestamp = {Thu, 25 Jul 2019 14:25:53 +0200},
+  biburl    = {https://dblp.org/rec/conf/iclr/LampleCDR18.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
 @InProceedings{Chu18asurvey,
   author = 	"Chu, Chenhui and Wang, Rui",
   title = 	"A Survey of Domain Adaptation for Neural Machine Translation",
@@ -3947,6 +4090,24 @@ archivePrefix = {arXiv},
     pages = "1580--1590",
     abstract = "This paper explores data augmentation methods for training Neural Machine Translation to make use of similar translations, in a comparable way a human translator employs fuzzy matches. In particular, we show how we can simply present the neural model with information of both source and target sides of the fuzzy matches, we also extend the similarity to include semantically related translations retrieved using sentence distributed representations. We show that translations based on fuzzy matching provide the model with {``}copy{''} information while translations based on embedding similarities tend to extend the translation {``}context{''}. Results indicate that the effect from both similar sentences are adding up to further boost accuracy, combine naturally with model fine-tuning and are providing dynamic adaptation for unseen translation pairs. Tests on multiple data sets and domains show consistent accuracy improvements. To foster research around these techniques, we also release an Open-Source toolkit with efficient and flexible fuzzy-match implementation.",
 }
+
+@inproceedings{santos20word,
+    title = "Word Embedding Evaluation in Downstream Tasks and Semantic Analogies",
+    author = "Santos, Joaquim  and
+      Consoli, Bernardo  and
+      Vieira, Renata",
+    booktitle = "Proceedings of the 12th Language Resources and Evaluation Conference",
+    month = may,
+    year = "2020",
+    address = "Marseille, France",
+    publisher = "European Language Resources Association",
+    url = "https://aclanthology.org/2020.lrec-1.594",
+    pages = "4828--4834",
+    abstract = "Language Models have long been a prolific area of study in the field of Natural Language Processing (NLP). One of the newer kinds of language models, and some of the most used, are Word Embeddings (WE). WE are vector space representations of a vocabulary learned by a non-supervised neural network based on the context in which words appear. WE have been widely used in downstream tasks in many areas of study in NLP. These areas usually use these vector models as a feature in the processing of textual data. This paper presents the evaluation of newly released WE models for the Portuguese langauage, trained with a corpus composed of 4.9 billion tokens. The first evaluation presented an intrinsic task in which WEs had to correctly build semantic and syntactic relations. The second evaluation presented an extrinsic task in which the WE models were used in two downstream tasks: Named Entity Recognition and Semantic Similarity between Sentences. Our results show that a diverse and comprehensive corpus can often outperform a larger, less textually diverse corpus, and that batch training may cause quality loss in WE models.",
+    language = "English",
+    ISBN = "979-10-95546-34-4",
+}
+
 @inproceedings{Li20shallow,
     title = "Shallow-to-Deep Training for Neural Machine Translation",
     author = "Li, Bei  and
@@ -4294,7 +4455,22 @@ http://proceedings.mlr.press/v119/zhang20ae.html
   volume={abs/2106.10840}
 }
 
-
+@inproceedings{xie21importance,
+    title = "Importance-based Neuron Allocation for Multilingual Neural Machine Translation",
+    author = "Xie, Wanying  and
+      Feng, Yang  and
+      Gu, Shuhao  and
+      Yu, Dong",
+    booktitle = "Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)",
+    month = aug,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.acl-long.445",
+    doi = "10.18653/v1/2021.acl-long.445",
+    pages = "5725--5737",
+    abstract = "Multilingual neural machine translation with a single model has drawn much attention due to its capability to deal with multiple languages. However, the current multilingual translation paradigm often makes the model tend to preserve the general knowledge, but ignore the language-specific knowledge. Some previous works try to solve this problem by adding various kinds of language-specific modules to the model, but they suffer from the parameter explosion problem and require specialized manual design. To solve these problems, we propose to divide the model neurons into general and language-specific parts based on their importance across languages. The general part is responsible for preserving the general knowledge and participating in the translation of all the languages, while the language-specific part is responsible for preserving the language-specific knowledge and participating in the translation of some specific languages. Experimental results on several language pairs, covering IWSLT and Europarl corpus datasets, demonstrate the effectiveness and universality of the proposed method.",
+}
 
 
 
