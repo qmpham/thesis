@@ -4,7 +4,7 @@ A neural machine translation (NMT\nomenclature[nmt]{NMT}{Neural machine translat
 
 The domain problem is addressed to some extent by domain adaptation approaches as long as the testing domain is known before training. However, in many applications, such as online translation on the web, the text to translate can be from any domain. We consider this situation "non domain-deterministic testing" in our review \ref{chap:mdmt-review}. In this situation, we could build domain-expert models for the source domains and combine their predictions during the inference \citep{Saunders19domain} to get a domain-adapted translation on the fly. Besides the mixture of model paradigm, several methods use context to improve the translation of similar sentences. However, these methods do not guarantee domain robustness against the out-of-domain text.
 
-Moreover, in real applications, an MT engine has to translate text from many domains whose genre and topic are highly variable. The strategy "one specialized NMT model per domain" will cost us largely when the number of domains explodes. Therefore, developing a multi-domain NMT system is essential for the MT business.
+Moreover, in real applications, an MT engine has to translate text from many domains whose genre and topic are highly variable. The strategy "one domain / one model" will cost us largely when the number of domains explodes. Therefore, developing a multi-domain NMT system is essential for the MT business.
 
 This thesis aims to provide a complete overview of the multi-domain adaptation problem in machine translation and study the approaches to adapting an NMT system to many domains with a small computation and storage cost.
 

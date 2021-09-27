@@ -94,7 +94,7 @@
 % hyperlinks:
 \ifthenelse{\isundefined{\hypersetup}}{%
  
-\usepackage[hidelinks=true,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=violet,citebordercolor=violet,pagebackref=true,backref=true]{hyperref}
+\usepackage[hidelinks=true,pagebackref=true,backref=true]{hyperref}
    \renewcommand{\backrefxxx}[3]{%
      [\hyperlink{page.#1}{cited page #1}]}
    \urlstyle{same} % normal text font (alternatives: tt, rm, sf)
@@ -109,11 +109,14 @@
 \renewcommand{\nomname}{List of Abbreviations}
 \setcounter{tocdepth}{2}
 
+%sectiondepth
+\setcounter{secnumdepth}{3}
+
 \def\altand{\&}
 %%\nomenclature[⟨prefix⟩]{⟨symbol⟩}{⟨description⟩}: the prefix is used to sort the abbreviations in the printing list.
 
 %bibliography
-\usepackage[numbers]{natbib}
+\usepackage{natbib}
 \setlength{\bibsep}{10.0pt}
 
 %table of content
@@ -189,8 +192,8 @@
 \newcommand{\revision}[1]{\textcolor{red}{#1}}
 \newcommand{\revisiondone}[1]{\textcolor{black}{#1}}
 \newcommand{\revisiondel}[1]{}
-\newcommand{\src}{\ensuremath{\mathbf{f}}} % source sentence
-\newcommand{\trg}{\ensuremath{\mathbf{e}}} % target sentence
+\newcommand{\src}{\ensuremath{x}} % source sentence
+\newcommand{\trg}{\ensuremath{y}} % target sentence
 \newcommand{\domain}[1]{\texttt{\textsc{#1}}}
 \newcommand{\system}[1]{\texttt{{#1}}}
 
@@ -269,8 +272,8 @@
 \bibliographystyle{apa-good}
 \clearpage{}
 
-\chapter*{Appendix}
-\section*{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisiting})}
+\appendix
+\chapter{A - Description of multi-domain systems \label{ssec:implementation-details} (Chapter \ref{chap:revisiting})}
 \label{appendix:a}
 We use the following setups for MDMT systems.
 \begin{itemize}
@@ -279,7 +282,7 @@ Training use a batch size of~$12,288$ tokens; optimization uses Adam with parame
 \item \system{FT-Res} and \system{MDL-res} use the same medium Transformer and add residual layers with a bottleneck dimension of size $1024$.
 \item \system{ADM}, \system{DM} use medium Tranformer model and a domain classifier composing of 3 dense layers of size $512 \times 2048$, $2048 \times 2048$ and $2048 \times domain\_num$. The two first layers of the classifier use the $\operatorname{ReLU}()$ as activation function, the last layer uses $\tanh()$ as activation function.
 \item \system{DC-Feat} uses medium Transformer model and domain embeddings of size~$4$. Given a sentence of domain~$i$ in a training batch, the embedding of domain $i$ is concatenated to the embedding of each token in the sentence.
-\item \system{LDR} uses medium Transformer model and for each token we introduce a \system{LDR} feature of size $4 \times domain\_num$. Given a sentence of domain $i\in[1,..,K]$ in the training batch, for each token of the sentence, the \system{LDR} units of the indexes outside of the range $[4(i-1),..,4i-1]$ are masked to $0$, and the masked LDR feature will be concatenated to the embedding of the token. Details are in \cite{Pham19generic}.
+\item \system{LDR} uses medium Transformer model and for each token we introduce a \system{LDR} feature of size $4 \times domain\_num$. Given a sentence of domain $i\in[1,..,K]$ in the training batch, for each token of the sentence, the \system{LDR} units of the indexes outside of the range $[4(i-1),..,4i-1]$ are masked to $0$, and the masked LDR feature will be concatenated to the embedding of the token of size $508$. Details are in Section ~\ref{sssec:ldr6domain-chap5}.
 \item \system{Mixed-Nat-RNN} uses one bidirectional LSTM layer in the encoder and one LSTM layer in the decoder. The size of hidden layers is $1024$, the size of word embeddings is $512$. 
 \item \system{WDCNMT} uses one bidirectional GRU layer in the encoder and one GRU-conditional layer in the decoder. The size of hidden layers is $1024$, the size of word embeddings is $512$.
 \end{itemize}
@@ -287,7 +290,7 @@ Training use a batch size of~$12,288$ tokens; optimization uses Adam with parame
 The learning rate is set
 as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system{FT-full} and \system{FT-Res}, we continue training using the same learning rate schedule, continuing the incrementation of the number of steps. All other MDMT systems reported in Tables~\ref{tab:performance-chap4} and \ref{tab:redomains-chap4} use a combined validation set comprising 6,000 lines, obtained by merging the six development sets. For the results in Table~\ref{tab:warmrestart} we also append the validation set of \domain{news} to the multi-domain validation set. In any case, training stops if either training reaches the maximum number of iterations (50,000) or the score on the validation set does not increase for three consecutive evaluations. We average five checkpoints to get the final model.
 
-\section*{B - Experiments with continual learning \label{ssec:full-continual}(Chapter \ref{chap:revisiting})}
+\chapter{B - Experiments with continual learning \label{ssec:full-continual}(Chapter \ref{chap:revisiting})}
 \label{appendix:b}
 \begin{table*}[h!]
   \centering
@@ -331,7 +334,7 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
   \label{tab:warmrestart}
 \end{table*}
 
-\section*{C - Experiments with automatic domains \label{ssec:full-automatic}(Chapter \ref{chap:revisiting})}
+\chapter{C - Experiments with automatic domains \label{ssec:full-automatic}(Chapter \ref{chap:revisiting})}
 \label{appendix:c}
 \begin{table*}[t]
   \centering
@@ -376,10 +379,10 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
 
 This experiment aims to simulate with automatic domains a scenario where the number of ``domains'' is large and where some ``domains'' are close and can effectively share information. Full results in Table~\ref{tab:automatic_domains}. Cluster size vary from approximately 8k sentences (cluster~24) up to more than 350k sentences. More than 2/3 of these clusters mostly comprise texts from one single domain, as for cluster 12 which is predominantly \domain{med}, the remaining clusters typically mix 2 domains. Fine-tuning with small domains is often outperformed by other MDMT techniques, an issue that a better regularization strategy might mitigate. Domain-control (\system{DC-Feat}) is very effective for small domains, but again less so in larger data conditions. Among the MD models, approaches using residual adapters have the best average performance.
 
-\section*{D - Generalized Multi-Domain Dynamic Adaptation Curriculum Algorithm (Chapter \ref{chap:mdac})}
+\chapter{D - Generalized Multi-Domain Dynamic Adaptation Curriculum Algorithm (Chapter \ref{chap:mdac})}
 \label{appendix:d}
 The pseudo-code for the generalized Multi-Domain Adaptation Dynamic Sampling Algorithm  is in algorithm~\label{alg:mdmt}.
-\section*{E - Experiments with automatic domains (Chapter \ref{chap:mdac})}
+\chapter{E - Experiments with automatic domains (Chapter \ref{chap:mdac})}
 \label{appendix:e}
 \begin{table*}[htbp]
   \centering

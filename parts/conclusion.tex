@@ -1,16 +1,105 @@
 \chapter{Conclusions}
 \label{chap:conclusion}
-This thesis proposed a unified framework which describes multiple main problems in (multi-)domain adaptation. Furthermore, we presented several novel methods for supervised (multi-)domain adaptation problem and non-domain-deterministic testing. We have showed the limitation of model-centric approaches in 
-supervised (multi-)domain adaptation problem according to our novel multi-domain evaluation method. Unfortunately, by the limit of time, we have not explored the non-domain-deterministic training setting.
+This thesis aims to clarify the objectives of MDMT, unify the mathematical notions used in MDMT into one system of notations, and finally propose different approaches for the supervised multi-domain adaptation setting. Besides, we discussed several attempts for unknown test domains.
 
-Among the four main problems of (multi-)domain adaptation \ref{chap:mdmt-review}, supervised (multi-)domain adaptation is the most studied. However, we showed that most of the previous methods are brittle to fuzzy domain separations and the continuous learning.  
+The performance of MDMT systems in individual test sets is usually considered as a rule of thumb to accept or reject a novel method, but they are often assessed by crudely designed experiments. Moreover, the success of an MDMT system does not rely only on the in-domain performance but also on the robustness to unseen domains, the cross-domain heterogeneity, the intra-domain heterogeneity, the growing number of domains, robustness to the unseen domains, and robustness to the erroneous domain tags. Our most important contribution is to build a multi-criteria evaluation that assesses five previous properties of an MDMT system. Those five "axiomatic" properties correspond to many issues reported in the research of (multi-)domain adaptation, which, however, have never been systematically formalized and assessed with well-designed tests. We built an MDMT testbed in $English-French$ inspired by our proposed multi-criteria evaluation. The data of our testbed consists of seven domains collected from OPUS. Moreover, this collection is highly unbalanced, which is ideal for assessing MDMT systems. We reimplemented and assessed a large set of popular MDMT methods that have been frequently used as baselines for comparing with novel MDMT methods. We demonstrated that our MDMT testbed was challenging and revealed many weaknesses of MDMT approaches, thus ideal for assessing the future work in MDMT. Furthermore, this work illustrates the need to use a wide range of domains to evaluate MDMT systems.
 
-\section{Supervised (multi-)domain adaptation}
+Secondly, our three proposal MDMT systems, including \system{LDR}, \system{Sparse} and \system{FT-Res-Gated}, constitute different way to partition domain-specific parameters/nodes and domain-agnostic parameters/nodes. Those systems can close the gap with fine-tuning in a well-conditioned MDMT setting while robust to erroneous domain tags. However, our proposed methods are still far from fulfilling our MDMT multi-criteria evaluation.
 
-\section{Non-domain-deterministic training, domain-deterministic testing}
+The domains' unbalanced train data challenges all the model-centric MDMT approaches. Moreover, the performance of an MDMT model in each domain depends largely on how often train instances of that domain are presented to that model. Heuristic fixed resampling of the train domains usually lags behind more sophisticated dynamical sampling strategies \citep{Wang20balancing}. Moreover, fixed sampling strategies can not generalize for non-standard test distributions such as uni-domain adaptation, bi-domain adaptation, or unseen domain adaptation. We studied a group of dynamical sampling strategies which are parametrizable and learned during the training. These methods can adapt the sampling strategy to any predefined test distribution. Moreover, we demonstrated that this type of sampling strategy upper-bounds fixed sampling strategies in general cases while achieving good performance in particular cases such as uni-domain adaptation, bi-domain adaptation, or unseen domain adaptation.
 
-\section{Domain-deterministic training, non-domain-deterministic testing}
+Besides, we analyzed several approaches for unknown test domains. These approaches rely on text retrieval, which searches for the most similar translations given a source sentence. There are two propositions to consume the retrieved examples: 1) fine-tuning the current NMT model with these examples; 2) Encoding retrieved examples by an additional encoder or simply concatenating to the source sentence. On the one hand, those methods strongly outperform strong MDMT baselines such as fine-tuning in many domains. On the other hand, those approaches rely on a strong similarity of the retrieved examples and admit a considerable latency due to the retrieval search and the processing of the retrieved examples or the fine-tuning step.
 
-\section{Non-domain-deterministic training, non-domain-deterministic testing}
+Finally, we hope that future work in multi-domain machine translation will rely on our five axiomatic requirements and pay more attention to the experimental design to assess the proposed method's ability accurately. Furthermore, despite the importance of in-domain performance, the robustness against variable test distributions should be equivalently taken into account. As multilingual machine translation, multi-domain machine translation is a promising paradigm for the MT industry and still needs lots of effort to achieve the long-term objective.
 
-\section{Future works}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
