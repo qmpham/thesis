@@ -41,13 +41,13 @@ and where we also define:
 \begin{equation}
 \begin{array}{rcl}
 \theta_{t+i} &=& Update\big(\theta_{t+i-1},[x^i_j,y^i_j]_{j=1}^N\big) \\ \nonumber
+ i \in \{ 1,\cdots,k \}
 x^i_j &\sim& \widehat{D^{d,l}_e}(x), y^i_j \sim g^d(x^i_j) \\
 J^t(\theta,\vlambda_t) &=& \displaystyle{\mathop{\sum}_{d=1}^{n_d}}\lambda^t(d)\displaystyle{\mathop{\sum}_{x^{d,t} \sim \widehat{D^{d,t}_e},y^{d,t} \sim g^d(x^{d,t})}} l(\theta,x^{d,t},y^{d,t}).
 \end{array}
 \end{equation}
 \endgroup
-
-In these equations, $N$ denotes the size of a batch; $\mathbf{lr}_{1}$ is the learning rate of the sampling distribution; $l(\theta,x,y) = $ is the loss of the NMT model on sample $(x,y)$; $J^t(\theta,\vlambda_t)$ is the weighted loss aggregated over $n_d$ dev-sets corresponding to the $n_d$ domains.
+In these equations, $k$ is number of simulation step, $N$ denotes the size of a batch; $\mathbf{lr}_{1}$ is the learning rate of the sampling distribution; $l(\theta,x,y) = -\displaystyle{\mathop{\sum}_{i}^{l_y}}log P(y_i|y_{<i},x;\theta)$ is the loss of the NMT model on sample $(x,y)$; $J^t(\theta,\vlambda_t)$ is the weighted loss aggregated over $n_d$ dev-sets corresponding to the $n_d$ domains.
 
 To compute the reward $R(d)$ of using data from domain $d$ to train the model, we simulate $k$ training steps from the current checkpoint by training the model with $k$ batches sampled from $D^l(d)$ and compute the gain of the weighted dev-loss. This computation is inspired by the target prediction gain in \citet{Graves17automated}. However, where \citet{Graves17automated} used accumulated gains from the past as rewards, we instead predict the usefulness of each domain for improving the future performance of the system given its current state. This is achieved by simulating a round of training with only the data from one domain. Furthermore, the choice of the parameterization of the sampling distribution in our method differs from that of \citet{Graves17automated}, although this choice is empirical.
 
