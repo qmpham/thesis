@@ -4,7 +4,7 @@ We use the following setups for MDMT systems.
 \begin{itemize}
 \item \system{Mixed-Nat}, \system{FT-full}, \system{TTM}, \system{DC-Tag} use a medium Transformer model of \cite{Vaswani17attention} with the following settings: embeddings size and hidden layers size are set to~$512$. Multi-head attention comprises 8 heads in each of the 6 layers; the inner feedforward layer contains~$2048$ cells. 
 Training use a batch size of~$12,288$ tokens; optimization uses Adam with parameters $\beta_1=0.9$, $\beta_2= 0.98$ and Noam decay ($warmup\_steps=4000$), and a dropout rate of $0.1$ for all layers.
-\item \system{FT-Res} and \system{MDL-res} use the same medium Transformer and add residual layers with a bottleneck dimension of size $1024$.
+\item \system{FT-Res} and \system{MT-res} use the same medium Transformer and add residual layers with a bottleneck dimension of size $1024$.
 \item \system{ADM}, \system{DM} use medium Tranformer model and a domain classifier composing of 3 dense layers of size $512 \times 2048$, $2048 \times 2048$ and $2048 \times domain\_num$. The two first layers of the classifier use the $\operatorname{ReLU}()$ as activation function, the last layer uses $\tanh()$ as activation function.
 \item \system{DC-Feat} uses medium Transformer model and domain embeddings of size~$4$. Given a sentence of domain~$i$ in a training batch, the embedding of domain $i$ is concatenated to the embedding of each token in the sentence.
 \item \system{LDR} uses medium Transformer model and for each token we introduce a \system{LDR} feature of size $4 \times domain\_num$. Given a sentence of domain $i\in[1,..,K]$ in the training batch, for each token of the sentence, the \system{LDR} units of the indexes outside of the range $[4(i-1),..,4i-1]$ are masked to $0$, and the masked LDR feature will be concatenated to the embedding of the token of size $508$. Details are in Section ~\ref{sssec:ldr6domain-chap5}.
@@ -51,7 +51,7 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
     \footnotesize \system{FT-Res}  & 37.0 & 57.6 & 53.8 & 34.5 &	46.1 & 91.1 & 29.6 &	42.2  & 53.3 \\[-2pt]
                                & \sbcl{+0.3}{+0.3} & \sbcl{+0.4}{+0.4} & \sbcl{+0.1}{+0.1} & \sbcl{-0.7}{-0.7} & \sbcl{+0.5}{+0.5} & \sbcl{-0.9}{-0.9} & \sbcl{\SW{-9.0}}{-0.6} & \sbcl{-0.1}{-0.1} & \sbcl{+0.2}{+0.2} \\
     
-    \footnotesize \system{MDL-Res}    &37.7   & 55.6   & 51.1   & 34.4  & 44.5  & 87.5  & 29.1 & 41.9 & 51.8 \\[-2pt]
+    \footnotesize \system{MT-Res}    &37.7   & 55.6   & 51.1   & 34.4  & 44.5  & 87.5  & 29.1 & 41.9 & 51.8 \\[-2pt]
                         &  \sbcl{+0.2}{-0.2} & \sbcl{+0.4}{+0.5} & \sbcl{+0.1}{0.0} & \sbcl{-0.9}{-0.4}  & \sbcl{-0.1}{-0.2} &  \sbcl{+0.9}{-0.2} & \sbcl{\SW{-8.0}}{\SW{-0.8}} & \sbcl{+0.1}{-0.2} & \sbcl{+0.1}{-0.1} \\
      \hline
   \end{tabular}
@@ -65,7 +65,7 @@ as in \cite{Vaswani17attention}. For the fine-tuning procedures used for \system
   \centering
   \footnotesize
   \begin{tabular}{|p{1.3cm}|*{11}{c|}} \hline
-   Model  & size&\system{Mixed}&\system{FT}&\system{FT}&\system{MDL}&\system{DC}&\system{DC}&\multirow{2}{*}{\system{TTM}}&\multirow{2}{*}{\system{ADM}}&\multirow{2}{*}{\system{DM}}&\multirow{2}{*}{\system{LDR}}  \\ 
+   Model  & size&\system{Mixed}&\system{FT}&\system{FT}&\system{MT}&\system{DC}&\system{DC}&\multirow{2}{*}{\system{TTM}}&\multirow{2}{*}{\system{ADM}}&\multirow{2}{*}{\system{DM}}&\multirow{2}{*}{\system{LDR}}  \\ 
    Cluster & train / test & \system{Nat} & \system{Full} & \system{Res} &\system{Res} & \system{Feat}& \system{Tag}& & & & \\ \hline
 24 \hfill [med]&8.1k / 3 &90.4&90.4&90.4&90.4&100.0&65.6&100.0&90.4&100.0&100.0 \\
 13 \hfill [-]&17.3k / 52&67.6&75.4&74.3&74.3&75.0&54.7&74.7&75.9&65.9&76.9 \\

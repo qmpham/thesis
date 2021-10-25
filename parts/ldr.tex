@@ -1,22 +1,24 @@
 \chapter{Lexicalized domain representations and Contextualized domain representation}
 \label{chap:ldr}
 \section{Introduction}
-In this chapter, we present an MDMT system that we developed and published in \citet{Pham19generic}. Our system "Lexicalized domain representation" (\system{LDR} \nomenclature[ldr]{LDR}{Lexicalized domain representation}) was introduced in Section ~\ref{ssec:systems-chap4} of the previous chapter and used as an MDMT baseline in our overview. Recently, we extended the idea of \system{LDR}, in which a number of units in the $0^{th}$ layer are reserved for one domain and are dropped when translating in other domains, to Contextualized domain representations (\nomenclature[cdr]{CDR}{Contextualized domain representation}), in which not only the $0^{th}$ layer but also higher layers use the same dropping mechanism.
+In this chapter, we present an MDMT system that we developed and published in \citet{Pham19generic}. Our system "Lexicalized domain representation" (\system{LDR} \nomenclature[ldr]{LDR}{Lexicalized domain representation}) was introduced in Section~\ref{ssec:systems-chap4} of the previous chapter and used as an MDMT baseline in our overview. Recently, we extended the idea of \system{LDR}, in which a number of units in the $0^{th}$ layer are reserved for one domain and are dropped when translating in other domains, to Contextualized domain representations (CDR\nomenclature[cdr]{CDR}{Contextualized domain representation}), in which not only the $0^{th}$ layer but also higher layers use the same dropping mechanism.
 
-The \emph{supervised multi-domain adaptation} setting presented in Section \ref{sec:case1} usually involves a large number of domains. Adapting the whole NMT system separately to each domain would waste training resources and require large hardware resources for maintenance. We develop a simple MDMT system that changes only the form of word embeddings, i.e., can be applied to any NMT architecture. Our proposal transposes to neural machine translation the feature expansion technique of (Daum\'e III, 2007). We isolate domain-agnostic from domain-specific units in word embeddings while sharing the rest of the network across domains. Our main hypothesis is that domains mostly differ at the lexical level due to cross-domain polysemy, which motivates domain-specific embeddings. Another motivation to reconstruct only word embeddings is that we can easily handle the growing number of domains by creating more domain-specific units, which can not be done so easily in higher layers.
+The \emph{supervised multi-domain adaptation} setting presented in Section\ref{sec:case1} usually involves a large number of domains. Adapting the whole NMT system separately to each domain would waste training resources and require large hardware resources for maintenance. We develop a simple MDMT system that changes only the form of word embeddings, i.e., can be applied to any NMT architecture. Our proposal transposes to neural machine translation the feature expansion technique of \citet{Daume07frustratingly}. We isolate domain-agnostic from domain-specific units in word embeddings while sharing the rest of the network across domains. Our main hypothesis is that domains mostly differ at the lexical level due to cross-domain polysemy, which motivates domain-specific embeddings. Another motivation to reconstruct only word embeddings is that we can easily handle the growing number of domains by creating more domain-specific units, which can not be done so easily in higher layers.
 
 \system{CDR}s are extensions of \system{LDR}s in higher levels of an NMT model. These layers create a partition of nodes in the network of an NMT model assigning different sub-networks to different domains. By doing this, we reduce the interference between domains in the contribution of the parameters to the prediction. Our first version of \system{CDR}s is hard-coded, i.e., the choice of dropping mask is heuristically predefined. However, the dropping pattern can be learned via a latent variable \citet{Gong21pay,Gong21adaptive}.
  
-Our experiments are complementary to those in Chapter ~\ref{chap:revisiting} and consider four domains, two neural architectures, and two language pairs and find that our technique yields effective multi-domain NMTs, outperforming several baselines. We also report the performance of \system{LDR} in a highly heterogeneous MDMT setting (see Chapter ~\ref{chap:revisiting}). We evaluate \system{CDR}s in the same MDMT setting as in Chapter ~\ref{chap:revisiting}.
+Our experiments are complementary to those in Chapter~\ref{chap:revisiting} and consider four domains, two neural architectures, and two language pairs and find that our technique yields effective multi-domain NMTs, outperforming several baselines. We also report the performance of \system{LDR} in a highly heterogeneous MDMT setting (see Chapter~\ref{chap:revisiting}). We evaluate \system{CDR}s in the same MDMT setting as in Chapter~\ref{chap:revisiting}.
 
 Our contributions are thus as follows: we adapt and implement the ideas of \citet{Daume07frustratingly} for two NMT architectures; we provide experimental evidence that shows the effectiveness of this technique; we evaluate the ability of our networks to accommodate new domains dynamically; we apply the idea of the sparse representation from \system{LDR} to higher layers and receive promising results in a highly heterogeneous MDMT setting. Finally, we introduce a new technique to analyze word polysemy using embeddings, which comforts the assumption that their variation across domains reflects the change of senses.
 
+\textit{This chapter draws from the following publication: \citet{Pham19generic}.}
+
 \section{Lexicalized domain representations\label{sec:lexicalized_embeddings-chap5}}
 \subsection{Multi-domain machine translation \label{ssec:statement-chap5}}
-As introduced in Section ~\ref{ssec:4cases-chap3}, a train example in the \emph{supervised multi-domain adaptation} setting is a triplet $(d,x,y)$, with $x$ in the source language, $y$ in the target language and $d$ a domain tag in $[1\dots n_d]$. According to Section ~\ref{ssec:formulizaion} the training instances are distributed according to a mixture $\mathcal{D}_e^S$ such that $\mathcal{D}_e^S(x) = \sum_{d=1}^{n_d} \lambda^{s}(d) \mathcal{D}_e^d(x)$, with $\{\lambda^{s}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{s}(d)=1$. According to our definition of the NMT loss function in Equation ~\eqref{eq:ce-chap2} and our definition of multi-domain distribution in Section ~\ref{ssec:formulizaion} and Section ~\ref{sec:domain}, our objective is to find a tuple of parameters $\{\theta_1 \dots \theta_d \} \in \mathbb{R}^D \times \dots \times \mathbb{R}^D$ minimizing:
+As introduced in Section~\ref{ssec:4cases-chap3}, a train example in the \emph{supervised multi-domain adaptation} setting is a triplet $(d,x,y)$, with $x$ in the source language, $y$ in the target language and $d$ a domain tag in $[1\dots n_d]$. According to Section~\ref{ssec:formulizaion} the training instances are distributed according to a mixture $\mathcal{D}_e^S$ such that $\mathcal{D}_e^S(x) = \sum_{d=1}^{n_d} \lambda^{s}(d) \mathcal{D}_e^d(x)$, with $\{\lambda^{s}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{s}(d)=1$. According to our definition of the NMT loss function in Equation ~\eqref{eq:ce-chap2} and our definition of multi-domain distribution in Section~\ref{ssec:formulizaion} and Section~\ref{sec:domain}, our objective is to find a tuple of parameters $\{\theta_1 \dots \theta_d \} \in \mathbb{R}^D \times \dots \times \mathbb{R}^D$ minimizing:
 \begin{equation} \label{eq:loss-chap5}
 \begin{split}
-\sum_{d \in [1..n_d]} \lambda^{s}(d) E_{x \sim \mathcal{D}_e^d(x), y \sim g^d(x)} [-log(P(y|x,\theta_d))] \text{.}
+\sum_{d=1}^{n_d} \lambda^{s}(d) E_{x \sim \mathcal{D}_e^d, y \sim g^d(x)} [-log(P(y|x,\theta_d))] \text{.}
 \end{split}
 \end{equation}
 in which the labeling function of each domain $d$ will be $g^d: \Omega_{e} \rightarrow \Omega_{f}$ where $\Omega_{e}$ and $\Omega_{f}$ are the set of sentences in the language $e$ and the language $f$ respectively.
@@ -54,14 +56,14 @@ Ensuring that the actual embedding does not contain any zero is essential for th
 r^{l}(d) & \in & \mathbb{R}^{d_k} \\
 r^{l}(d)_i &=& \begin{cases}
       1, & \text{if}\ i<d_a \\
-      1, & \text{if}\ d_a + d \times \frac{d_k - d_a}{n_d} <= i < d_a + (d+1) \times \frac{d_k - d_a}{n_d} \\
+      1, & \text{if}\ d_a + d \times \frac{d_k - d_a}{n_d} \leq i < d_a + (d+1) \times \frac{d_k - d_a}{n_d} \\
       0, & \text{otherwise}
     \end{cases} \\
 d & \in & \{0,\dots,n_d-1 \} \\
 \end{array}
 \label{eq:sparse-chap5}
 \end{equation}
-$h_l$ is the output of the $l^{th}$ layer; $d_a$ is the number of domain-agnostic nodes; $n_d$ is the number of domains. We allocate the same number of domain-specific nodes for every domain. However, the number of nodes in each intermediate layer is always fixed at $d_k$, \system{CDR} can not dynamically create more units for new domains. Therefore, the model currently only handles a fixed number of domains. In Section ~\ref{sec:conclusion-chap5} we will discuss a promising approach that allows \system{CDR} to handle an arbitrary number of domains.
+$h_l$ is the output of the $l^{th}$ layer; $d_a$ is the number of domain-agnostic nodes; $n_d$ is the number of domains. We allocate the same number of domain-specific nodes for every domain. However, the number of nodes in each intermediate layer is always fixed at $d_k$, \system{CDR} can not dynamically create more units for new domains. Therefore, the model currently only handles a fixed number of domains. In Section~\ref{sec:conclusion-chap5} we will discuss a promising approach that allows \system{CDR} to handle an arbitrary number of domains.
 
 \begin{figure}[h!]
   \center
@@ -69,7 +71,7 @@ $h_l$ is the output of the $l^{th}$ layer; $d_a$ is the number of domain-agnosti
   \caption{Contextualized domain representations. When processing a sample from domain $1$, only the signal of the domain-agnostic nodes and the $1^{th}$ domain's nodes are passed to higher layers, other nodes are dropped out.} 
   \label{fig:sparse-chap5}
 \end{figure}
-In our experiments with \system{CDR}, we consider only the Transformer architecture of \citet{Vaswani17attention} and the same experimental setting as in Section ~\ref{ssec:corpora-chap4}.
+In our experiments with \system{CDR}, we consider only the Transformer architecture and the same experimental setting as in Section~\ref{ssec:corpora-chap4}.
 
 \section{Experiments \label{sec:experiments-chap5}}
 \subsection{Domains, data and metrics \label{ssec:data-chap5}}
@@ -81,7 +83,7 @@ the European Central Bank (ECB) \citep{Tiedemann09news},
 In addition, for English-French we also use corpora in the IT-domain obtained from the OPUS web site\footnote{\url{http://opus.nlpl.eu}} corresponding to KDE, Ubuntu, GNOME and PHP datasets (IT). Moreover, we use IT only in the scenario of continual training, in which we continue training our MDMT system with the mix of new domain IT and the old domains EMEA, ECB and EPPS.
 
 We randomly split those corpora into training, validation and test sets (see statistics in Table~\ref{tab:Corpora-chap5}).
-Validation sets are used to chose the best model according to the average BLEU score \citep{Papineni02bleu}\footnote{We use detokenized truecasing multibleu.}
+Validation sets are used to chose the best model according to the average BLEU score \citep{Papineni02bleu}\footnote{We use detokenized, truecasing multibleu.}
 
 \begin{table}[h]
   \centering
@@ -114,7 +116,7 @@ We therefore report below two numbers as $S_{(T)}$: the first ($S$) is comparabl
 
 To reduce the number of lexical units and make our systems open-vocabulary, we apply Byte-Pair Encoding \citep{Sennrich16neural} separately for each language with 30,000 merge operations.
 \subsubsection{7 domains, 1 language pair}
-We report again the performance of \system{LDR} in the same setting presented in Section ~\ref{ssec:corpora-chap4}, which consists of 7 domains in English$\rightarrow$French translation task. For the sake of brevity, we will not provide the description of the data here (see Section ~\ref{ssec:corpora-chap4}).
+We report again the performance of \system{LDR} in the same setting presented in Section~\ref{ssec:corpora-chap4}, which consists of 7 domains in English$\rightarrow$French translation task. For the sake of brevity, we will not provide the description of the data here (see Section~\ref{ssec:corpora-chap4}).
 
 \subsubsection{Statistical significance}
 Statistical significance is estimated using bootstrap resampling \citep{Koehn04statistical}, implemented in compare-mt\footnote{\url{https://github.com/neulab/compare-mt}} \citep{Neubig19compare-mt}. We report significant differences at the level of $p=0.05$.
@@ -139,7 +141,7 @@ The domain control systems are exactly as their baseline counterparts (RNN and T
 To train NMT systems, we use Adam, with parameters $\beta_1=0.9$, $\beta_2 = 0.999$, $\alpha=0.0005$ for RNNs; with parameters $\beta_1=0.9$, $\beta_2= 0.98$, with Noam decay \citep{Vaswani17attention} for Transformer ($warmup\_steps=4000$). In all cases, we use a batch size of~128 and a dropout rate of 0.1 for all layers. 
 All our systems are implemented in OpenNMT-tf\footnote{\url{https://github.com/OpenNMT/OpenNMT-tf}} \citep{Klein17opennmt}.
 \subsubsection{6 domains, 1 language pair}
-The description of MDMT systems for the comparison with \system{CDR} and \system{LDR} was provided in Section ~\ref{ssec:baselines-chap4}.
+The description of MDMT systems for the comparison with \system{CDR} and \system{LDR} was provided in Section~\ref{ssec:baselines-chap4} and in Section~\ref{ssec:systems-chap4}.
 
 \subsection{Implementing Lexicalized Domain Representations}
 \subsubsection{3 domains, 2 language pairs}
@@ -173,9 +175,9 @@ In this setting, we split the embedding vector of size $532$ into seven regions:
 
 \subsection{Implementing Contextualized domain representations}
 \subsubsection{6 domains, 1 language pair}
-We do nothing special except applying domain dropping mask to each layer as explained in Equation ~\eqref{eq:sparse-chap5} in both the encoder and the decoder of an NMT model. For the hyperparameters, we choose heuristically $d_a = 480$ and $d_k = 672$ so that there are $\frac{672-480}{6} = 32$ domain-specific nodes for each domain, making the effective number of nodes for each domain equal to $512$. This setting uses approximately $3m$ additional parameters per domains, which is only $25\%$ compared to \system{FT-Res} and \system{MT-Res} (see Section ~\ref{ssec:cost-chap4} and Table ~\ref{tab:performance-chap4}).
+We do nothing special except applying domain dropping mask to each layer as explained in Equation ~\eqref{eq:sparse-chap5} in both the encoder and the decoder of an NMT model. For the hyperparameters, we choose heuristically $d_a = 480$ and $d_k = 672$ so that there are $\frac{672-480}{6} = 32$ domain-specific nodes for each domain, making the effective number of nodes for each domain equal to $512$. This setting uses approximately $3m$ additional parameters per domains, which is only $25\%$ compared to \system{FT-Res} and \system{MT-Res} (see Section~\ref{ssec:cost-chap4} and Table ~\ref{tab:performance-chap4}).
 
-In our experiments, we evaluate this method with Transformer models, which are state-of-the-art architecture in MT. We also report \texttt{CDR}$^{0.5}$ and \texttt{CDR}$^{1.0}$ which correspond to the distribution of simple concatenation of the domains' corpus and the down-sampling distribution $[\frac{\sqrt{|C_i|}}{\sum_{i\in [1,..,d]}\sqrt{|C_i|}}]$.
+In our experiments, we evaluate this method with Transformer models, which are state-of-the-art architecture in MT. We also report \texttt{CDR}$^{1.0}$ and \texttt{CDR}$^{0.5}$ which correspond to the distribution of simple concatenation of the domains' corpus and the down-sampling distribution $[\frac{\sqrt{|C_i|}}{\sum_{i\in [1,..,d]}\sqrt{|C_i|}}]$.
 
 \subsection{Results \label{ssec:results-chap5}}
 \subsubsection{3 domains, 2 language pairs}
@@ -319,7 +321,7 @@ $\mathtt{WDCMT}$                        & 68.76$_{45.29}$ & \bf 35.71 & \bf 52.7
 \caption{BLEU scores for RNN systems. Comparison between \texttt{WDCMT} and $\texttt{LDR}_{pred}$ built using conditional GRUs.\label{tab:results-rnn-wdcmt-chap5}}
 \end{table}
 \subsubsection{6 domains, 1 language pair}
-To allow the readers easily compare the performance of \system{LDR} between 2 settings: 4 domains and 6 domains, we report again a part, which contains only Transformer-based system, of Table ~\ref{tab:performance-chap4} as below
+To allow the readers easily compare the performance of \system{LDR} between 2 settings: 4 domains and 6 domains, we report again a part, which contains only Transformer-based system, of Table ~\ref{tab:performance-chap4} (see Table ~\ref{tab:mdmt-res-chap5}).
 \begin{table*}
   \centering
   \begin{tabular}{|p{4cm}|*{8}{r|}} \hline
@@ -332,7 +334,7 @@ To allow the readers easily compare the performance of \system{LDR} between 2 se
     \system{DC-Tag} \hfill{\footnotesize[+6$\times$512]}        & 38.1 & 55.3 & 49.9   & 33.2 & 43.5 & \SB{80.5} &41.6 & 50.1    \\%    & 21.8 \\
     \system{DC-Feat} \hfill{\footnotesize[+6$\times$4]}    & 37.7  & 54.9 & 49.5   & 32.9 & 43.6 & \SB{79.9} &41.4 & 49.9   \\% & \SW{21.7} \\
     \system{LDR}       \hfill{\footnotesize[+6$\times$384k]}    & 37.0   & 54.7 & 49.9 & 33.9 & 43.6 & \SB{79.9} &40.9 & 49.8          \\% & 22.1 \\ 
-    \system{CDR}$^{1.0}$ \hfill{\footnotesize[+6$\times$3m]} & \SB{38.0} & \SB{55.9} & \SB{51.4} & 33.9 & \SB{45.0} & \SB{87.4} & \SB{42.4} & 51.9 \\
+    \system{CDR}$^{1.0}$ \hfill{\footnotesize[+6$\times$3m]} & 38.0 & \SB{55.9} & \SB{51.4} & 33.9 & \SB{45.0} & \SB{87.4} & \SB{42.4} & 51.9 \\
     \system{CDR}$^{0.5}$ \hfill{\footnotesize[+6$\times$3m]} & 37.3 & \SB{57.0} & \SB{54.5} & 32.2 & \SB{47.6} & \SB{91.0} & \SB{42.4} & 53.3 \\
     \system{TTM}      \hfill{\footnotesize[+6$\times$1024]}        & 37.3 & 54.9 & 49.5 & 32.9 & 43.6 & \SB{79.9} &41.0 & 49.7     \\% &  23.4 \\
     \system{DM}        \hfill{\footnotesize[+0]}         & \SW{35.6} & \SW{49.5}  & \SW{45.6}& \SW{29.9} & \SW{37.1} & \SW{62.4} & 38.1 & 43.4 \\ % & 22.6\\
@@ -341,10 +343,11 @@ To allow the readers easily compare the performance of \system{LDR} between 2 se
     \system{MT-Res} \hfill{\footnotesize[+6$\times$12.4m]}    & 37.9 & \SB{56.0}  & \SB{51.2}   & 33.5   &  44.4  & \SB{88.3} & 42.0 & \SB{51.9} \\%  & \SW{21.2} \\
      \hline 
   \end{tabular}
-  \caption{Translation performance of MDMT systems \revisiondone{based on the same Transformer architecture. The former contains 65m parameters. For each system, we report the number of additional domain specific parameters,}  BLEU scores for each domain, domain-weighted (w\domain{avg}) and unweighted (\domain{avg}) averages. \revisiondone{For weighted-averages, we take the domain proportions from Table~\ref{tab:Corpora-chap4}}. Boldface denotes significant gains with respect to \system{Mix-Nat}, underline denotes significant losses.}
+  \caption{Translation performance of MDMT systems based on the same Transformer architecture. The former contains 65m parameters. For each system, we report the number of additional domain specific parameters, BLEU scores for each domain, domain-weighted (w\domain{avg}) and unweighted (\domain{avg}) averages. For weighted-averages, we take the domain proportions from Table~\ref{tab:Corpora-chap4}. Boldface denotes significant gains with respect to \system{Mix-Nat}, underline denotes significant losses.}
+  \label{tab:mdmt-res-chap5}
 \end{table*}
 
-In this setting, \system{LDR} is only slightly better than the generic model \system{Mixed-Nat}, which is trained with the same sampling distribution. The system is only significantly better than \system{Mixed-Nat} in \domain{rel}. Moreover, \system{LDR} achieves a performance equivalent to \system{DC-Tag}, \system{DC-Feat}. This result is inconsistent with the results in the previous setting with only four domains. This might be explained by the interference between domains in the contribution of parameters in the prediction. As there are more domains and the domains' sizes are much more unbalanced, the partition of the parameters should be more extensive than the word embedding level. Moreover, word-embeddings do not capture the context, which is more important for the prediction than the word alone. We find that a partition of intermediate nodes in higher layers captures better the statistical bias than just in the $0^{th}$ layer, where the context is not formed. Our hypothesis is supported by the performance of \system{CDR}$^{1.0}$. Our model significantly outperforms \system{Mixed-Nat} in $5/6$ domains except for \system{talk}, which is a "hard" domain where no MDMT systems does better than \system{Mixed-Nat}. Moreover, \system{CDR}$^{1.0}$ performs equivalently to \system{MDL-Res} using $75\%$ less additional parameters. Furthermore, with a sampling strategy more balanced, \system{CDR}$^{0.5}$ matches the performance of \system{FT-Res}, which is carefully fine-tuned for each domain.
+In this setting, \system{LDR} is only slightly better than the generic model \system{Mixed-Nat}, which is trained with the same sampling distribution. The system is only significantly better than \system{Mixed-Nat} in \domain{rel}. Moreover, \system{LDR} achieves a performance equivalent to \system{DC-Tag}, \system{DC-Feat}. This result is inconsistent with the results in the previous setting with only four domains. This might be explained by the interference between domains in the contribution of parameters in the prediction. As there are more domains and the domains' sizes are much more unbalanced, the partition of the parameters should be more extensive than the word embedding level. Moreover, word-embeddings do not capture the context, which is more important for the prediction than the word alone. We find that a partition of intermediate nodes in higher layers captures better the statistical bias than just in the $0^{th}$ layer, where the context is not formed. Our hypothesis is supported by the performance of \system{CDR}$^{1.0}$. Our model significantly outperforms \system{Mixed-Nat} in $4/6$ domains except for \domain{talk} and \domain{med} which are "hard" domains where no MDMT systems significantly does better than \system{Mixed-Nat}. Moreover, \system{CDR}$^{1.0}$ performs equivalently to \system{MT-Res} using $75\%$ less additional parameters. Furthermore, with a sampling strategy more balanced, \system{CDR}$^{0.5}$ matches the performance of \system{FT-Res}, which is carefully fine-tuned for each domain.
 
 However, Table ~\ref{tab:redomains-chap4} shows a dramatic loss in the random domain tag setting, which means \system{LDR} is not robust in the case of 6 domains. This observation is inconsistent with the results in Table \ref{tab:results-trsf-chap5}. This loss might be due to the fact that this MDMT setting is much more adverse than the previous setting with only 3 domains. This again illustrates the need to use a wide range of available domains to evaluate the systems.
 
@@ -355,7 +358,7 @@ In the limit where the domain specific part is very small, we should recover the
 conversely, we expect to see a less effective sharing of data across domains by increasing the domain-specific regions. 
 Table~\ref{tab:embedding-size-chap5} reports the result of  a series of experiments for the Transformer architecture (English-French) with varying domain-specific sizes allocating between 4 and 64 cells for domain-specific information, and the complement to 512 for the domain-agnostic part. 
 The differences are overall quite small in our experimental setting, where the training data is relatively limited and does not require to use a large embedding size. 
-We therefore decided to allocate $8$~cells for the domain specific part in the experiments of Section ~\ref{sssec:ldr3domain-chap5}. 
+We therefore decided to allocate $8$~cells for the domain specific part in the experiments of Section~\ref{sssec:ldr3domain-chap5}. 
 This suggests that we could easily accommodate more domains with the same architecture and even reserve some regions to handle supplementary data (see below). %incoming training data.  
 % \fyTodo{Easily accomodate more domains}
 \fyDone{Given the ways embeddings are computed, why not add more domains, and test robustness agains data presentation order ?}
@@ -412,7 +415,7 @@ It is interesting to see that this additional data has also a positive impact on
 finally, using IT data does not impact the quality of translations for the EPPS domain of any of the models. Overall better results are obtained by our $\mathtt{LDR}_{oracle}^*$ model trained with data from an additional source.
 
 \subsubsection{7 domains}
-We report again the result of the experiments in the continuous learning presented in Section ~\ref{ssec:continual-chap4}. We observe a significant loss of \system{LDR} compared to the generic baseline \system{Mixed-Nat} while adding domain \domain{news}. The loss is mainly due to a decrease of \system{LDR}'s performance in the largest \domain{med} domain. This result shows the brittleness of our system against the change of train data distribution, in which the proportion of \system{med} drops $5\%$ from $0.68$ to $0.65$.
+We report again the result of the experiments in the continuous learning presented in Section~\ref{ssec:continual-chap4}. We observe a significant loss of \system{LDR} compared to the generic baseline \system{Mixed-Nat} while adding domain \domain{news}. The loss is mainly due to a decrease of \system{LDR}'s performance in the largest \domain{med} domain. This result shows the brittleness of our system against the change of train data distribution, in which the proportion of \system{med} drops $5\%$ from $0.68$ to $0.65$.
 
 \subsection{Analysis of Word Embeddings of \system{LDR} \label{ssec:word_embeddings-chap5}}
 One of our main assumptions is that the difference between domains can be confined at the lexical level, warranting our decision to specialize lexical representations for each domain, while the remaining part of the network is shared across domains. Linguistically, this assumption relates to the classical ``one sense per collocation'' \citep{Yarowsky93onesense} and corresponds to the fact that in many cases, polysemy corresponds to variation of use across domain. This variation of senses was reported in \citet{Carpuat13domain} as a source of errors when translating in unseen domains. The authors demonstrated that a word would be translated to different translations with respect to the domains. SMT models can not boostrap this lack of knowledge and make sense errors. In MDMT, MT models cope the same problem. In the weaker form of \citep{Yarowsky93onesense}'s theory, it allows us to assume that all occurrences of a given form in a given domain correspond to the same sense and share the same representation; the same form occurring in different domains is allowed to have one distinct embedding per domain, which may help capture polysemy and lexical ambiguity in translation. 

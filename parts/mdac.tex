@@ -2,14 +2,14 @@
 \section{Introduction}
 Building effective Neural Machine Translation models often implies accommodating diverse sets of heterogeneous data so as to optimize performance for the domain(s) of interest. Such multi-source / multi-domain adaptation problems are typically approached through instance selection or reweighting strategies, based on a static assessment of the relevance of training instances with respect to the task at hand. In this work, we study dynamic data selection strategies that are able to automatically re-evaluate the usefulness of data samples and to evolve a data selection policy in the course of training. Based on the results of multiple experiments, we show that such methods constitute a generic framework to automatically and effectively cater to a variety of real-world situations, from supervised multi-domain adaptation to unsupervised domain adaptation. 
 
-As we usually reported in the previous chapters, MDMT train data usually admit an adverse heterogeneity in the domains' data. In the MDMT setting presented in Section ~\ref{ssec:corpora-chap4}, most common MDMT systems hardly achieve significant improvement compared to the generic model. This might prove the brittleness of the MDMT model-centric approaches to the heterogeneity of data. To overcome this challenge, we study the efficacy of the data-centric approaches, and particularly the data sampling methods.
+As we usually reported in the previous chapters, MDMT train data usually admit an adverse heterogeneity in the domains' data. In the MDMT setting presented in Section~\ref{ssec:corpora-chap4}, most common MDMT systems hardly achieve significant improvement compared to the generic model. This might prove the brittleness of the MDMT model-centric approaches to the heterogeneity of data. To overcome this challenge, we study the efficacy of the data-centric approaches, and particularly the data sampling methods.
 
 As introduced in Chapter~\ref{chap:mdmt-review}, data sampling approaches aim to find the optimal balance of training data with respect to a certain objective, which can be one or multiple target domains. This is, however, a challenging task due, for instance, to the similarity between domains/languages, but also due to regularization effects of out-of-domain data \citep{Miceli17regularization}. It may also be suboptimal, as some target domains or languages might be easier to train than others. Finally, improving the performance of the MT system in one domain will often hurt that of another \citep{Wees17dynamic, Britz17effective}, and improving model generalization across all domains \citep{koehn18findings} may not achieve optimally for any particular domain. Several recent proposals have explored ways to instead consider \emph{dynamic} data selection and sampling strategies that surpass static strategies. Notably, \citet{Wees17dynamic,Zhang19curriculum} construct a static curriculum, while \citet{Graves17automated,Platanios19competence,Kumar19reinforcement,Wang20learning-multi,Wang20balancing} build curricula that automatically adapt to the training data.
 
 In this chapter, we contribute to this line of research in several ways. First, we propose a novel framework (\emph{Multi-Domain Automated Curriculum}, MDAC for short) that simultaneously accounts for the domain adaptation and the multi-domain adaptation problems. Second, we propose a variant of the work of \cite{Wang20balancing} for building an automated curriculum for training Multi-Domain NMT models. We evaluate our method in various single-domain and multi-domain adaptation settings. We compare our method with several contrasts, including the work of \citet{Zhang19curriculum} and \citet{Wang20balancing}, which was previously only applied to multilingual MT. Based on these experimental results, our main conclusions are that (a) using MDAC often yields overall performance that is as good as the standard fine-tuning strategy for domain adaptation; (b) MDAC can effectively handle a variety of test situations, from targeting one single domain to the full multi-domain scenario. 
 
 \section{Learning with multiple data sources} \label{sec:mdmt-chap7}
-First, we want to recall our definition of MDMT setting in Section ~\ref{ssec:formalization-chap4}. Our train instances are distributed according to a mixture $\mathcal{D}_e^S$ such that $\mathcal{D}_e^S(x) = \sum_{d=1}^{n_d} \lambda^{s}(d) \mathcal{D}^d_e(x)$, with $\{\lambda^{s}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{s}(d)=1$. In the sequel, we also use boldface to denote the vector $\vlambda$, and $\lambda(d)$ is used to denote a scalar corresponding to the $d^{th}$ element of the vector $\vlambda$.
+First, we want to recall our definition of MDMT setting in Section~\ref{ssec:formalization-chap4}. Our train instances are distributed according to a mixture $\mathcal{D}_e^S$ such that $\mathcal{D}_e^S(x) = \sum_{d=1}^{n_d} \lambda^{s}(d) \mathcal{D}^d_e(x)$, with $\{\lambda^{s}(d), d=1 \dots n_d\}$ the mixture weights satisfying $\sum_d \lambda^{s}(d)=1$. In the sequel, we also use boldface to denote the vector $\vlambda$, and $\lambda(d)$ is used to denote a scalar corresponding to the $d^{th}$ element of the vector $\vlambda$.
 
 The main challenge is then to make the best of this heterogeneous data, with the aim to achieve the optimal performance for the intended test conditions. These might correspond to data from just one of the training domains, as in standard supervised (multi-source) domain adaptation; a more difficult case is when the test data is from one domain unseen in training (unsupervised domain adaptation); in multi-domain adaptation finally, the test distribution is itself a mixture of domains, some of which may also be observed in training.  Without loss of generality, one may then assume that the test distribution takes the form $\mathcal{D}^{T}_e(x) = \sum_{d=1}^{n_d} \lambda^{t}(d) \mathcal{D}_e^d(x)$ - with only one non-null  component in the case of pure domain adaptation. These settings are illustrated on Figure~\ref{fig:mdmt-lambdas-chap7}.
 \begin{figure}[h]
@@ -29,21 +29,21 @@ Assuming training data in each of the $n_d$ domains $d_1 \dots d_{n_d}$, we deno
 % Our method
 MDAC constructs an adaptative training distribution $\vlambda^{l}$ that optimizes the data selection policy along with the training of the NMT model. We parameterize $\vlambda^{l}$ by a differentiable function $\vlambda^l(\vpsi)$. We divide the training into many short sessions; in each session $t$, the model is trained with a static data distribution $\vlambda^{l}(\vpsi_t)$. After one learning session, we update the data distribution using the REINFORCE algorithm of \citet{Williams92simple}. The evolution of $\vpsi$ is thus defined by:
 \begin{align*}
-\vpsi_{t+1} &= \vpsi_t + \mathbf{lr}_{1} * \displaystyle{\mathop{\sum}_{d=1}^{n_d}} R(d) * \frac{\partial \lambda^l(d;\vpsi_t)}{\partial \vpsi}, \\
+\vpsi_{t\text{+}1} &= \vpsi_t + \mathbf{lr}_{1} * \displaystyle{\mathop{\sum}_{d=1}^{n_d}} R(d) * \frac{\partial \lambda^l(d;\vpsi_t)}{\partial \vpsi}, \\
 \end{align*}
 \begingroup
 \allowdisplaybreaks
 where reward $R(d)$ is computed as:
 \begin{align*}
-  R(d) = J^t(\theta_t,\vlambda^t) - J^t(\theta_{t+k},\vlambda^t),
+  R(d) = J^t(\theta_t,\vlambda^t) - J^t(\theta_{t\text{+}k},\vlambda^t),
 \end{align*}
 and where we also define:
 \begin{equation}
 \begin{array}{rcl}
-\theta_{t+i} &=& Update\big(\theta_{t+i-1},[x^i_j,y^i_j]_{j=1}^N\big) \\ \nonumber
- i \in \{ 1,\cdots,k \}
-x^i_j &\sim& \widehat{D^{d,l}_e}(x), y^i_j \sim g^d(x^i_j) \\
-J^t(\theta,\vlambda_t) &=& \displaystyle{\mathop{\sum}_{d=1}^{n_d}}\lambda^t(d)\displaystyle{\mathop{\sum}_{x^{d,t} \sim \widehat{D^{d,t}_e},y^{d,t} \sim g^d(x^{d,t})}} l(\theta,x^{d,t},y^{d,t}).
+\theta_{t\text{+}i} &=& Update\big(\theta_{t\text{+}i\text{-}1},[x^i_j,y^i_j]_{j=1}^N\big) \\ \nonumber
+ i &\in& \{ 1,\cdots,k \} \\
+x^i_j &\sim& \widehat{D^{d,l}_e}, y^i_j \sim g^d(x^i_j) \\
+J^t(\theta,\vlambda_t) &=& \displaystyle{\mathop{\sum}_{d=1}^{n_d}}\lambda^t(d)\displaystyle{\mathbb{E}_{x^{d,t} \sim \widehat{D^{d,t}_e},y^{d,t} \sim g^d(x^{d,t})}} \big[ l(\theta,x^{d,t},y^{d,t}) \big].
 \end{array}
 \end{equation}
 \endgroup
@@ -60,14 +60,14 @@ The setting developed in previous sections is quite general and can, in principl
 \item is MDAC also a viable option in multi-domain adaptation scenarios?
 \item does MDAC also enable to perform \emph{unsupervised} (multi-)domain adaptation? \fyDone{TBContinued}
 \end{itemize}
-These questions are further explored in section~\ref{sec:results-chap7}. We now turn to our experimental conditions.
+These questions are further explored in Section~\ref{sec:results-chap7}. We now turn to our experimental conditions.
 
 \section{Experimental settings} \label{sec:exp-chap7}
 \subsection{Data and metrics \label{ssec:corpora-chap7}}
-In this work, we reuse the MDMT setting of Section ~\ref{ssec:corpora-chap4}, which has proved to be challenging for MDMT systems. We uses the same metric and processing procedure as in Section ~\ref{ssec:corpora-chap4}. For the sake of brevity, we will not provide the description here.
+In this work, we reuse the MDMT setting of Section~\ref{ssec:corpora-chap4}, which has proved to be challenging for MDMT systems. We uses the same metric and processing procedure as in Section~\ref{ssec:corpora-chap4}. For the sake of brevity, we will not provide the description here.
 
 \subsection{Baseline systems \label{ssec:baseline-chap7}}
-Our baselines are standard for multi-domain systems.\footnote{We however omit domain-specific systems trained only with the corresponding subset of the data, which are always inferior to the mix-domain strategy \citep{Britz17effective}.} Using Transformers \citep{Vaswani17attention} implemented in OpenNMT-tf\footnote{\url{https://github.com/OpenNMT/OpenNMT-tf}} \citep{Klein17opennmt}, we build the following systems:
+Our baselines are standard for multi-domain systems.\footnote{We however omit domain-specific systems trained only with the corresponding subset of the data, which are always inferior to the mix-domain strategy \citep{Britz17effective}.} Using Transformers implemented in OpenNMT-tf\footnote{\url{https://github.com/OpenNMT/OpenNMT-tf}} \citep{Klein17opennmt}, we build the following systems:
 
 \begin{itemize}
 \itemsep0em 
@@ -77,7 +77,7 @@ Our baselines are standard for multi-domain systems.\footnote{We however omit do
 q_d = \frac{\mid N^{s}_d \mid}{\displaystyle{N^{s}}} % \mathop{\sum}_{i=1}^K\mid D_i \mid}}
 \end{align}
 with $\alpha \in \{0,0.25,0.5,0.75,1.0\}$. We denote these as \system{Mixed-$\alpha$} below. \system{Mixed-$0$} uses a uniform distribution, \system{Mixed-$1.0$} the empirical domain distribution;
-\item fine-tuned models \citep{Luong15stanford,Freitag16fast} which was already presented in Section ~\ref{ssec:baselines-chap4}. Their implementations are provided in Appendix ~\ref{appendix:a};
+\item fine-tuned models \citep{Luong15stanford,Freitag16fast} which was already presented in Section~\ref{ssec:baselines-chap4}. Their implementations are provided in Appendix ~\ref{appendix:a};
 \item systems trained with fixed data mixtures corresponding to $\vlambda^l \in \big[ \vlambda_0, \vlambda_{0.25}, \vlambda_{0.5}, \vlambda_{0.75}, \vlambda_{1.0}\big]$; these are used in the multi-domain experiments of Section~\ref{ssec:mda-chap7};
 \item  our own implementations of recent dynamic sampling proposals from the literature: Curriculum Learning (CL) of \citet{Zhang19curriculum} and Differential Data Selection (DDS) of \citet{Wang20balancing} (see details below);
 \end{itemize}
@@ -269,6 +269,6 @@ For instance, \citet{Zhang19curriculum} study supervised DA and propose a curric
 
 \citet{Kumar19reinforcement} use reinforcement techniques (deep Q-learning) to learn the curriculum strategy: in this work, complexity corresponds to difficulty levels which are binned using contrastive data selection. The reward is based on the decrease of the development set's loss that results from the actual data selection strategy.\fyDone{Alert: what do we do during warm-up ?} The same technique is recently applied to multilingual NMT in \citep{Kumar21learning}. \citet{Zhou20uncertainty} propose another curriculum-based approach which instead relies on \emph{instance uncertainty} as a measure of their difficulty and presents the data sample starting with the easiest (more predictable) first. Another contribution of this work is an alternative criterium for stopping the training. More related to our problems, \citet{Wang20learning-multi} adapt CL for multi-domain adaptation, where an optimal instance weighting scheme is found using Bayesian optimization techniques. Each step consists of (a) weighting instances based on relevance features, (b) fine-tuning a pretrained model using the weighted training set, and is applied iteratively to train a sequence of models. The one that maximizes the development set performance is finally retained.
 
-\section{Conclusion and outlook}
+\section{Conclusions and outlook}
 
 In this study, we have presented a generic framework to perform a variety of standard adaptation tasks for machine translation, ranging from the conventional supervised domain adaptation to multi-domain adaptation and unseen domain adaptation. By experimenting with all these settings, we have shown that the same algorithm, aimed at automatically finding an effective data sampling scheme during the course of training, could be used in all these situations. This algorithm, we believe, provides us with a more sound approach to (multi-domain) DA than existing heuristics and dispenses with the costly search of optimal meta-parameters. Another contribution of our work is an experimental comparison of recent approaches to dynamic data selection. In the future, we intend to continue developing this approach and improve its effectiveness. One issue that we have left unaddressed is reward normalization. We remarked that rewards in early stages of the training have much higher magnitude than in the middle and ending stages making pre-mature judgments of the utility of each domain. \citet{Kumar19reinforcement} also reported this problem. \citet{Graves17automated} proposed a simple rule for re-scaling rewards to the interval $(-1,1)$. Another area where we need to progress is the unsupervised learning setting of Section~\ref{ssec:clda-chap7}, where our results still lag way behind that of supervised DA - this might be due to the inability of our simplistic optimization strategy to handle a large number of domains.

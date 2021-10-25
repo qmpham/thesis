@@ -2107,13 +2107,12 @@ series = {IJCAI'16}
   Series = {AMTA 2012}
 }
 
-@inproceedings{He16deep,
-author = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
-year = {2016},
-month = {06},
-pages = {770-778},
-title = {Deep Residual Learning for Image Recognition},
-doi = {10.1109/CVPR.2016.90}
+@article{He16deep,
+  title={Deep Residual Learning for Image Recognition},
+  author={Kaiming He and X. Zhang and Shaoqing Ren and Jian Sun},
+  journal={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2016},
+  pages={770-778}
 }
 
 @article{Jimmy16layer,
@@ -2560,11 +2559,20 @@ archivePrefix = {arXiv},
 }
 
 @article{Servan16Domain,
-  title={Domain specialization: a post-training domain adaptation for Neural Machine Translation},
-  author={Christophe Servan and J. Crego and Jean Senellart},
-  journal={ArXiv},
-  year={2016},
-  volume={abs/1612.06141}
+  author    = {Christophe Servan and
+               Josep Maria Crego and
+               Jean Senellart},
+  title     = {Domain specialization: a post-training domain adaptation for Neural
+               Machine Translation},
+  journal   = {CoRR},
+  volume    = {abs/1612.06141},
+  year      = {2016},
+  url       = {http://arxiv.org/abs/1612.06141},
+  eprinttype = {arXiv},
+  eprint    = {1612.06141},
+  timestamp = {Mon, 13 Aug 2018 16:46:00 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/ServanCS16.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
 @inproceedings{Chen16Bilingual,
@@ -3265,9 +3273,9 @@ doi = {10.5715/jnlp.24.597}
 @inproceedings{Machcek18morphological,
   title={Morphological and Language-Agnostic Word Segmentation for NMT},
   author={Dominik Mach{\'a}cek and Jon{\'a}s Vidra and Ondrej Bojar},
-  booktitle={TSD},
-  year={2018}
-}
+  booktitle={International Conference on Text, Speech, and Dialogue},
+  year={2018},
+  pages = {277--284},}
 
 @inproceedings{wuebker18compact,
     title = "Compact Personalized Models for Neural Machine Translation",
@@ -4072,14 +4080,25 @@ archivePrefix = {arXiv},
     primaryClass={cs.CL}
 }
 
-@article{Neubig19compare-mt,
-  author    = {Graham Neubig and Zi{-}Yi Dou and Junjie Hu and Paul Michel and Danish Pruthi and Xinyi Wang and John Wieting},
-  title     = {compare-mt: {A} Tool for Holistic Comparison of Language Generation Systems},
-  journal   = {CoRR},
-  volume    = {abs/1903.07926},
-  year      = {2019},
-  url       = {http://arxiv.org/abs/1903.07926},
+@inproceedings{Neubig19compare-mt,
+    title = "compare-mt: A Tool for Holistic Comparison of Language Generation Systems",
+    author = "Neubig, Graham  and
+      Dou, Zi-Yi  and
+      Hu, Junjie  and
+      Michel, Paul  and
+      Pruthi, Danish  and
+      Wang, Xinyi",
+    booktitle = "Proceedings of the 2019 Conference of the North {A}merican Chapter of the Association for Computational Linguistics (Demonstrations)",
+    month = jun,
+    year = "2019",
+    address = "Minneapolis, Minnesota",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/N19-4007",
+    doi = "10.18653/v1/N19-4007",
+    pages = "35--41",
+    abstract = "In this paper, we describe compare-mt, a tool for holistic analysis and comparison of the results of systems for language generation tasks such as machine translation. The main goal of the tool is to give the user a high-level and coherent view of the salient differences between systems that can then be used to guide further analysis or system improvement. It implements a number of tools to do so, such as analysis of accuracy of generation of particular types of words, bucketed histograms of sentence accuracies or counts based on salient characteristics, and extraction of characteristic n-grams for each system. It also has a number of advanced features such as use of linguistic labels, source side data, or comparison of log likelihoods for probabilistic models, and also aims to be easily extensible by users to new types of analysis. compare-mt is a pure-Python open source package, that has already proven useful to generate analyses that have been used in our published papers. Demo Video: https://youtu.be/NyJEQT7t2CA",
 }
+
 @inproceedings{Saunders19ucam,
     title = "{UCAM} Biomedical Translation at {WMT}19: Transfer Learning Multi-domain Ensembles",
     author = "Saunders, Danielle and Stahlberg, Felix and Byrne, Bill",
@@ -4279,14 +4298,9 @@ archivePrefix = {arXiv},
     pages = "3874--3884",
     abstract = "Multilingual Neural Machine Translation enables training a single model that supports translation from multiple source languages into multiple target languages. We perform extensive experiments in training massively multilingual NMT models, involving up to 103 distinct languages and 204 translation directions simultaneously. We explore different setups for training such models and analyze the trade-offs between translation quality and various modeling decisions. We report results on the publicly available TED talks multilingual corpus where we show that massively multilingual many-to-many models are effective in low resource settings, outperforming the previous state-of-the-art while supporting up to 59 languages in 116 translation directions in a single model. Our experiments on a large-scale dataset with 103 languages, 204 trained directions and up to one million examples per direction also show promising results, surpassing strong bilingual baselines and encouraging future work on massively multilingual NMT.",
 }
-@misc{Wang19neural,
-    title={Neural Machine Translation with Byte-Level Subwords},
-    author={Changhan Wang and Kyunghyun Cho and Jiatao Gu},
-    year={2019},
-    eprint={1909.03341},
-    archivePrefix={arXiv},
-    primaryClass={cs.CL}
-}
+
+@article{Wang19neural, title={Neural Machine Translation with Byte-Level Subwords}, volume={34}, url={https://ojs.aaai.org/index.php/AAAI/article/view/6451}, DOI={10.1609/aaai.v34i05.6451}, abstractNote={&lt;p&gt;Almost all existing machine translation models are built on top of character-based vocabularies: characters, subwords or words. Rare characters from noisy text or character-rich languages such as Japanese and Chinese however can unnecessarily take up vocabulary slots and limit its compactness. Representing text at the level of bytes and using the 256 byte set as vocabulary is a potential solution to this issue. High computational cost has however prevented it from being widely deployed or used in practice. In this paper, we investigate byte-level subwords, specifically byte-level BPE (BBPE), which is compacter than character vocabulary and has no out-of-vocabulary tokens, but is more efficient than using pure bytes only is. We claim that contextualizing BBPE embeddings is necessary, which can be implemented by a convolutional or recurrent layer. Our experiments show that BBPE has comparable performance to BPE while its size is only 1/8 of that for BPE. In the multilingual setting, BBPE maximizes vocabulary sharing across many languages and achieves better translation quality. Moreover, we show that BBPE enables transferring models between languages with non-overlapping character sets.&lt;/p&gt;}, number={05}, journal={Proceedings of the AAAI Conference on Artificial Intelligence}, author={Wang, Changhan and Cho, Kyunghyun and Gu, Jiatao}, year={2020}, month={Apr.}, pages={9154-9160} }
+
 
 @InProceedings{Welleck19non, title = {Non-Monotonic Sequential Text Generation}, author = {Welleck, Sean and Brantley, Kiant{\'e} and Iii, Hal Daum{\'e} and Cho, Kyunghyun}, booktitle = {Proceedings of the 36th International Conference on Machine Learning}, pages = {6716--6726}, year = {2019}, editor = {Kamalika Chaudhuri and Ruslan Salakhutdinov}, volume = {97}, series = {Proceedings of Machine Learning Research}, month = {09--15 Jun}, publisher = {PMLR}, pdf = {http://proceedings.mlr.press/v97/welleck19a/welleck19a.pdf}, url = { http://proceedings.mlr.press/v97/welleck19a.html }, abstract = {Standard sequential generation methods assume a pre-specified generation order, such as text generation methods which generate words from left to right. In this work, we propose a framework for training models of text generation that operate in non-monotonic orders; the model directly learns good orders, without any additional annotation. Our framework operates by generating a word at an arbitrary position, and then recursively generating words to its left and then words to its right, yielding a binary tree. Learning is framed as imitation learning, including a coaching method which moves from imitating an oracle to reinforcing the policy’s own preferences. Experimental results demonstrate that using the proposed method, it is possible to learn policies which generate text without pre-specifying a generation order, while achieving competitive performance with conventional left-to-right generation.} }
 
@@ -4421,23 +4435,21 @@ archivePrefix = {arXiv},
     abstract = "We investigate adaptive ensemble weighting for Neural Machine Translation, addressing the case of improving performance on a new and potentially unknown domain without sacrificing performance on the original domain. We adapt sequentially across two Spanish-English and three English-German tasks, comparing unregularized fine-tuning, L2 and Elastic Weight Consolidation. We then report a novel scheme for adaptive NMT ensemble decoding by extending Bayesian Interpolation with source information, and report strong improvements across test domains without access to the domain label.",
 }
 
-@article{Schwenk19wikimatrix,
-  author    = {Holger Schwenk and
-               Vishrav Chaudhary and
-               Shuo Sun and
-               Hongyu Gong and
-               Francisco Guzm{\'{a}}n},
-  title     = {WikiMatrix: Mining 135M Parallel Sentences in 1620 Language Pairs
-               from Wikipedia},
-  journal   = {CoRR},
-  volume    = {abs/1907.05791},
-  year      = {2019},
-  url       = {http://arxiv.org/abs/1907.05791},
-  archivePrefix = {arXiv},
-  eprint    = {1907.05791},
-  timestamp = {Wed, 17 Jul 2019 10:27:36 +0200},
-  biburl    = {https://dblp.org/rec/journals/corr/abs-1907-05791.bib},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
+@inproceedings{Schwenk19wikimatrix,
+    title = "{W}iki{M}atrix: Mining 135{M} Parallel Sentences in 1620 Language Pairs from {W}ikipedia",
+    author = "Schwenk, Holger  and
+      Chaudhary, Vishrav  and
+      Sun, Shuo  and
+      Gong, Hongyu  and
+      Guzm{\'a}n, Francisco",
+    booktitle = "Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume",
+    month = apr,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.eacl-main.115",
+    pages = "1351--1361",
+    abstract = "We present an approach based on multilingual sentence embeddings to automatically extract parallel sentences from the content of Wikipedia articles in 96 languages, including several dialects or low-resource languages. We do not limit the extraction process to alignments with English, but we systematically consider all possible language pairs. In total, we are able to extract 135M parallel sentences for 16720 different language pairs, out of which only 34M are aligned with English. This corpus is freely available. To get an indication on the quality of the extracted bitexts, we train neural MT baseline systems on the mined data only for 1886 languages pairs, and evaluate them on the TED corpus, achieving strong BLEU scores for many language pairs. The WikiMatrix bitexts seem to be particularly interesting to train MT systems between distant languages without the need to pivot through English.",
 }
 
 @inproceedings{Saunders19domain,
@@ -4470,17 +4482,22 @@ archivePrefix = {arXiv},
     pages = "1903--1915",
     abstract = "We introduce a curriculum learning approach to adapt generic neural machine translation models to a specific domain. Samples are grouped by their similarities to the domain of interest and each group is fed to the training algorithm with a particular schedule. This approach is simple to implement on top of any neural framework or architecture, and consistently outperforms both unadapted and adapted baselines in experiments with two distinct domains and two language pairs.",
 }
-
+	
 @inproceedings{Pham19generic,
-	Address = {Hong-Kong, CN},
-	Author = {Pham, Minh Quang AND Crego, Josep-Maria AND Senellart, Jean AND Yvon, Fran\c{c}ois},
-	Booktitle = {Proceedings of the 16th {International Workshop on Spoken Language Translation}},
-	Series = {IWSLT},
-	Keywords = {Machine Translation; Domain Adaptation},
-	Pages = {9p},
-	Title = {{Generic and Specialized Word Embeddings for Multi-Domain Machine Translation}},
-	Url = {https://zenodo.org/record/3524959/files/IWSLT2019_paper_10.pdf},
-	Year = {2019}}
+  TITLE = {{Generic and Specialized Word Embeddings for Multi-Domain Machine Translation}},
+  AUTHOR = {Pham, Minh Quang and Crego, Josep-Maria and Yvon, Fran{\c c}ois and Senellart, Jean},
+  URL = {https://hal.archives-ouvertes.fr/hal-02343215},
+  BOOKTITLE = {{International Workshop on Spoken Language Translation}},
+  ADDRESS = {Hong-Kong, China},
+  SERIES = {Proceedings of the 16th International Workshop on Spoken Language Translation (IWSLT)},
+  YEAR = {2019},
+  MONTH = Nov,
+  DOI = {10.5281/zenodo.3524978},
+  KEYWORDS = {Machine Translation ; Domain Adaptation},
+  PDF = {https://hal.archives-ouvertes.fr/hal-02343215/file/IWSLT2019_paper_10.pdf},
+  HAL_ID = {hal-02343215},
+  HAL_VERSION = {v1},
+}
 
 @inproceedings{Kumar19reinforcement,
     title = "Reinforcement Learning based Curriculum Optimization for Neural Machine Translation",

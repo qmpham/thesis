@@ -1,40 +1,35 @@
-\chapter{Attempts at Unsupervised Multi-Domain Adaptation}
+\chapter{Attempts at unsupervised multi-domain adaptation}
 \label{chap:priming}
 \section{Introduction}
-In this chapter, we discuss recent studies on the fourth setting of MDMT presented in Section \ref{sec:case4}. When the test domain is undetermined, we can work around by adapting the generic NMT system to a latent domain of the test sentence on the fly. \citet{Li18onesentence, Farajian17multidomain} used similar sentences to adapt the NMT system to the test sentence. The authors proposed finetuning the NMT model over a batch of similar sentences retrieved from a translation memory (TM\nomenclature{tm}{TM}{Translation memory}). We group these method under "one-sentence adaptation paradigm". Recent works of ~\citet{bulte19neural,xu20boosting} introduced a simple and elegant framework where similar translations are used to improve the context of the translation effectively boosting translation accuracy. We group these methods into the group of context-augmented NMT. In all cases, context-augmented NMT is performed by simply injecting retrieved sentences in the input stream prior to inference decoding.
+In this chapter, we discuss recent studies on the fourth setting of MDMT presented in Section \ref{sec:case4}. When the test domain is undetermined, we can work around by adapting the generic NMT system to a latent domain of the test sentence on the fly. \citet{Li18onesentence, Farajian17multidomain} used similar sentences to adapt the NMT system to the test sentence. The authors proposed finetuning the NMT model over a batch of similar sentences retrieved from a translation memory (TM\nomenclature[tm]{TM}{Translation memory}). We group these method under "one-sentence adaptation paradigm". Recent works of ~\citet{bulte19neural,xu20boosting} introduced a simple and elegant framework where similar translations are used to improve the context of the translation effectively boosting translation accuracy. We group these methods into the group of "context-augmented NMT". In all cases, context-augmented NMT is performed by simply injecting retrieved sentences in the input stream prior to inference decoding. Context-augmented NMT and one-sentence adaptation can be grouped into a larger category, that we name retrieval-based MT.
 
-In this chapter, our primary goal is to compare two paradigms: on-the-fly one-sentence adaptation \citep{Li18onesentence, Farajian17multidomain} and augmented context NMT \citep{bulte19neural,xu20boosting}. We also discuss how different retrieval methods affect the quality of context-augmented NMT. 
+In this chapter, our primary goal is to compare two paradigms: on-the-fly one-sentence adaptation \citep{Farajian17multidomain,Li18onesentence} and augmented context NMT \citep{bulte19neural,xu20boosting}. We also discuss how different retrieval methods affect the quality of context-augmented NMT. 
 
-Finally, we propose a variant of \citet{bulte19neural}, which performs slightly better and can be used with monolingual data, providing a scenario where NMT can be effectively helped by large amounts of available data. Our proposal does not require to change the NMT architectures or algorithms, relying solely on input preprocessing and on prefix (forced) decoding \citep{santy19inmt,rebecca16neural}, a feature already implemented in many NMT toolkits.
+Finally, we propose a variant of \citet{bulte19neural}, which performs slightly better and can be used with monolingual data, providing a scenario where NMT can be effectively helped by large amounts of available data. Our proposal does not require to change the NMT architectures or algorithms, relying solely on input preprocessing and on prefix (forced) decoding \citep{rebecca16neural,santy19inmt}, a feature already implemented in many NMT toolkits.
 
 \section{Context-augmented NMT}
 \label{sec:priming-chap8}
 This section describes the general context-augmented NMT with similar translations. We follow the work by ~\citet{bulte19neural,xu20boosting} and build a translation model that incorporates similar translations from a translation memory (TM) to boost translation accuracy. In this work, TMs are parallel corpora containing translations falling in the same domain as test sentences.
 
-The following section describes several common retrieval methods used in \citet{bapna19non,bulte19neural,xu20boosting,Farajian17multidomain}. We will also describe a variant of \citet{pagliardini18unsupervised}, which is developed by Josep Maria Crego.
+The following section describes several common retrieval methods used in \citet{Farajian17multidomain,bapna19non,bulte19neural,xu20boosting}. We will also describe a variant of \citet{pagliardini18unsupervised}, which is developed by Josep Maria Crego.
 \subsection{Similarity Computation}
 \label{ssec:sim-chap8}
 We detail the sentence similarity tools evaluated in this work. The first employs discrete word representations\fyDone{As opposed to? why not discrete / continuous}, while the rest relies on building distributed representations of sentences to perform similar sentence retrieval:
-
 \paragraph{\system{FM}:} fuzzy matching is a lexicalized matching method aimed to identify non-exact matches of a given sentence. Following~\citet{xu20boosting}, we use \texttt{FuzzyMatch}\footnote{\url{https://github.com/systran/FuzzyMatch}}, where the fuzzy match score $\operatorname{FM} (s_i,s_j)$ between two sentences $s_i$ and $s_j$ is:
     \begin{equation*}
     \operatorname{FM} (s_i,s_j) = 1 - \frac{\operatorname{ED} (s_i,s_j)}{max(|s_i|,|s_j|)}
     \label{eq:FM-chap8}
     \end{equation*}
     \noindent with $\operatorname{ED}(s_i,s_j)$ being the Edit Distance between $s_i$ and $s_j$, and $|s|$ is the length of $s$. 
-\paragraph{\system{S2V}:} we use \texttt{sent2vec}\footnote{\url{https://github.com/epfml/sent2vec}}~\citep{pagliardini18unsupervised} to generate sentence embeddings. The network implements a simple but efficient unsupervised objective to train distributed representations for sentences. 
-The model is based on efficient matrix factor (bilinear) models~\citep{Mikolov13efficient,Mikolov13distributed,Pennington14glove}.
-
-Borrowing the notations of~\citet{pagliardini18unsupervised}, training the model is formalized as an optimization problem:
-
-\begin{equation*}
-\min_{\vect{U},\vect{V}} \sum_{s\in \mathcal{C}} f_{s} (\vect{UV}\iota_{s})
-\end{equation*}
-\noindent 
-for two parameter matrices $\vect{U} \in \R^{|\mathcal{V}|\times d}$ and $\vect{V} \in \R ^{d\times |\mathcal{V}|}$, where $\mathcal{V}$ denotes the vocabulary and $d$ is the embedding dimension. The minimization of the cost function $f_{s}$ is performed on a training corpus $\mathcal{C}$ of sentences $s$.
-
-In \texttt{sent2vec}, $\iota_{s}$ is a binary vector encoding the bigrams in $s$ (bag of bigrams encoding). 
-
+\paragraph{\system{S2V}:} we use \texttt{sent2vec}\footnote{\url{https://github.com/epfml/sent2vec}}~\citep{pagliardini18unsupervised} to generate sentence embeddings. The network implements a simple but efficient unsupervised objective to train distributed representations for sentences. The model is based on efficient matrix factor (bilinear) models~\citep{Mikolov13efficient,Mikolov13distributed,Pennington14glove}.
+%Borrowing the notations of~\citet{pagliardini18unsupervised}, training the model is formalized as an optimization problem:
+%
+%\begin{equation*}
+%\min_{\vect{U},\vect{V}} \sum_{s\in \mathcal{C}} f_{s} (\vect{UV}\iota_{s})
+%\end{equation*}
+%\noindent 
+%for two parameter matrices $\vect{U} \in \R^{|\mathcal{V}|\times d}$ and $\vect{V} \in \R ^{d\times |\mathcal{V}|}$, where $\mathcal{V}$ denotes the vocabulary and $d$ is the embedding dimension, $\iota_{s}$ is a binary vector encoding the bigrams in $s$ (bag of bigrams encoding). The minimization of the cost function $f_{s}$ is performed on a training corpus $\mathcal{C}$ of sentences $s$.
+%In \texttt{sent2vec},
 \paragraph{\system{CBON}:} the Continuous Bag of $n$-grams (\texttt{CBON}) 
  model denotes our re-implementation of the previous \texttt{sent2vec} model. In addition to multiple implementation details, the main difference is the use of arbitrary large $n$-grams to model sentence representations, where \texttt{sent2vec} only used bigrams.
 
@@ -133,7 +128,7 @@ Continuing on our running example, during inference the model receives:
 
 \subsection{Corpora}
 \label{ssec:corpora-chap8}
-In this chapter, we use an experimental setting larger than the one of Chapter ~\ref{chap:revisiting}. We experiment with the English-French language pair and data originating from eight domains, corresponding to texts from three European institutions: 
+In this chapter, we use an experimental setting larger than the one of Chapter~\ref{chap:revisiting}. We experiment with the English-French language pair and data originating from eight domains, corresponding to texts from three European institutions: 
 the European Parliament (\domain{EPPS}), 
 the European Medicines Agency (\domain{EMEA}) and
 the European Central Bank (\domain{ECB});
@@ -187,11 +182,8 @@ All data is preprocessed using the OpenNMT tokenizer\footnote{\url{https://githu
 
 \subsection{System Configurations}
 \label{ssec:config-chap8}
-
 This section gives learning/inference details of the various systems used in this work.
-
 \subsubsection*{Similarity} 
-
 For fuzzy matching \system{FM} we follow the works of ~\citet{Koehn10convergence,bulte19neural,xu20boosting} and keep the $n$-best matches when $\operatorname{FM}(s_1,s_2) \geq 0.5$ with no approximation.
 %
 Concerning \system{S2V}, the model is trained with default options during 20 epochs using all training data. We use an embedding dimension of 300 cells. 
@@ -205,22 +197,18 @@ For both \system{CBON} and \system{S2V} models, we use the $5$-best matches when
 In all cases, perfect matches are not used for training.
 %
 Accuracy results on the translation task indicate that $3$-grams yield slightly lower accuracy results than those obtained with $4$-grams. In the remainder, we always use the $4$-gram version of \system{CBON}.
-
 \subsubsection*{Sentence Retrieval}
-
 To identify similar translations using distributed representations, we use the \texttt{faiss}\footnote{\url{https://github.com/facebookresearch/faiss}} search toolkit~\citep{Johnson19billion} through its Python API with exact \textit{FlatIP} index. 
-
 \subsubsection*{Translation}
-
-Our NMT models rely on the Transformer base architecture of~\citet{Vaswani17attention}, implemented in the \texttt{OpenNMT-tf}\footnote{\url{https://github.com/OpenNMT/OpenNMT-tf}} toolkit~\citep{Klein17opennmt}.
+Our NMT models rely on the Transformer base architecture, implemented in the \texttt{OpenNMT-tf}\footnote{\url{https://github.com/OpenNMT/OpenNMT-tf}} toolkit~\citep{Klein17opennmt}.
 %
 We use the standard setting of Transformers for all experiments: size of word embedding: $512$; size of hidden layers: $512$; size of inner feed-forward layer: $2,048$; number of heads: $8$; number of layers in the encoder or in the decoder: $6$. In the \system{tgt$^1$+STU} scheme, 
-token ($508$ cells) and \system{STU} ($4$ cells) streams are concatenated, thus using the same number of parameters in all schemes.
+token ($508$ cells) and \system{STU} ($4$ cells) streams are concatenated as in MDMT systems with domain embeddings of \citet{Kobus17domain}, thus using the same number of parameters in all schemes.
 
 For training, we use the Adam~\citep{Kingma15adam} optimiser with a batch size of $4,096$ tokens. We set the warmup steps to $4,000$ and update the learning rate for every $8$ iterations. Models are optimised during $300K$ iterations, using a single NVIDIA V100 GPU.
 %
 We limit the length of training sentences to $300$ BPE tokens~\citep{Sennrich16neural} in both source and target sides to enable the integration of similar sentences. We use a joint BPE-vocabulary of size 32K for both source and target texts. Inference is performed with a beam size of $5$ using CTranslate2\footnote{\url{https://github.com/OpenNMT/CTranslate2}}, a custom C++ runtime inference engine for OpenNMT models that enables fast CPU decoding and also implements prefix decoding.
-For evaluation, we report BLEU~\citep{Papineni02bleu} scores computed by detokenized case-sensitive \texttt{multi-bleu.perl}\footnote{\url{https://github.com/moses-smt/mosesdecoder/blob/master/scripts/generic/multi-bleu.perl}}.
+For evaluation, we report BLEU~\citep{Papineni02bleu} scores computed by detokenized, truecasing \texttt{multi-bleu.perl}\footnote{\url{https://github.com/moses-smt/mosesdecoder/blob/master/scripts/generic/multi-bleu.perl}}.
 
 We re-implement the work of \citet{Farajian17multidomain} as a contrastive model that we denote \system{$\mu$adapt}. Note that we only experiment with the basic version of this work, where the closest neighbours of the input sentence are first retrieved from the memory and then used to fine-tune a generic model during $15$ additional iterations with a fixed learning rate of $0.0005$; the fine-tuned model is then used to produce the translation of the given input sentence. In addition, \citet{Farajian17multidomain} include a variant where learning rate and number of epochs are dynamically adapted considering sentence similarity.
 Adaptation is run on a sentence-by-sentence basis.
@@ -326,21 +314,21 @@ In our experiments, micro-adaptation does not yield the gains observed with cont
 \fyDone{Comment on the news very small retrieval rate?}
 
 Retrieval results shown in Table~\ref{tab:results1-chap8} (small font numbers) indicate a reduced number of similar sentences found for some domains (\domain{NEWS}, \domain{EPPS} and \domain{WIKI}). 
-In the context of scarce similar sentences, the boost in translation quality observed for most domains is subsequently reduced. The case of the \system{NEWS} domain is particularly harmful since worst results are always obtained when compared to the \system{Base} system.
+In the context of scarce similar sentences, the boost in translation quality observed for most domains is subsequently reduced. The case of the \domain{NEWS} domain is particularly harmful since worst results are always obtained when compared to the \system{Base} system.
 
 However, very large monolingual collections of texts exist, far exceeding the amount of available parallel corpora. The latter are more expensive to collect and typically only exist for a limited number of domains and language pairs. With the objective to enhance NMT with monolingual corpora, we now apply the methods presented above to monolingual corpora. 
 
 We collect monolingual corpora in the target language (French in this work) and translate each sentence back into English to obtain synthetic parallel data. Similar to back-translation experiments in~\citet{Sennrich16improving}, we only use original (human-crafted) target-language data. We expect this to add less noise than incorporating synthetic target-language data into the NMT input.
 Once translated into English, the various context-augmented approaches identify similar synthetic sentences and injects both the synthetic source and original target in the NMT input stream.
 %
-Note that cross-lingual sentence embedding models exist~\citep{sabet2019robust,schwenk17learning,Conneau19crosslingual} but our preliminary experiments using these tools did not show satisfactory results.
+Note that cross-lingual sentence embedding models exist~\citep{schwenk17learning,sabet2019robust,Conneau19crosslingual} but our preliminary experiments using these tools did not show satisfactory results.
 
 Thus, we exploit large collections of French texts for the News and Wikipedia domains (as detailed in Table~\ref{tab:corpora-chap8}) that we translate into English to enable similarity retrieval. 
 %
 Table~\ref{tab:results2-chap8} reports \texttt{BLEU} scores obtained by the best performing network \system{CBON} following the \system{s+t$^5$} scheme.
 
 The supplementary number of similar sentences (468 input sentences have similar translations) collected for the \domain{WIKI} domain over parallel and monolingual\footnote{Test French sentences entirely found in monolingual \domain{WIKI} corpora are not considered as similar translations.} corpora (par+mon) yields an improvement of 2 \texttt{BLEU} points.
-However, very few (97) similar sentences are identified\footnote{In all cases we consider similar sentences $s_i$ and $s_j$ when ($\operatorname{EM}(s_i,s_j) \ge 0.8$)} over near 95 million sentences (par+mon), showing a small gain when compared to using only parallel sentences (par). The network does not succeed to outperform the accuracy of the \system{base} system. 
+However, very few (97) similar sentences are identified in \domain{NEWS} domain\footnote{In all cases we consider similar sentences $s_i$ and $s_j$ when ($\operatorname{EM}(s_i,s_j) \ge 0.8$)} over nearly 95 million sentences (par+mon), showing a small gain when compared to using only parallel sentences (par). The network does not succeed to outperform the accuracy of the \system{base} system. 
 As outlined by~\citet{bulte19neural,xu20boosting} the accuracy of context-augmented networks may slightly drop in performance when no similar translations are integrated. \citet{he21fast} mitigated this problem by jointly training the NMT model with and without retrieval.
 
 \begin{table}[ht]

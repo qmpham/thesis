@@ -43,9 +43,9 @@ where $Linear$ is a dense layer mapping to $\mathbb{R}^{|\Sigma_y|}$.
 
 The hidden state of the Decoder is computed recursively as 
 \begin{equation}
-s_i = g(s_{i-1},y_{i-1},c_i),
+s_i = g(s_{i\text{-}1},y_{i\text{-}1},c_i),
 \end{equation}
-using the hidden state of the previous time step, the observation of the previous time step (i.e. the $(i-1)^{th}$ token) and the context $c_i$, which is computed from the representation of the source sequence $Enc(x)$ and $s_{i-1}$.
+using the hidden state of the previous time step, the observation of the previous time step (i.e. the $(i\text{-}1)^{th}$ token) and the context $c_i$, which is computed from the representation of the source sequence $Enc(x)$ and $s_{i\text{-}1}$.
 
 In order to transform the input sequence of integers into continuous hidden states, Encoder and Decoder have to use a look-up table of word embeddings. A word embedding is a real-valued vector in a high dimension space that represents a token in the vocabulary of the NMT model. The motivation of using word embedding is to transform the input sequence of integers to a sequence of vectors in a continuous space which allows the parameters of the NMT model to be trained with gradient descent-based optimization methods. The lookup table has the size of $|\Sigma_{\{x,y\}}| \times d$ where $|\Sigma_{\{x,y\}}|$ is the size of the corresponding vocabulary, and d is the dimension of word embedding space. Word embeddings are not only used in NMT models but also in Neural language models \citep{Bengio03aneural}(NLM\nomenclature[nlm]{NLM}{Neural Language Model}). \citet{Le12continuous, Schwenk12continuous} used NLM for phrase-based statistical machine translation. Moreover, word embedding can be trained alone using the Skip-gram model \citep{Mikolov13distributed} or the Continuous Bag of Word model \citep{Mikolov13efficient}. After training such models, the resulting word embeddings possess semantic properties so that words having similar meanings or close meanings are mapped to similar vectors in terms of cosine similarity \citep{Collobert11natural, Mikolov13distributed, collobert08aunified}. The fine-grained semantic representation of word embeddings significantly improves the performance of AI in text classification, text retrieval, etc., and surprisingly enables unsupervised machine translation and unsupervised word translation  \citep{Pennington14glove,levy15improving,Guillaume18unsupervised,santos20word}. By using word embeddings, the source sequence is mapped to a sequence of real-valued vectors. 
 
@@ -65,7 +65,7 @@ The decoder works similarly to a language model as it predicts one token per tim
 \label{fig:decoding}
 \end{figure*}
 
-NMT's architectures are usually a stack of multiple layers. As described above, the input source sequence is mapped to a sequence of word embeddings. This is considered the $0^{th}$ layer of the Encoder. The $i^{th}$ layer is built upon the $(i-1)^{th}$ layer by applying the same encoding mechanism, which can be recurrent layer, convolutional layer or self-attention layer, to the output of the $(i-1)^{th}$. We illustrate different multi-layer decoders in figure \ref{fig:multi-layer}. For example, \citet{Vaswani17attention} stacked 6 Transformer layers in both the encoder and the decoder of their NMT model. Deep NMT models are able to learn from very large-scale of parallel data \citep{Ott18scaling} and continually create new state-of-the-art performances. However, deep NMT models are harder to train because the gradient flow has to back-propagate through many layers. In order to prevent the gradient flow from vanishing, which happens when the value of the output of the linear transformation in some layer jumps outside the domain of the activation function, \citep{He16deep} proposes using residual connections, which replaces $f(x)$ by $f(x)+x$ where $x$ is the output of the lower layer and $f(.)$ is the transformation of the layer, to transit from the lower layers to their following layers. By using residual connections, a fraction of the gradient still reaches the lower layer and continues to propagate until the lowest layer.
+NMT's architectures are usually a stack of multiple layers. As described above, the input source sequence is mapped to a sequence of word embeddings. This is considered the $0^{th}$ layer of the Encoder. The $i^{th}$ layer is built upon the $(i\text{-}1)^{th}$ layer by applying the same encoding mechanism, which can be recurrent layer, convolutional layer or self-attention layer, to the output of the $(i\text{-}1)^{th}$. We illustrate different multi-layer decoders in figure \ref{fig:multi-layer}. For example, \citet{Vaswani17attention} stacked 6 Transformer layers in both the encoder and the decoder of their NMT model. Deep NMT models are able to learn from very large-scale of parallel data \citep{Ott18scaling} and continually create new state-of-the-art performances. However, deep NMT models are harder to train because the gradient flow has to back-propagate through many layers. In order to prevent the gradient flow from vanishing, which happens when the value of the output of the linear transformation in some layer jumps outside the domain of the activation function, \citep{He16deep} proposes using residual connections, which replaces $f(x)$ by $f(x)+x$ where $x$ is the output of the lower layer and $f(.)$ is the transformation of the layer, to transit from the lower layers to their following layers. By using residual connections, a fraction of the gradient still reaches the lower layer and continues to propagate until the lowest layer.
 
 Deep NMT models also suffer from Internal Covariate Shift in which the distribution of the value of each layer significantly changes due to the change of the parameters of the models. In deep neural network, the distribution of the value of high layers is highly affected by the parameters of the lower layers and can be dramatically shifted by a small change in the value of those parameters. Large shift can push the value of the layer to the saturation zone of activation function where the gradient is extremely small. In practice, the saturation problem can be mitigated by using the Rectified Linear Units $RELU(x) = max(x,0)$ \citep{Nair10rectified}. Recently, \citep{Ioffe15batch,Jimmy16layer} propose different normalization methods to stabilize the value of layers so that they are not easily pushed to saturation zone of activation function. In principle, Normalization methods re-scale and re-center the distribution of the value of each layer with learnable mean and learnable variance. Normalization methods prove to be very helpful in practice. For example, Layer normalization must be included in every layer of Attention-based NMT \citep{Vaswani17attention}.
 
@@ -85,20 +85,20 @@ This section reviews the very first NMT architecture, the Recurrent neural machi
 Gated recurrent units (GRU) and Long-short term memory units (LSTM) are the two most popular layers in the group of Recurrent neural networks. They follow the auto-regressive paradigm by constructing the hidden states one by one as follows
 \begin{equation}
 \begin{array}{rcl}
-h^l_t = f(h^{l-1}_t, h^l_{t-1})
+h^l_t = f(h^{l\text{-}1}_t, h^l_{t\text{-}1})
 \end{array}
 \end{equation}
-where $h^{l-1}_t$ is the hidden state at time step $t$ of the $(l-1)^{th}$ layer, the $0^{th}$ layer is the sequence of word embeddings; the mapping $f$ can be GRU cell or LSTM cell, which will be explained below.
+where $h^{l\text{-}1}_t$ is the hidden state at time step $t$ of the $(l\text{-}1)^{th}$ layer, the $0^{th}$ layer is the sequence of word embeddings; the mapping $f$ can be GRU cell or LSTM cell, which will be explained below.
 
 LSTMs were first introduced by \citet{Hochreiter97long}. They use 4 gating functions including input gate i, output gate o, forget gate $f$ and memory cell $c$. At each time step $t$, the contextualized embedding $h_t$ is computed as follows
 \begin{equation}
 \label{eq:lstm}
 \begin{array}{rcl}
-f_t &=& \sigma_g (W_f h^{l-1}_t + U_f h_{t-1} + b_f),\\
-i_t &=& \sigma_g (W_i h^{l-1}_t + U_i h_{t-1} + b_i),\\
-o_t &=& \sigma_g (W_o h^{l-1}_t + U_o h_{t-1} + b_o),\\
-\tilde{c}_t &=& \sigma_c (W_o h^{l-1}_t + U_o h_{t-1} + b_o),\\
-c_t &=& f_t \odot c_{t-1} + i_t \odot \tilde{c}_t,\\
+f_t &=& \sigma_g (W_f h^{l\text{-}1}_t + U_f h_{t\text{-}1} + b_f),\\
+i_t &=& \sigma_g (W_i h^{l\text{-}1}_t + U_i h_{t\text{-}1} + b_i),\\
+o_t &=& \sigma_g (W_o h^{l\text{-}1}_t + U_o h_{t\text{-}1} + b_o),\\
+\tilde{c}_t &=& \sigma_c (W_o h^{l\text{-}1}_t + U_o h_{t\text{-}1} + b_o),\\
+c_t &=& f_t \odot c_{t\text{-}1} + i_t \odot \tilde{c}_t,\\
 h_t &=& o_t \odot \sigma_h(c_t),\\
 \end{array}
 \end{equation}
@@ -108,37 +108,37 @@ The motivation behind this highly complex structure is to stabilize the explodin
 \begin{equation}
 \label{eq:gru}
 \begin{array}{rcl}
-z_t &=& \sigma_g (W_z h^{l-1}_t + U_z h_{t-1} + b_z)\\
-r_t &=& \sigma_g (W_r h^{l-1}_t + U_r h_{t-1} + b_r)\\
-\hat{h}_t &=& \sigma_h (W_h h^{l-1}_t + U_h (r_t \odot h_{t-1}) + b_h)\\
-h_t &=& (1-z_t)\odot h_{t-1} + z_t \odot \hat{h}_t\\
+z_t &=& \sigma_g (W_z h^{l\text{-}1}_t + U_z h_{t\text{-}1} + b_z)\\
+r_t &=& \sigma_g (W_r h^{l\text{-}1}_t + U_r h_{t\text{-}1} + b_r)\\
+\hat{h}_t &=& \sigma_h (W_h h^{l\text{-}1}_t + U_h (r_t \odot h_{t\text{-}1}) + b_h)\\
+h_t &=& (1-z_t)\odot h_{t\text{-}1} + z_t \odot \hat{h}_t\\
 \end{array}
 \end{equation}
 Where $\sigma_h$ is a hyperbolic tangent function while other notations are the same as in the equations \ref{eq:lstm}.
 \subsection{RNN encoders}
 RNN encoders use LSTM or GRU layers to encode the source sequence. RNN encoders can use more than one layer to capture more fine-grained language representations \citep{Li20shallow}. The $0^{th}$ layer is a sequence of word embeddings, which are extracted from the look-up table of the source side using the word ordering provided by the source sequence. 
 
-\subsubsection{Bidirectional RNN encoder}
+\subsubsection{Bidirectional RNN encoders}
 Unlike the decoder, the encoder is not constrained to process the input sequence from left to right. Effectively, the context of one token in the source sequence contains not only its preceding neighbors but also its following neighbors. Therefore, encoding the source sequence from left to right is not enough to fully describe the context of each token. To increase the coverage of contextualized embedding, the encoder process the source sequence both from left to right and from right to left at the same time. Such encoders are deemed bidirectional. Bidirectional encoding results in two sequences of contextualized embeddings; the encoder simply combines two contextualized embeddings of a token into one real vector via either concatenation or summation. The resulting contextualized embedding improves the representation of each word with information regarding its neighbours on the right and on the left.
 \subsection{RNN decoders}
 RNN decoders predict the target sequence from left to right, one token per time step. It initializes the $0^{th}$ hidden state by zero vector or a linear transformation of the last hidden state of the last layer of the encoder. The following section will discuss on an important component of the NMT model, which are attention mechanisms. As the hidden representation of the decoder at each step is computed as follows
 \begin{equation}
-s_i = g(s_{i-1},y_{i-1},c_i),
+s_i = g(s_{i\text{-}1},y_{i\text{-}1},c_i),
 \end{equation}
 where $c_i$ is the context vector. $c_i$ is computed via an attentional mechanism using $s_i$ and $Enc(x)$, which will be explained in Section \ref{ssec:attention}.
 
 The prediction probability will be computed as follows
 \begin{equation}
-p(y_i|s_i,y_{i-1},c_i) = \operatorname{softmax}(Dense(t_i))_{y_i}
+p(y_i|s_i,y_{i\text{-}1},c_i) = \operatorname{softmax}(Dense(t_i))_{y_i}
 \end{equation}
 where $y_i$ is an index of the target vocabulary, $Dense$ is a dense layer, whose output is of dimension $|\Sigma_y|$, and $t_i$ is computed as follows
 \begin{equation}
 \begin{array}{rcl}
-t_i &=& \big[ max\big\{ \tilde{t}_{i,2j-1}, \tilde{t}_{i,2j} \big\} \big]^{T}_{j=1,\cdots,d}, \\
-\tilde{t}_i &=& U_0 s_{i-1} + V_0Emb(y_{i_1}) + C_0c_i,
+t_i &=& \big[ max\big\{ \tilde{t}_{i,2j\text{-}1}, \tilde{t}_{i,2j} \big\} \big]^{T}_{j=1,\cdots,d}, \\
+\tilde{t}_i &=& U_0 s_{i\text{-}1} + V_0Emb(y_{i_1}) + C_0c_i,
 \end{array}
 \end{equation}
-where $Emb(y_{i-1})$ is the word embedding of the token $y_{i-1}$, $U_0 \in \mathbb{R}^{2l\times d}$, $V_0 \in \mathbb{R}^{2l\times d'}$, and $C_0 \in \mathbb{R}^{2l\times d}$ for a uni-directional encoder and $C_0 \in \mathbb{R}^{2l\times 2d}$ for a bi-directional encoder.
+where $Emb(y_{i\text{-}1})$ is the word embedding of the token $y_{i\text{-}1}$, $U_0 \in \mathbb{R}^{2l\times d}$, $V_0 \in \mathbb{R}^{2l\times d'}$, and $C_0 \in \mathbb{R}^{2l\times d}$ for a uni-directional encoder and $C_0 \in \mathbb{R}^{2l\times 2d}$ for a bi-directional encoder.
 \subsubsection{Attention mechanisms \label{ssec:attention}}
 An attentional mechanism consists of 3 components: Query vectors, Key vectors, and Value vectors. Given a sequence $Q_i$, $i \in [1 \cdots n]$, $K_j$, $j \in [1 \cdots m]$ and $V_j$, $j \in [1 \cdots m]$, the results
 of the attentional mechanism composed by those vectors will be as follows
@@ -152,21 +152,19 @@ The attention mechanism manages and quantifies the dependences between the input
 \begin{array}{rcl}
 c_i &=& \sum_{j} \alpha_{ij} h_j, \\
 \alpha_{ij} &=& \frac{exp(e_{ij})}{\sum_{k}exp(e_{ik})}, \\
-e_{ik} &=& sim(s_{i-1},h_k),\\
+e_{ik} &=& sim(s_{i\text{-}1},h_k),\\
 \end{array}
 \end{equation}
-where $h_j$ is the output of the last layer of the encoder, $s_{i-1}$ is the hidden state at the $(i-1)^{th}$ time step of the last layer of the decoder. 
-
-%This context vector will be used to compute the hidden state at $i^{th}$ position by the attentional mechanism improves the translation quality of very long sequences. Indeed, the context vector produced by the RNN encoder struggles to capture all the dependence between tokens of the input sequence because it lacks the direct links between 2 tokens. The information of a token vanishes while the encoder moves toward the far ending of the input sequence. The same problem happens with the decoder when it decodes the context vector into the output sequence. The attentional mechanism provides the direct links from each output token to any input token, allows the decoder to capture the information of any input token regardless of its position.
+where $h_j$ is the output of the last layer of the encoder, $s_{i\text{-}1}$ is the hidden state at the $(i\text{-}1)^{th}$ time step of the last layer of the decoder. 
 
 \section{Convolutional neural machine translation} \label{sec:cnn}
 \nomenclature[cnn]{CNN}{Convolutional neural network}
 The convolutional neural network was successfully applied to the MT task in the work of \citet{Ghering17convolutional} that outperformed the current state-of-the-art performance of the RNMT. As we mentioned in the previous section, convolutional neural machine translation (CNMT) does not construct the hidden states iteratively in one direction. The model considers the sequence as an image, of which each column of pixels is a word embedding, and applies convolutional kernels on it. Therefore, CNMT is much faster than RNMT. We give the detail of the convolutional encoder and the convolutional decoder in the following sections.
-\subsection{Convolutional encoder}
+\subsection{Convolutional encoders}
 Concretely, each layer of a convolutional encoder contains a one dimensional convolution kernel followed by a non-linear activation function. We denote $h^l_i$ the $i^{th}$ hidden state of the $l^{th}$ layer. Those hidden states are computed as follows
 \begin{equation}
 \begin{array}{lcr}
-h^l_i = v\bigg( W^l \big[h^{l-1}_{i-\frac{k}{2}}, \cdots, h^{l-1}_{i+\frac{k}{2}} \big] + b_w \bigg) + h^{l-1}_{i},
+h^l_i = v\bigg( W^l \big[h^{l\text{-}1}_{i\text{-}\frac{k}{2}}, \cdots, h^{l\text{-}1}_{i\text{+}\frac{k}{2}} \big] + b_w \bigg) + h^{l\text{-}1}_{i},
 \end{array}
 \end{equation}
 where $W^l \in \mathbb{R}^{2d \times kd}$, $b_w \in \mathbb{R}^{2d}$, d is the dimension of hidden states as well of word embeddings, k is the width of the kernel, the activation function v is Gated Linear Unit \citep{Ghering17convolutional} defined as follows
@@ -176,8 +174,8 @@ v([A,B]) = A \odot \sigma(B),
 \end{array}
 \end{equation}
 where $\odot$ is the element-wise multiplication, $\sigma$ is the sigmoid function.
-\subsection{Convolutional decoder}
-Unlike the convolutional encoder, in which each hidden states has access to its left and right neighbors, the decoder only allows left accesses to avoid conditioning the predictions on the following tokens, which remain unknown before the prediction during the inference. Therefore, \citet{Ghering17convolutional} appended $k-1$ padding tokens in the left side of the output sequence, e.g $PAD$, $PAD$,$ <BOS>$,$je$,$t'$,$aime$ for convolution kernel of size 3 so that $\big[ PAD, PAD, <BOS>\big]$ predicts $je$, $\big[ PAD,<BOS>,je\big]$ predicts $t'$ and so forth.
+\subsection{Convolutional decoders}
+Unlike the convolutional encoder, in which each hidden states has access to its left and right neighbors, the decoder only allows left accesses to avoid conditioning the predictions on the following tokens, which remain unknown before the prediction during the inference. Therefore, \citet{Ghering17convolutional} appended $k\text{-}1$ padding tokens in the left side of the output sequence, e.g $PAD$, $PAD$,$ <BOS>$,$je$,$t'$,$aime$ for convolution kernel of size 3 so that $\big[ PAD, PAD, <BOS>\big]$ predicts $je$, $\big[ PAD,<BOS>,je\big]$ predicts $t'$ and so forth.
 The convolutional decoder also uses an attention mechanism to improve the performance for long sentences. \citet{Ghering17convolutional} proposed a slightly different version from ones of \citet{Luong15stanford, Bahdanau15learning}. For each $l^{th}$ decoder layer, the query will be a combination of the hidden state $h^l_i$ and the word embedding of the previous token $g_i$ as follows
 \begin{equation}
 \begin{array}{rcl}
@@ -201,12 +199,12 @@ The context vector $c^l_i$ will be as follow
 c^l_i = \sum_{j=1}\alpha_{ij}V^l_j
 \end{equation}
 Once $c^l_i$ has been computed, it is simply added to the output of the corresponding decoder layer $h^l_i$.
-\subsection{Positional embedding}
+\subsection{Positional embeddings}
 \citet{Ghering17convolutional} proposed using embeddings corresponding to each position of the input sequence. The purpose is to equip the CNMT model with a sense of order as the convolution kernel does not take into account the order of tokens in the input sequence. Effectively, if we interchange the position of tokens outside the window of the kernel, the value of the hidden state does not change. Positional embeddings are real value vectors having the same dimension as word embeddings. Positional embeddings are added to word embeddings of the corresponding position before passing to the first layer.
 
 \section{Attention-based neural machine translation} \label{sec:transformer}
 The Transformer architecture was first introduced by \citet{Vaswani17attention} and has quickly become the state-of-the-art architecture not only in MT but also in language modeling (LM)  \citep{Devlin19bert,Conneau19cross,Brown20language}, text summarization \citep{Zhang20pegasus} etc. The Transformer model's power relies on the attentional mechanism, which was discussed in the previous section \ref{ssec:attention}. The Transformer model consists of a fully attention-based encoder and decoder. 
-\subsection{Transformer encoder}
+\subsection{Transformer encoders}
 \label{ssec:transformer-enc}
 The Transformer encoder consists of layers made of a multi-head self-attention sub-layer followed by a position-wise fully connected feed-forward network. The multi-head self-attention sub-layer is an extension of the self-attention sub-layer and is described by the following equation
 \begin{equation}
@@ -227,22 +225,22 @@ where $W_1 \in \mathbb{R}^{d_k \times d_b}$,$W_2 \in \mathbb{R}^{d_b \times d_k}
 The final detail is that the output of each sub-layer has to pass through a Layer-Normalization sub-layer \citep{Jimmy16layer}. In conclusion, the contextualized embedding of the $l^{th}$ layer of the Transformer encoder will be as follows
 \begin{equation}
 \begin{array}{rcl}
-\tilde{h}^l &=& LN\bigg(Multihead\big(h^{l-1}, h^{l-1}, h^{l-1}\big) + h^{l-1}\bigg), \\ 
+\tilde{h}^l &=& LN\bigg(Multihead\big(h^{l\text{-}1}, h^{l\text{-}1}, h^{l\text{-}1}\big) + h^{l\text{-}1}\bigg), \\ 
 h^l &=& LN\bigg(FFN\big(\tilde{h}^l\big) + \tilde{h}^l\bigg),
 \end{array}
 \label{eq:self-att}
 \end{equation}
 where $LN$ is a Layer-Normalization sub-layer.
-\subsection{Transformer decoder}
+\subsection{Transformer decoders}
 The Transformer decoder consists of layers made of a multi-head self-attention sub-layer followed by a multi-head cross-attention sub-layer then by a position-wise fully connected feed-forward network. The multi-head self-attention sub-layer and the feed-forward network have the same design as those in the Transformer encoder. The multi-head cross-attention sub-layer of the $l^{th}$ layer of the decoder uses the output of the last layer of the encoder as keys and values, the output of the $l^{th}$ self-attention sub-layer as queries
 \begin{equation}
 \begin{array}{rcl}
-\tilde{s}^l &=& LN\bigg( Multihead\big( s^{l-1},s^{l-1},s^{l-1} \big) + s^{l-1} \bigg), \\
+\tilde{s}^l &=& LN\bigg( Multihead\big( s^{l\text{-}1},s^{l\text{-}1},s^{l\text{-}1} \big) + s^{l\text{-}1} \bigg), \\
 \bar{s}^l &=& LN\bigg( Multihead\big( \tilde{s}^l, h^u, h^u \big) + \tilde{s}^l \bigg), \\
 s^l &=& LN\bigg( FFN\big( \bar{s}^l \big) + \bar{s}^l \bigg), \\
 \end{array}
 \end{equation}
-where $s^l$,$s^{l-1}$ are the outputs of the $l^{th}$ and $(l-1)^{th}$ layers of the decoder respectively, $h^u$ is the output of the last layer of the encoder.
+where $s^l$,$s^{l\text{-}1}$ are the outputs of the $l^{th}$ and $(l\text{-}1)^{th}$ layers of the decoder respectively, $h^u$ is the output of the last layer of the encoder.
 
 In order to prevent the future information in the decoder, at each time step $i^{th}$, the attention scores of tokens at positions after $i^{th}$ are masked by zero.
 
@@ -260,13 +258,13 @@ The purpose of training NMT models is to find optimal values for their parameter
 
 Concerning the optimization of the model on the training set, we usually use MLE, i.e.
 \begin{equation}
-\hat{\theta} = \displaystyle{\mathop{argmax}_{\theta}\mathbb{E}_{x \sim \mathcal{D}_e(x), y \sim g(x)}}log P(y|x;\theta),
+\hat{\theta} = \displaystyle{\mathop{argmax}_{\theta}\mathbb{E}_{x \sim \mathcal{D}_e, y \sim g(x)}}log P(y|x;\theta),
 \label{eq:mle-chap2}
 \end{equation}
 where $\mathcal{D}_e$ is the train distribution over the set of sentences, $\Omega_e$ in language $e$ and $g$ is a hypothetical translation function, $g:\Omega_e \rightarrow \Omega_f$, which needs to be learned by our model ($\Omega_f$ is set of sentences in the language $f$). According to Equation ~\refeq{eq:factorization-chap2}, MLE is equivalent to minimizing the cross-entropy loss
 \begin{equation}
 \begin{array}{rcl}
-L_{CE}(\theta, \mathcal{D}_e, g) &=& -\displaystyle{\mathbb{E}_{x \sim \mathcal{D}_e(x), y \sim g(x)} \mathop{\sum}_{i}^{l_y}}log P(y_i|y_{<i},x;\theta), \\
+L_{CE}(\theta, \mathcal{D}_e, g) &=& -\displaystyle{\mathbb{E}_{x \sim \mathcal{D}_e, y \sim g(x)} \mathop{\sum}_{i}^{l_y}}log P(y_i|y_{<i},x;\theta), \\
 \hat{\theta} &=& \displaystyle{\mathop{argmin}_{\theta}} \ L_{CE}(\theta,\mathcal{D}_e,g).
 \end{array}
 \label{eq:ce-chap2}
@@ -281,7 +279,7 @@ Besides, log-likelihood maximization \eqref{eq:mle-chap2} assumes that a ground-
 
 \begin{equation}
 \begin{array}{rcl}
-L_{CE}(\theta, \mathcal{D}_e, g) &=& -\displaystyle{ \mathbb{E}_{x \sim \mathcal{D}_e(x), y \sim g(x)}} \bigg[ \displaystyle{\mathop{\sum}_{i}^{l_y}} \big( (1-\epsilon) * log P(y_i|y_{<i},x;\theta) \\
+L_{CE}(\theta, \mathcal{D}_e, g) &=& -\displaystyle{ \mathbb{E}_{x \sim \mathcal{D}_e, y \sim g(x)}} \bigg[ \displaystyle{\mathop{\sum}_{i}^{l_y}} \big( (1-\epsilon) * log P(y_i|y_{<i},x;\theta) \\
 	&+& \frac{\epsilon}{\mid \Sigma_y \mid} * \displaystyle{\mathop{\sum}_{y' \in \Sigma_y}} log P(y = y'|y_{<i},x;\theta)\big) \bigg], \\
 \end{array}
 \end{equation}
