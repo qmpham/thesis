@@ -461,11 +461,66 @@ In our future work, we aim to develop another version of \system{CDR} using lear
 %\begin{array}{rcl}
 %\tilde{r}^{l}(d)_i &=& \begin{cases}
 %      1, & \text{if}\ i<d_a \\
-%      1, & \text{if}\ d_a + p \times \frac{d_k - d_a}{n_p} \leqslant i < d_a + (p+1) \times \frac{d_k - d_a}{n_p} \  \text{AND} \  m(d,p) == 1 \\
+%      1, & \text{if}\ d_a + p \times \frac{d_k - d_a}{n_p} \leqslant i < d_a + (p+1) \times \frac{d_k - d_a}{n_p} \  \text{AND} \  m^d(p) == 1 \\
 %      0, & \text{otherwise}
 %    \end{cases} \\
 %p & \in & \{0,\dots,n_p-1 \} \\
 %d & \in & \{0,\dots,n_d-1 \} \\
+%m^d & \in & \{0,1\}^{n_p} \ \forall d \\
+%\mid m^d \mid_{L_1} &=& k  \\
+%\Delta^{n_p}_k & = & \{ m \in \{0,1\}^{n_p} | \mid m \mid_{L_1} = k \}
 %\end{array}
 %\end{equation}
 %where $n_p$ is number of domain-specific regions; $m(d,p)$ follows a Bernoulli distribution which is parameterized and learned jointly with the parameters of the NMT model by optimizing the evidence lower bound (ELBO) \citep{kingma13variational} with Gumbel-softmax reparametrization trick \citep{jang17categorical}. The domain-specific region $p$ is allocated to domain $d$ if $m(d,p)==1$. The allocation of hidden nodes to each domain is now decided by the variables $m(p,d)$ which allow the model to accommodate an arbitrary number of domains. 
+
+%\begin{array}{rcl} 
+%log P(y|x,\theta,d) &=&log P(y, m^d |x,\theta,d) - logP(m^d|y, x,\theta,d) \\
+%
+%& = & \mathbb{E}_{P(m^d | \Phi^d)} \big[ log P(y, m^d | x,\theta,d) - log P(m^d | \Phi^d) \big]  + KL(P(m^d | \Phi^d) \parallel P(m^d|y, x,\theta,d)) \\
+%
+%& \geq & \mathbb{E}_{P(m^d | \Phi^d)} \big[ log P(y, m^d | x,\theta,d) - log P(m^d | \Phi^d) \big]  \\
+%
+%& = &  \mathbb{E}_{P(m^d | \Phi^d)} \big[ log P(y | x,\theta,m^d, d) \big] - KL \big( P(m^d | \Phi^d) \parallel P(m^d | x,\theta,d) \big) \\
+%& = & \mathcal{L}(\theta, \Phi^d, x , y) \\
+%& & \\
+%Suppose \ \ \ P(m^d | x, \theta, d) &=& U(\Delta^{n_p}_k) \\
+%
+%\Phi_d & \in & \mathbb{R}^{n_p} \\
+%
+%Ind^d = \{ i_1, \cdots, i_k \} | \Phi^d & \sim &Sampling\_without\_replacement \big( softmax(\Phi^d) \big) \\
+%
+%m^d(i) &=& \mathbb{I}(i \in Ind^d)
+%
+%\end{array}
+
+%\begin{array}{rcl}
+%L(\theta, \Phi_0, \cdots, \Phi_{n_d\text{-1}}) &=& \sum_{d=0}^{n_d-1} \mathbb{E}_{x \sim \mathcal{D}_s^d, y \sim g^d(x)} \big[ \mathcal{L}(\theta,\Phi_d,x,y) \big]
+%\end{array}
+
+%\begin{array}{rcl}
+%
+%g_i &\sim& Gumbel(0,1) \ i.i.d \ \forall i \in \{ 0,\cdots,n_d-1 \} \\
+%
+%i_1, \cdots, i_k &=& Top_{k} \{ g_0 + \Phi^d_0, \cdots, g_{n_d-1} + \Phi^d_{n_d-1} \} \\
+%
+%m^d(i) &=& \mathbb{I}(i \in Ind^d) \\
+%
+%\end{array}
+
+%\begin{array}{rcl}
+% \tilde{m}^d &=&\displaystyle{\mathop{argmin}_{\substack{
+%       0 \leq m_i \leq 1 \ \forall 0 \leq i \leq n_d\text{-}1 \\
+%        1^{T}.m = k
+%      }}} -(g+\Phi^d)^{T} . m - \tau H_b(m) \\
+%& & \\
+%H_b(m) &=& - \sum_i m_i log(m_i) + (1-m_i)log(1-m_i)
+%\end{array}
+%
+%%\begin{array}{rcl} 
+%
+%Ind^d &=& Top_k(\Phi^d) \\
+%m^d &=& \mathbb{I}(i\in Ind^d)\\
+%
+%y &\sim& P(.|x,\theta,m^d)
+%
+%\end{array}
