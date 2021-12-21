@@ -90,16 +90,6 @@
 \usepackage{spverbatim}
 
 \usepackage{breakurl}
-% reference
-%\usepackage[hidelinks]{hyperref}
-%% hyperlinks:
-%\ifthenelse{\isundefined{\hypersetup}}{%
-% 
-%\usepackage[hidelinks=true,pagebackref=true,backref=true]{hyperref}
-%   \renewcommand{\backrefxxx}[3]{%
-%     [\hyperlink{page.#1}{cited page #1}]}
-%   \urlstyle{same} % normal text font (alternatives: tt, rm, sf)
-%}{}
 
 % hyperlinks:
 \ifthenelse{\isundefined{\hypersetup}}{
@@ -117,8 +107,9 @@
      \fi%
      }
 
+%%%
 
-
+\usepackage{mdframed}
 
 
 % abbreviation package
@@ -250,6 +241,26 @@
 \definecolor{lifgtred3}{rgb}{0.95,0.8,0.8}
 \definecolor{lightgrayishbleu}{rgb}{0.812,0.886,0.953}
 \definecolor{softbleu}{rgb}{0.435,0.659,0.863}
+\definecolor{Prune}{RGB}{99,0,60} % l14-33 : couleurs de la charte graphique upsaclay
+\definecolor{B1}{RGB}{49,62,72} 
+\definecolor{C1}{RGB}{124,135,143}
+\definecolor{D1}{RGB}{213,218,223}
+\definecolor{A2}{RGB}{198,11,70}
+\definecolor{B2}{RGB}{237,20,91}
+\definecolor{C2}{RGB}{238,52,35}
+\definecolor{D2}{RGB}{243,115,32}
+\definecolor{A3}{RGB}{124,42,144}
+\definecolor{B3}{RGB}{125,106,175}
+\definecolor{C3}{RGB}{198,103,29}
+\definecolor{D3}{RGB}{254,188,24}
+\definecolor{A4}{RGB}{0,78,125}
+\definecolor{B4}{RGB}{14,135,201}
+\definecolor{C4}{RGB}{0,148,181}
+\definecolor{D4}{RGB}{70,195,210}
+\definecolor{A5}{RGB}{0,128,122}
+\definecolor{B5}{RGB}{64,183,105}
+\definecolor{C5}{RGB}{140,198,62}
+\definecolor{D5}{RGB}{213,223,61}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand\blankpage{%
@@ -272,6 +283,27 @@
 	\doublespacing	
 
     \input{layout/firstpage.tex}
+    
+	\afterpage{\null\newpage}
+	
+	\normalsize
+%\titleformat{\chapter}[hang]{\bfseries\Large\color{Prune}}{\thechapter\ -}{.1ex}
+%{\vspace{0.1ex}
+%}
+%[\vspace{1ex}]
+%\titlespacing{\chapter}{0pc}{0ex}{0.5pc}
+%
+%\titleformat{\section}[hang]{\bfseries\normalsize}{\thesection\ .}{0.5pt}
+%{\vspace{0.1ex}
+%}
+%[\vspace{0.1ex}]
+%\titlespacing{\section}{1.5pc}{4ex plus .1ex minus .2ex}{.8pc}
+%
+%\titleformat{\subsection}[hang]{\bfseries\small}{\thesubsection\ .}{1pt}
+%{\vspace{0.1ex}
+%}
+%[\vspace{0.1ex}]
+%\titlespacing{\subsection}{3pc}{2ex plus .1ex minus .2ex}{.1pc}
         
 %    \begin{dedication}
 %	Dedicated to my family.
@@ -279,7 +311,7 @@
 %	For their endless love, support and encouragement.
 %	\end{dedication}
 %	
-%    \input{parts/acknowledgement.tex}
+    \input{parts/acknowledgement.tex}
     
 	\input{parts/abstract.tex}	
 
@@ -317,7 +349,8 @@
 
 \appendix
 	\input{parts/appendix.tex}
-
+	
+	\input{parts/resume.tex}
 \end{document}
 
 
